@@ -1,0 +1,40 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/BubbleShooter.dir/link.d"
+  "CMakeFiles/BubbleShooter.dir/src/Game.cpp.o"
+  "CMakeFiles/BubbleShooter.dir/src/Game.cpp.o.d"
+  "CMakeFiles/BubbleShooter.dir/src/classes/Bubble.cpp.o"
+  "CMakeFiles/BubbleShooter.dir/src/classes/Bubble.cpp.o.d"
+  "CMakeFiles/BubbleShooter.dir/src/classes/BubbleGrid.cpp.o"
+  "CMakeFiles/BubbleShooter.dir/src/classes/BubbleGrid.cpp.o.d"
+  "CMakeFiles/BubbleShooter.dir/src/classes/Roof.cpp.o"
+  "CMakeFiles/BubbleShooter.dir/src/classes/Roof.cpp.o.d"
+  "CMakeFiles/BubbleShooter.dir/src/classes/Score.cpp.o"
+  "CMakeFiles/BubbleShooter.dir/src/classes/Score.cpp.o.d"
+  "CMakeFiles/BubbleShooter.dir/src/classes/Shooter.cpp.o"
+  "CMakeFiles/BubbleShooter.dir/src/classes/Shooter.cpp.o.d"
+  "CMakeFiles/BubbleShooter.dir/src/core/InputHandler.cpp.o"
+  "CMakeFiles/BubbleShooter.dir/src/core/InputHandler.cpp.o.d"
+  "CMakeFiles/BubbleShooter.dir/src/core/Renderer.cpp.o"
+  "CMakeFiles/BubbleShooter.dir/src/core/Renderer.cpp.o.d"
+  "CMakeFiles/BubbleShooter.dir/src/core/ResourceManager.cpp.o"
+  "CMakeFiles/BubbleShooter.dir/src/core/ResourceManager.cpp.o.d"
+  "CMakeFiles/BubbleShooter.dir/src/core/Settings.cpp.o"
+  "CMakeFiles/BubbleShooter.dir/src/core/Settings.cpp.o.d"
+  "CMakeFiles/BubbleShooter.dir/src/main.cpp.o"
+  "CMakeFiles/BubbleShooter.dir/src/main.cpp.o.d"
+  "CMakeFiles/BubbleShooter.dir/src/screens/GameOverScreen.cpp.o"
+  "CMakeFiles/BubbleShooter.dir/src/screens/GameOverScreen.cpp.o.d"
+  "CMakeFiles/BubbleShooter.dir/src/screens/GameScreen.cpp.o"
+  "CMakeFiles/BubbleShooter.dir/src/screens/GameScreen.cpp.o.d"
+  "CMakeFiles/BubbleShooter.dir/src/screens/HomeScreen.cpp.o"
+  "CMakeFiles/BubbleShooter.dir/src/screens/HomeScreen.cpp.o.d"
+  "CMakeFiles/BubbleShooter.dir/src/screens/OptionsScreen.cpp.o"
+  "CMakeFiles/BubbleShooter.dir/src/screens/OptionsScreen.cpp.o.d"
+  "bin/BubbleShooter"
+  "bin/BubbleShooter.pdb"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/BubbleShooter.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()
