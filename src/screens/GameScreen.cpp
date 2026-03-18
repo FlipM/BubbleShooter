@@ -119,8 +119,18 @@ namespace screens
             return;
         }
 
-        // Bubble-grid collision (stub — distance check against occupied cells).
-        // TODO: efficient spatial lookup; for now just snap on roof contact.
+        utils::HexCoord flyingCoord = m_grid.snapToGrid(m_flyingBubble->pixelPos());
+        std::vector<utils::HexCoord> neighbours = m_grid.neighbours(flyingCoord);
+        for(const auto& neighborCoord : neighbours) 
+        {
+            auto neighborBubble = m_grid.at(neighborCoord);
+            if (neighborBubble != nullptr && m_flyingBubble->collides(*neighborBubble)) 
+            {
+                m_flyingBubble->onCollisionWithBubble(*neighborBubble);
+                landBubble();
+                return;
+            }
+        }
     }
 
     void GameScreen::landBubble() 

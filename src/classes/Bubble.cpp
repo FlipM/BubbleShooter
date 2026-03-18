@@ -69,7 +69,19 @@ namespace classes
         m_pixelPos.y += m_velocity.y * deltaSeconds;
     }
 
-    void Bubble::onCollisionWithBubble(Bubble & /*other*/) 
+    bool Bubble::collides(const Bubble &other) const noexcept 
+    {        
+        if (!m_active || !other.m_active)
+            return false;
+            
+        float dx = m_pixelPos.x - other.m_pixelPos.x;
+        float dy = m_pixelPos.y - other.m_pixelPos.y;
+        float distanceSq = dx * dx + dy * dy;
+        float radiusSum = m_radius + other.m_radius;
+        return distanceSq <= radiusSum * radiusSum;
+    }
+
+    void Bubble::onCollisionWithBubble(Bubble & other) 
     {
         // TODO: snap to nearest grid cell, trigger BubbleGrid::findMatches().
         std::clog << "[Bubble] onCollisionWithBubble() stub\n";

@@ -8,8 +8,7 @@ namespace core
     ResourceManager::ResourceManager(SDL_Renderer *renderer)
         : m_renderer(renderer) {}
 
-    ResourceManager::TexturePtr
-    ResourceManager::getTexture(const std::string &id,
+    TexturePtr ResourceManager::getTexture(const std::string &id,
                                 const std::string &filePath) 
     {
         if (auto it = m_textures.find(id); it != m_textures.end()) 

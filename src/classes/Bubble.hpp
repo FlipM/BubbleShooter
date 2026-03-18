@@ -67,6 +67,9 @@ namespace classes
             /// Set launch velocity (px/s).
             void setVelocity(utils::Vec2f vel) noexcept { m_velocity = vel; }
 
+
+            bool collides(const Bubble &other) const noexcept;
+            
             // ── Interaction triggers (stubs) ──────────────────────────────────────
             /// Called when this bubble collides with another bubble on the grid.
             void onCollisionWithBubble(Bubble &other);

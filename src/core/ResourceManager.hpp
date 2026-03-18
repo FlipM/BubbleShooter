@@ -39,8 +39,7 @@ namespace core {
             // TODO: getFont(id, path, ptSize) → TTF_Font wrapper
 
         private:
-            SDL_Renderer *m_renderer{
-                nullptr}; ///< Non-owning — lifetime managed by Renderer.
+            SDL_Renderer *m_renderer{nullptr}; ///< Non-owning — lifetime managed by Renderer.
             std::unordered_map<std::string, TexturePtr> m_textures;
     };
 

@@ -5,6 +5,7 @@
 #include <cmath>
 #include <utility>
 
+
 namespace utils 
 {
     /// Hex grid orientation (flat-top vs pointy-top).
@@ -17,6 +18,12 @@ namespace utils
         int r{0}; ///< row
     };
 
+    const float BALL_SIZE = std::sqrt(3.f);
+    const float BALL_RADIUS = BALL_SIZE / 2.f;
+    const float X_OFFSET = BALL_RADIUS;
+    const float Y_OFFSET = BALL_RADIUS;
+
+
     /// Screen-space 2D point.
     struct Vec2f 
     {
@@ -27,13 +34,12 @@ namespace utils
     /// Convert hex axial (q, r) → pixel (x, y) for pointy-top hexagons.
     /// @param size  radius (center to vertex) in pixels.
     /// @param origin pixel position of hex (0,0).
-    [[nodiscard]] inline Vec2f hexToPixel(HexCoord hex, float size,
-                                        Vec2f origin = {0.f, 0.f}) noexcept 
+    [[nodiscard]] inline Vec2f hexToPixel(HexCoord hex, float size, Vec2f origin = {0.f, 0.f}) noexcept 
     {
         // TODO: toggle orientation via template parameter.
-        const float x =
-            size * (std::sqrt(3.f) * hex.q + std::sqrt(3.f) / 2.f * hex.r);
-        const float y = size * (3.f / 2.f * hex.r);
+        int offset_r = hex.r % 2;
+        const float x = size * (BALL_SIZE * hex.q + BALL_RADIUS * offset_r + X_OFFSET);
+        const float y = size * (BALL_SIZE * hex.r + Y_OFFSET);
         return {origin.x + x, origin.y + y};
     }
 
@@ -41,28 +47,14 @@ namespace utils
     [[nodiscard]] inline HexCoord pixelToHex(Vec2f point, float size,
                                             Vec2f origin = {0.f, 0.f}) noexcept 
     {
-        const float px = (point.x - origin.x) / size;
-        const float py = (point.y - origin.y) / size;
+        const float px = ((point.x - origin.x) / size);
+        const float py = ((point.y - origin.y) / size);
 
-        const float q_f = (std::sqrt(3.f) / 3.f * px - 1.f / 3.f * py);
-        const float r_f = (2.f / 3.f * py);
+        const int r = static_cast<int>(std::floor(py / BALL_SIZE));
+        const int offset_r = r % 2;
+        const int q = static_cast<int>(std::floor((px - BALL_RADIUS * offset_r) / BALL_SIZE));
 
-        // Cube-coordinate rounding.
-        float x = q_f;
-        float z = r_f;
-        float y = -x - z;
-
-        float rx = std::round(x), ry = std::round(y), rz = std::round(z);
-        float dx = std::abs(rx - x), dy = std::abs(ry - y), dz = std::abs(rz - z);
-
-        if (dx > dy && dx > dz)
-            rx = -ry - rz;
-        else if (dy > dz)
-            ry = -rx - rz;
-        else
-            rz = -rx - ry;
-
-        return {static_cast<int>(rx), static_cast<int>(rz)};
+        return {q, r};
     }
 
     /// Angle in radians from point A to point B.

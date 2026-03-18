@@ -23,7 +23,7 @@ namespace classes {
 
             // ── Grid manipulation ─────────────────────────────────────────────────
             /// Place a bubble at hex coord (q, r).  Replaces any existing bubble.
-            void addBubble(std::shared_ptr<Bubble> bubble, utils::HexCoord pos);
+            void addBubble(std::unique_ptr<Bubble> bubble, utils::HexCoord pos);
 
             /// Remove and return the bubble at (q, r).  Returns nullptr if empty.
             std::shared_ptr<Bubble> removeBubble(utils::HexCoord pos);
@@ -47,6 +47,10 @@ namespace classes {
             /// Advance the whole grid downward by one row (ratchet mechanic).
             void advanceDown();
 
+            /// Get flat-top hex neighbour coords (axial coordinates).
+            [[nodiscard]] std::vector<utils::HexCoord>
+            neighbours(utils::HexCoord pos) const;
+
             // ── Rendering ─────────────────────────────────────────────────────────
             /// Draw the background hex grid lines + all active bubbles.
             void draw(SDL_Renderer *renderer) const;
@@ -67,10 +71,6 @@ namespace classes {
 
             /// Convert grid index → screen pixel.
             [[nodiscard]] utils::Vec2f cellCenter(utils::HexCoord pos) const noexcept;
-
-            /// Flat-top hex neighbour offsets (axial coordinates).
-            [[nodiscard]] std::vector<utils::HexCoord>
-            neighbours(utils::HexCoord pos) const;
 
             /// Draw the outline of a single hex cell (background grid decoration).
             void drawHexOutline(SDL_Renderer *renderer, utils::Vec2f center) const;

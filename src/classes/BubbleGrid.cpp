@@ -13,7 +13,7 @@ namespace classes {
         m_grid.assign(rows, std::vector<std::shared_ptr<Bubble>>(cols, nullptr));
     }
 
-    void BubbleGrid::addBubble(std::shared_ptr<Bubble> bubble,
+    void BubbleGrid::addBubble(std::unique_ptr<Bubble> bubble,
                             utils::HexCoord pos) 
     {
         if (pos.r < 0 || pos.r >= m_rows || pos.q < 0 || pos.q >= m_cols)
@@ -74,18 +74,23 @@ namespace classes {
 
     void BubbleGrid::draw(SDL_Renderer *renderer) const 
     {
-        // Draw faint hex grid background.
-        for (int r = 0; r < m_rows; ++r) {
-            for (int q = 0; q < m_cols; ++q) {
-            drawHexOutline(renderer, cellCenter({q, r}));
+        // Draw hex lines. Odd rows has one less slot.
+        for (int r = 0; r < m_rows; ++r) 
+        {
+            int n_cols = m_cols - (r % 2);
+            for (int q = 0; q < n_cols; ++q) 
+            {
+                drawHexOutline(renderer, cellCenter({q, r}));
             }
         }
 
         // Draw all active bubbles.
-        for (auto &row : m_grid) {
-            for (auto &bubble : row) {
-            if (bubble)
-                bubble->draw(renderer);
+        for (auto &row : m_grid) 
+        {
+            for (auto &bubble : row) 
+            {
+                if (bubble)
+                    bubble->draw(renderer);
             }
         }
     }
@@ -97,13 +102,19 @@ namespace classes {
 
     std::vector<utils::HexCoord> BubbleGrid::neighbours(utils::HexCoord pos) const 
     {
-        // Pointy-top axial neighbour directions.
-        static constexpr utils::HexCoord dirs[6] = {{1, 0},  {-1, 0}, {0, 1},
-                                                    {0, -1}, {1, -1}, {-1, 1}};
+        int offset_r = pos.r % 2;
+
+        static constexpr utils::HexCoord dirs[6] = {{1,  0},   {-1,  0},  // samle line
+                                                    {0, -1},   { 1, -1},  // prev line
+                                                    {0,  1},   { 1,  1}}; // next line
         std::vector<utils::HexCoord> result;
         result.reserve(6);
-        for (auto &d : dirs) {
+        for (auto &d : dirs) 
+        {
             utils::HexCoord n{pos.q + d.q, pos.r + d.r};
+            // If odd row, subtract 1 in the indexes of top and bottom neighbors.
+            if(offset_r == 0 && (d.r == 1 || d.r == -1)) 
+                n.q -= 1; 
             if (n.q >= 0 && n.q < m_cols && n.r >= 0 && n.r < m_rows)
             result.push_back(n);
         }
