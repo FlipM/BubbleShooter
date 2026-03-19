@@ -16,25 +16,25 @@ namespace classes {
     void BubbleGrid::addBubble(std::unique_ptr<Bubble> bubble,
                             utils::HexCoord pos) 
     {
-        if (pos.r < 0 || pos.r >= m_rows || pos.q < 0 || pos.q >= m_cols)
+        if (pos.r < 0 || pos.r >= m_rows || pos.c < 0 || pos.c >= m_cols)
             return;
         bubble->setGridPos(pos);
         bubble->setPixelPos(cellCenter(pos));
-        m_grid[pos.r][pos.q] = std::move(bubble);
+        m_grid[pos.r][pos.c] = std::move(bubble);
     }
 
     std::shared_ptr<Bubble> BubbleGrid::removeBubble(utils::HexCoord pos) 
     {
-        if (pos.r < 0 || pos.r >= m_rows || pos.q < 0 || pos.q >= m_cols)
+        if (pos.r < 0 || pos.r >= m_rows || pos.c < 0 || pos.c >= m_cols)
             return nullptr;
-        return std::exchange(m_grid[pos.r][pos.q], nullptr);
+        return std::exchange(m_grid[pos.r][pos.c], nullptr);
     }
 
     std::shared_ptr<Bubble> BubbleGrid::at(utils::HexCoord pos) const 
     {
-        if (pos.r < 0 || pos.r >= m_rows || pos.q < 0 || pos.q >= m_cols)
+        if (pos.r < 0 || pos.r >= m_rows || pos.c < 0 || pos.c >= m_cols)
             return nullptr;
-        return m_grid[pos.r][pos.q];
+        return m_grid[pos.r][pos.c];
     }
 
     std::vector<utils::HexCoord>
@@ -49,7 +49,7 @@ namespace classes {
         std::vector<utils::HexCoord> matched;
         // Placeholder: return only the origin cell.
         matched.push_back(origin);
-        std::clog << "[BubbleGrid] findMatches() stub at (" << origin.q << ','
+        std::clog << "[BubbleGrid] findMatches() stub at (" << origin.c << ','
                     << origin.r << ")\n";
         return matched;
     }
@@ -78,9 +78,9 @@ namespace classes {
         for (int r = 0; r < m_rows; ++r) 
         {
             int n_cols = m_cols - (r % 2);
-            for (int q = 0; q < n_cols; ++q) 
+            for (int c = 0; c < n_cols; ++c) 
             {
-                drawHexOutline(renderer, cellCenter({q, r}));
+                drawHexOutline(renderer, cellCenter({r, c}));
             }
         }
 
@@ -104,18 +104,18 @@ namespace classes {
     {
         int offset_r = pos.r % 2;
 
-        static constexpr utils::HexCoord dirs[6] = {{1,  0},   {-1,  0},  // samle line
-                                                    {0, -1},   { 1, -1},  // prev line
-                                                    {0,  1},   { 1,  1}}; // next line
+        static constexpr utils::HexCoord dirs[6] = {{ 0, 1},   { 0, -1},  // samle line
+                                                    {-1, 0},   {-1,  1},  // prev line
+                                                    { 1, 0},   { 1,  1}}; // next line
         std::vector<utils::HexCoord> result;
         result.reserve(6);
         for (auto &d : dirs) 
         {
-            utils::HexCoord n{pos.q + d.q, pos.r + d.r};
+            utils::HexCoord n{pos.r + d.r, pos.c + d.c};
             // If odd row, subtract 1 in the indexes of top and bottom neighbors.
             if(offset_r == 0 && (d.r == 1 || d.r == -1)) 
-                n.q -= 1; 
-            if (n.q >= 0 && n.q < m_cols && n.r >= 0 && n.r < m_rows)
+                n.c -= 1; 
+            if (n.c >= 0 && n.c < m_cols && n.r >= 0 && n.r < m_rows)
             result.push_back(n);
         }
         return result;

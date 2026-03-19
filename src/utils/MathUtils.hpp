@@ -14,8 +14,8 @@ namespace utils
     /// Hex cell in axial coordinates.
     struct HexCoord 
     {
-        int q{0}; ///< column
         int r{0}; ///< row
+        int c{0}; ///< column
     };
 
     const float BALL_SIZE = std::sqrt(3.f);
@@ -38,7 +38,7 @@ namespace utils
     {
         // TODO: toggle orientation via template parameter.
         int offset_r = hex.r % 2;
-        const float x = size * (BALL_SIZE * hex.q + BALL_RADIUS * offset_r + X_OFFSET);
+        const float x = size * (BALL_SIZE * hex.c + BALL_RADIUS * offset_r + X_OFFSET);
         const float y = size * (BALL_SIZE * hex.r + Y_OFFSET);
         return {origin.x + x, origin.y + y};
     }
@@ -52,9 +52,9 @@ namespace utils
 
         const int r = static_cast<int>(std::floor(py / BALL_SIZE));
         const int offset_r = r % 2;
-        const int q = static_cast<int>(std::floor((px - BALL_RADIUS * offset_r) / BALL_SIZE));
+        const int c = static_cast<int>(std::floor((px - BALL_RADIUS * offset_r) / BALL_SIZE));
 
-        return {q, r};
+        return {r, c};
     }
 
     /// Angle in radians from point A to point B.
