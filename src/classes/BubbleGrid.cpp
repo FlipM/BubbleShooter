@@ -11,6 +11,7 @@ namespace classes {
         : m_cols(cols), m_rows(rows), m_hexSize(hexSize), m_origin(origin) 
     {
         m_grid.assign(rows, std::vector<std::shared_ptr<Bubble>>(cols, nullptr));
+        visited.assign(rows, std::vector<short>(cols, 0));
     }
 
     void BubbleGrid::addBubble(std::unique_ptr<Bubble> bubble,
@@ -25,8 +26,6 @@ namespace classes {
 
     std::shared_ptr<Bubble> BubbleGrid::removeBubble(utils::HexCoord pos) 
     {
-        if (pos.r < 0 || pos.r >= m_rows || pos.c < 0 || pos.c >= m_cols)
-            return nullptr;
         return std::exchange(m_grid[pos.r][pos.c], nullptr);
     }
 
@@ -37,8 +36,12 @@ namespace classes {
         return m_grid[pos.r][pos.c];
     }
 
-    std::vector<utils::HexCoord>
-    BubbleGrid::findMatches(utils::HexCoord origin) const 
+    bool BubbleGrid::isValidBubble(std::shared_ptr<Bubble> bubblePtr) const
+    {
+        return bubblePtr && bubblePtr->isActive();
+    }
+
+    std::vector<utils::HexCoord> BubbleGrid::findMatches(utils::HexCoord origin) 
     {
         // TODO: BFS collecting same-colour connected bubbles.
         // Returns coords of matched group (≥3 → pop them).
@@ -47,10 +50,34 @@ namespace classes {
             return {};
 
         std::vector<utils::HexCoord> matched;
-        // Placeholder: return only the origin cell.
+
+        classes::BubbleColor color = src->color();
+        this->clearVisited();
+        visited[origin.r][origin.c] = 1;
+        matched = recMatches(origin, color);
+        
+        return matched;
+    }
+
+    std::vector<utils::HexCoord> BubbleGrid::recMatches(utils::HexCoord origin, BubbleColor &color)
+    {
+        std::vector<utils::HexCoord> matched;
         matched.push_back(origin);
-        std::clog << "[BubbleGrid] findMatches() stub at (" << origin.c << ','
-                    << origin.r << ")\n";
+        visited[origin.r][origin.c] = 1;
+
+        std::vector<utils::HexCoord> neighbours = this->neighbours(origin);
+        for(const auto& neighborCoord : neighbours) 
+        {
+            if (isVisited(neighborCoord))
+                continue;
+
+            auto neighborBubble = this->at(neighborCoord);
+            if(isValidBubble(neighborBubble) && neighborBubble->matches(color))
+            {
+                auto subMatches = recMatches(neighborCoord, color);
+                matched.insert(matched.end(), subMatches.begin(), subMatches.end());
+            }
+        }
         return matched;
     }
 
@@ -75,10 +102,10 @@ namespace classes {
     void BubbleGrid::draw(SDL_Renderer *renderer) const 
     {
         // Draw hex lines. Odd rows has one less slot.
-        for (int r = 0; r < m_rows; ++r) 
+        for (short r = 0; r < m_rows; ++r) 
         {
-            int n_cols = m_cols - (r % 2);
-            for (int c = 0; c < n_cols; ++c) 
+            short n_cols = m_cols - (r % 2);
+            for (short c = 0; c < n_cols; ++c) 
             {
                 drawHexOutline(renderer, cellCenter({r, c}));
             }
@@ -100,9 +127,23 @@ namespace classes {
         return utils::hexToPixel(pos, m_hexSize, m_origin);
     }
 
+    void BubbleGrid::clearVisited()
+    {
+        for(short r = 0; r < m_rows; r++)
+        {
+            std::fill(visited[r].begin(), visited[r].end(), 0);
+        }
+    }
+
+    bool BubbleGrid::isVisited(utils::HexCoord pos) const
+    {
+        return visited[pos.r][pos.c] == 1;
+    }
+
+
     std::vector<utils::HexCoord> BubbleGrid::neighbours(utils::HexCoord pos) const 
     {
-        int offset_r = pos.r % 2;
+        short offset_r = pos.r % 2;
 
         static constexpr utils::HexCoord dirs[6] = {{ 0, 1},   { 0, -1},  // samle line
                                                     {-1, 0},   {-1,  1},  // prev line

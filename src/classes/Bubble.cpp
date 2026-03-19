@@ -37,9 +37,9 @@ namespace classes
         std::clog << "[Bubble] pop() — color " << static_cast<int>(m_color) << '\n';
     }
 
-    bool Bubble::matches(const Bubble &other) const noexcept 
+    bool Bubble::matches(const BubbleColor &color) const noexcept 
     {
-        return m_color == other.m_color;
+        return m_color == color;
     }
 
     void Bubble::draw(SDL_Renderer *renderer) const 

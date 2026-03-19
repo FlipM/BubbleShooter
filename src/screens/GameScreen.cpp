@@ -148,6 +148,7 @@ namespace screens
             m_score.addPoints(static_cast<int>(matched.size()) * 10);
             for (auto &c : matched) 
             {
+                // Needs to be sure that the bubble is still there and active before popping
                 if (auto b = m_grid.removeBubble(c)) 
                 {
                     b->pop();

@@ -53,7 +53,7 @@ namespace classes
             void pop();
 
             /// True if this bubble matches the colour of another (for chain detection).
-            [[nodiscard]] bool matches(const Bubble &other) const noexcept;
+            [[nodiscard]] bool matches(const BubbleColor &color) const noexcept;
 
             // ── Rendering ─────────────────────────────────────────────────────────
             /// Draw the bubble at its current pixel position.

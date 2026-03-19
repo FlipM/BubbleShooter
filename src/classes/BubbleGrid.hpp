@@ -30,12 +30,14 @@ namespace classes {
 
             /// Returns pointer to bubble at (q, r), or nullptr.
             [[nodiscard]] std::shared_ptr<Bubble> at(utils::HexCoord pos) const;
+            [[nodiscard]] bool isValidBubble(std::shared_ptr<Bubble> bubblePtr) const;
 
             // ── Game logic stubs ──────────────────────────────────────────────────
             /// BFS/DFS from (q, r) collecting connected bubbles of the same colour.
             /// @returns list of matching coords (≥3 triggers pop).
-            [[nodiscard]] std::vector<utils::HexCoord>
-            findMatches(utils::HexCoord origin) const;
+            [[nodiscard]] std::vector<utils::HexCoord> findMatches(utils::HexCoord origin); 
+            [[nodiscard]] std::vector<utils::HexCoord> recMatches(utils::HexCoord origin, BubbleColor &color);
+
 
             /// Remove all bubbles with no path to the roof (floating bubbles).
             void dropFloating();
@@ -48,8 +50,10 @@ namespace classes {
             void advanceDown();
 
             /// Get flat-top hex neighbour coords (axial coordinates).
-            [[nodiscard]] std::vector<utils::HexCoord>
-            neighbours(utils::HexCoord pos) const;
+            [[nodiscard]] std::vector<utils::HexCoord> neighbours(utils::HexCoord pos) const;
+
+            void clearVisited();
+            [[nodiscard]] bool isVisited(utils::HexCoord pos) const; 
 
             // ── Rendering ─────────────────────────────────────────────────────────
             /// Draw the background hex grid lines + all active bubbles.
@@ -68,6 +72,8 @@ namespace classes {
 
             /// Storage: m_grid[row][col].  Null means empty cell.
             std::vector<std::vector<std::shared_ptr<Bubble>>> m_grid;
+            std::vector<std::vector<short>> visited;
+
 
             /// Convert grid index → screen pixel.
             [[nodiscard]] utils::Vec2f cellCenter(utils::HexCoord pos) const noexcept;

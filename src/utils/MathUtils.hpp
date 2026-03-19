@@ -14,8 +14,8 @@ namespace utils
     /// Hex cell in axial coordinates.
     struct HexCoord 
     {
-        int r{0}; ///< row
-        int c{0}; ///< column
+        short r{0}; ///< row
+        short c{0}; ///< column
     };
 
     const float BALL_SIZE = std::sqrt(3.f);
@@ -50,9 +50,9 @@ namespace utils
         const float px = ((point.x - origin.x) / size);
         const float py = ((point.y - origin.y) / size);
 
-        const int r = static_cast<int>(std::floor(py / BALL_SIZE));
-        const int offset_r = r % 2;
-        const int c = static_cast<int>(std::floor((px - BALL_RADIUS * offset_r) / BALL_SIZE));
+        const short r = static_cast<short>(std::floor(py / BALL_SIZE));
+        const short offset_r = r % 2;
+        const short c = static_cast<short>(std::floor((px - BALL_RADIUS * offset_r) / BALL_SIZE));
 
         return {r, c};
     }
