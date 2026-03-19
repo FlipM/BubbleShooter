@@ -21,8 +21,8 @@ namespace classes
     {
         float angle = utils::angleBetween(m_basePos, mousePos);
         // Clamp: don't allow shooting downward (below horizontal).
-        constexpr float minAngle = -3.14159265f; // straight left
-        constexpr float maxAngle = 0.f;          // straight right
+        constexpr float minAngle = -(utils::PI * 0.8); 
+        constexpr float maxAngle = -(utils::PI * 0.2);     
         m_aimAngle = utils::clamp(angle, minAngle, maxAngle);
     }
 

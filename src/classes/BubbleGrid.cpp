@@ -19,6 +19,9 @@ namespace classes {
     {
         if (pos.r < 0 || pos.r >= m_rows || pos.c < 0 || pos.c >= m_cols)
             return;
+
+        // Special case: 
+
         bubble->setGridPos(pos);
         bubble->setPixelPos(cellCenter(pos));
         m_grid[pos.r][pos.c] = std::move(bubble);
@@ -83,14 +86,28 @@ namespace classes {
 
     void BubbleGrid::dropFloating() 
     {
-        // TODO: BFS from roof row; mark unreachable cells; remove them + add score.
-        std::clog << "[BubbleGrid] dropFloating() stub\n";
+        return;
+        for(short c = 0; c < m_cols; c++)
+        {
+            ;
+            //if(!isVisited({0, c}) && at({0, c}))
+                //dropFloatingRec({0, c});
+        }
+
+        for(short r = 0; r < m_rows; r++)
+        {
+            for(short c = 0; c < m_cols; c++)
+            {
+                if(!isVisited({r, c}) && at({r, c}))
+                    removeBubble({r, c})->pop();
+            }
+        }
     }
 
     utils::HexCoord BubbleGrid::snapToGrid(utils::Vec2f pixelPos) const 
     {
         // TODO: find nearest empty hex cell to pixelPos.
-        return utils::pixelToHex(pixelPos, m_hexSize, m_origin);
+        return utils::pixelToHex(pixelPos, m_origin);
     }
 
     void BubbleGrid::advanceDown() 
@@ -104,8 +121,7 @@ namespace classes {
         // Draw hex lines. Odd rows has one less slot.
         for (short r = 0; r < m_rows; ++r) 
         {
-            short n_cols = m_cols - (r % 2);
-            for (short c = 0; c < n_cols; ++c) 
+            for (short c = 0; c < m_cols; ++c) 
             {
                 drawHexOutline(renderer, cellCenter({r, c}));
             }
@@ -124,7 +140,7 @@ namespace classes {
 
     utils::Vec2f BubbleGrid::cellCenter(utils::HexCoord pos) const noexcept 
     {
-        return utils::hexToPixel(pos, m_hexSize, m_origin);
+        return utils::hexToPixel(pos, m_origin);
     }
 
     void BubbleGrid::clearVisited()
@@ -170,8 +186,8 @@ namespace classes {
         constexpr int sides = 6;
         for (int i = 0; i < sides; ++i) 
         {
-            float a0 = static_cast<float>(i) / sides * 2.f * 3.14159265f;
-            float a1 = static_cast<float>(i + 1) / sides * 2.f * 3.14159265f;
+            float a0 = static_cast<float>(i) / sides * 2.f * utils::PI;
+            float a1 = static_cast<float>(i + 1) / sides * 2.f * utils::PI;
             int x0 = static_cast<int>(center.x + m_hexSize * std::cos(a0));
             int y0 = static_cast<int>(center.y + m_hexSize * std::sin(a0));
             int x1 = static_cast<int>(center.x + m_hexSize * std::cos(a1));

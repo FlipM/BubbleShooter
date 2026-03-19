@@ -108,7 +108,8 @@ std::unique_ptr<screens::Screen> Game::makeScreen(GameState state,
             // GameScreen calls back with the score when game is over.
             // We capture 'this' safely — screen lifetime is owned by this Game.
             auto *gs = new screens::GameScreen(
-                [this] {
+                [this] 
+                {
                 // TODO: extract score from GameScreen.
                 changeState(GameState::GAME_OVER, 0);
                 },

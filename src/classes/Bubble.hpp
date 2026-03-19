@@ -85,7 +85,7 @@ namespace classes
             utils::HexCoord m_gridPos; ///< Position in the hex grid (-1,-1 = in-flight).
             utils::Vec2f m_pixelPos;   ///< Screen-space centre.
             utils::Vec2f m_velocity;   ///< Pixels/second while in-flight.
-            int m_radius{20};
+            int m_radius{static_cast<int>(utils::HEX_SIZE)}; ///< Radius of the bubble in pixels (for collision).
             bool m_active{true};
 
             // TODO: animation state (pop timer, scale, alpha)

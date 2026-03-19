@@ -11,18 +11,16 @@ namespace screens
         // Grid configuration constants.
         constexpr int GRID_COLS = 10;
         constexpr int GRID_ROWS = 14;
-        constexpr float HEX_SIZE = 22.f; // pixels, center-to-vertex
-        constexpr int ROOF_HEIGHT = 24;
     } // namespace
 
     GameScreen::GameScreen(Callback onGameOver, SDL_Rect viewport)
         : m_onGameOver(std::move(onGameOver)), m_viewport(viewport),
-        m_grid(GRID_COLS, GRID_ROWS, HEX_SIZE,
-                {static_cast<float>(viewport.x + 8),
-                static_cast<float>(viewport.y + ROOF_HEIGHT + 8)}),
+        m_grid(GRID_COLS, GRID_ROWS, utils::HEX_SIZE,
+                {static_cast<float>(viewport.x + 2),
+                static_cast<float>(viewport.y + utils::ROOF_HEIGHT + 2)}),
         m_shooter({static_cast<float>(viewport.x + viewport.w / 2),
                     static_cast<float>(viewport.y + viewport.h - 70)}),
-        m_roof(viewport.x, viewport.y, viewport.w, ROOF_HEIGHT) 
+        m_roof(viewport.x, viewport.y, viewport.w, utils::ROOF_HEIGHT) 
     {
         // TODO: populate initial grid with random bubbles.
         std::clog << "[GameScreen] constructed, viewport " << viewport.w << 'x'
