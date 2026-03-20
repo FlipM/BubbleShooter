@@ -96,8 +96,12 @@ std::unique_ptr<screens::Screen> Game::makeScreen(GameState state,
     {
         case GameState::HOME:
             return std::make_unique<screens::HomeScreen>(
-                [this] { changeState(GameState::PLAYING); },
+                [this] { changeState(GameState::ENTRY_LEVEL); },
                 [this] { changeState(GameState::OPTIONS); }, vp);
+
+        case GameState::ENTRY_LEVEL:
+            return std::make_unique<screens::EntryLevelScreen>(
+                [this] { changeState(GameState::PLAYING); }, , vp);
 
         case GameState::OPTIONS:
             return std::make_unique<screens::OptionsScreen>(
@@ -108,19 +112,20 @@ std::unique_ptr<screens::Screen> Game::makeScreen(GameState state,
             // GameScreen calls back with the score when game is over.
             // We capture 'this' safely — screen lifetime is owned by this Game.
             auto *gs = new screens::GameScreen(
-                [this] 
-                {
-                // TODO: extract score from GameScreen.
-                changeState(GameState::GAME_OVER, 0);
-                },
+                [this] { changeState(GameState::GAME_OVER, 0); },
+                [this] { changeState(GameState::ENTRY_LEVEL); },
+                [this] { advanceStage(); },
                 vp);
             return std::unique_ptr<screens::GameScreen>(gs);
         }
 
         case GameState::GAME_OVER:
             return std::make_unique<screens::GameOverScreen>(
-                scoreForGameOver, [this] { changeState(GameState::PLAYING); },
-                [this] { changeState(GameState::HOME); }, vp);
+                scoreForGameOver, 
+                [this] { changeState(GameState::PLAYING); },
+                [this] { changeState(GameState::HOME); },
+                [this] { resetStage(); },
+                vp);
     }
   return nullptr; // unreachable
 }

@@ -44,6 +44,12 @@ namespace classes {
         return bubblePtr && bubblePtr->isActive();
     }
 
+    BubbleColor BubbleGrid::getRandomColor(const std::vector<short> &palette) const
+    {        
+        int randomIndex = rand() % palette.size();
+        return static_cast<BubbleColor>(palette[randomIndex]);
+    }
+
     std::vector<utils::HexCoord> BubbleGrid::findMatches(utils::HexCoord origin) 
     {
         // TODO: BFS collecting same-colour connected bubbles.
@@ -142,8 +148,8 @@ namespace classes {
 
     void BubbleGrid::draw(SDL_Renderer *renderer) const 
     {
-        // Draw hex lines. Odd rows has one less slot.
-        for (short r = 0; r < m_rows; ++r) 
+        // Draw hex lines. Odd rows has one less slot. Last row is ommited, since a ball there would end the game.
+        for (short r = 0; r < m_rows - 1; ++r) 
         {
             for (short c = 0; c < m_cols; ++c) 
             {

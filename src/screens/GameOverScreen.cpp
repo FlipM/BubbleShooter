@@ -3,10 +3,12 @@
 
 namespace screens {
 
-    GameOverScreen::GameOverScreen(int finalScore, Callback onRetry,
-                                Callback onHome, SDL_Rect viewport)
-        : m_finalScore(finalScore), m_onRetry(std::move(onRetry)),
-        m_onHome(std::move(onHome)), m_viewport(viewport) 
+    GameOverScreen::GameOverScreen(int finalScore, Callback onRetry, Callback onHome, Callback advanceStage, SDL_Rect viewport)
+        :   m_finalScore(finalScore), 
+            m_onRetry(std::move(onRetry)),
+            m_onHome(std::move(onHome)), 
+            m_advanceStage(std::move(advanceStage)),
+            m_viewport(viewport) 
     {
         const int cx = viewport.x + viewport.w / 2;
         const int mx = viewport.y + viewport.h / 2;

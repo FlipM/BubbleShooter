@@ -1,7 +1,5 @@
 // screens/GameScreen.cpp
 #include "GameScreen.hpp"
-#include <SDL2/SDL.h>
-#include <iostream>
 
 namespace screens 
 {
@@ -9,22 +7,25 @@ namespace screens
     namespace 
     {
         // Grid configuration constants.
-        constexpr int GRID_COLS = 10;
-        constexpr int GRID_ROWS = 14;
+        constexpr short GRID_COLS = 10;
+        constexpr short GRID_ROWS = 14;
     } // namespace
 
-    GameScreen::GameScreen(Callback onGameOver, SDL_Rect viewport)
-        : m_onGameOver(std::move(onGameOver)), m_viewport(viewport),
-        m_grid(GRID_COLS, GRID_ROWS, utils::HEX_SIZE,
-                {static_cast<float>(viewport.x + 2),
-                static_cast<float>(viewport.y + utils::ROOF_HEIGHT + 2)}),
-        m_shooter({static_cast<float>(viewport.x + viewport.w / 2),
-                    static_cast<float>(viewport.y + viewport.h - 70)}),
-        m_roof(viewport.x, viewport.y, viewport.w, utils::ROOF_HEIGHT) 
+    GameScreen::GameScreen(Callback onGameOver, Callback onAdvanceStage, Callback advanceStage, SDL_Rect viewport)
+        :   m_onGameOver(std::move(onGameOver)), 
+            m_onAdvanceStage(std::move(onAdvanceStage)), 
+            m_advanceStage(std::move(advanceStage)), 
+            m_viewport(viewport),
+            m_grid(GRID_COLS, GRID_ROWS, utils::HEX_SIZE,  {static_cast<float>(viewport.x + 2), 
+                    static_cast<float>(viewport.y + utils::ROOF_HEIGHT + 2)}),
+            m_shooter({static_cast<float>(viewport.x + viewport.w / 2), static_cast<float>(viewport.y + viewport.h - 70)}),
+            m_roof(viewport.x, viewport.y, viewport.w, utils::ROOF_HEIGHT) 
     {
         // TODO: populate initial grid with random bubbles.
         std::clog << "[GameScreen] constructed, viewport " << viewport.w << 'x'
                     << viewport.h << '\n';
+        m_levelLoader.loadLevel(m_currentStage, m_grid);
+        
     }
 
     void GameScreen::handleEvent(const SDL_Event &event,
@@ -69,6 +70,7 @@ namespace screens
         // TODO: update particle effects, animations.
 
         checkGameOver();
+        checkNextLevel();
     }
 
     void GameScreen::render(SDL_Renderer *renderer) 
@@ -159,8 +161,24 @@ namespace screens
 
     void GameScreen::checkGameOver() 
     {
-        // Game over if any bubble in the last row reaches the shooter area.
-        // TODO: implement proper check against grid rows vs shooter position.
+        for (short col = 0; col < GRID_COLS; ++col) 
+        {
+            if(m_grid.at({GRID_ROWS - 1, col})) 
+            {
+                std::clog << "[GameScreen] game over condition met\n";
+                m_onGameOver();
+            }
+        }
+    }
+
+    void GameScreen::checkNextLevel() 
+    {  
+        if (m_levelLoader.isStageCleared(m_currentStage, m_grid)) 
+        {
+            std::clog << "[GameScreen] stage cleared, advancing\n";
+            m_advanceStage();
+            m_onAdvanceStage();
+        }
     }
 
     void GameScreen::drawBackground(SDL_Renderer *renderer) const 

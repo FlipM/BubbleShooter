@@ -7,11 +7,19 @@
 #include "core/Renderer.hpp"
 #include "core/ResourceManager.hpp"
 #include "core/Settings.hpp"
+#include "levels/LevelLoader.hpp"
 #include "screens/Screen.hpp"
 #include <memory>
 #include <string>
 
-enum class GameState { HOME, OPTIONS, PLAYING, GAME_OVER };
+enum class GameState 
+{ 
+    HOME, 
+    OPTIONS, 
+    ENTRY_LEVEL,
+    PLAYING, 
+    GAME_OVER 
+};
 
 class Game 
 {
@@ -29,6 +37,10 @@ class Game
         /// Transition to a new game state, constructing the appropriate Screen.
         void changeState(GameState newState, int scoreForGameOver = 0);
 
+        void advanceStage(levels::Stage newStage) { m_currentStage++; }
+        void resetStage() { m_currentStage = levels::Stage::LEARNING_1; }
+
+
     private:
         core::Renderer m_renderer;
         core::InputHandler m_input;
@@ -37,6 +49,7 @@ class Game
 
         std::unique_ptr<screens::Screen> m_currentScreen;
         GameState m_state{GameState::HOME};
+        levels::Stage m_currentStage{levels::Stage::LEARNING_1};
         bool m_running{true};
 
         // ── Frame timing ──────────────────────────────────────────────────────

@@ -1,19 +1,17 @@
 // screens/GameOverScreen.hpp
 #pragma once
 
-#include "HomeScreen.hpp" // re-use Button struct
 #include "Screen.hpp"
 #include <functional>
 
 namespace screens {
 
-    class GameOverScreen final : public Screen 
+    class EntryLevelScreen final : public Screen 
     {
         public:
             using Callback = std::function<void()>;
 
-            GameOverScreen(int finalScore, Callback onRetry, Callback onHome,
-                            Callback resetStage, SDL_Rect viewport);
+            EntryLevelScreen(Callback onPlay, levels::Stage initStage, SDL_Rect viewport);
 
             void handleEvent(const SDL_Event &event,
                             const core::InputHandler &input) override;
@@ -21,13 +19,10 @@ namespace screens {
             void render(SDL_Renderer *renderer) override;
 
         private:
-            int m_finalScore;
-            Callback m_onRetry;
-            Callback m_onHome;
-            Callback m_resetStage;
+            Callback m_onPlay;
+            levels::Stage m_initStage;
             SDL_Rect m_viewport;
-            Button m_retryBtn;
-            Button m_homeBtn;
+            int m_finalScore;
     };
 
 } // namespace screens
