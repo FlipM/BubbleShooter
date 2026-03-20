@@ -74,6 +74,8 @@ namespace classes {
             std::vector<std::vector<std::shared_ptr<Bubble>>> m_grid;
             std::vector<std::vector<short>> visited;
 
+            void dfsVisited(utils::HexCoord pos);
+
 
             /// Convert grid index → screen pixel.
             [[nodiscard]] utils::Vec2f cellCenter(utils::HexCoord pos) const noexcept;

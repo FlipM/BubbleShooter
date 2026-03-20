@@ -1,4 +1,29 @@
 cmake_minimum_required(VERSION 3.21)
+
+# ── Windows zero-config bootstrap (vcpkg) ───────────────────────────────────
+# Allows: cmake -B build
+# without explicitly passing -DCMAKE_TOOLCHAIN_FILE or -DVCPKG_TARGET_TRIPLET.
+if(WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+    set(_VCPKG_CANDIDATES
+        "C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
+    )
+
+    if(DEFINED ENV{VCPKG_ROOT})
+        list(PREPEND _VCPKG_CANDIDATES "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
+    endif()
+
+    foreach(_vcpkg_toolchain IN LISTS _VCPKG_CANDIDATES)
+        if(EXISTS "${_vcpkg_toolchain}")
+            set(CMAKE_TOOLCHAIN_FILE "${_vcpkg_toolchain}" CACHE FILEPATH "vcpkg toolchain file")
+            break()
+        endif()
+    endforeach()
+
+    if(NOT DEFINED VCPKG_TARGET_TRIPLET)
+        set(VCPKG_TARGET_TRIPLET "x64-windows" CACHE STRING "vcpkg target triplet")
+    endif()
+endif()
+
 project(BubbleShooter VERSION 0.1.0 LANGUAGES CXX)
 
 # ── Standard ────────────────────────────────────────────────────────────────
@@ -14,12 +39,22 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # On Windows (vcpkg + MSVC): vcpkg install sdl2 sdl2-ttf sdl2-image --triplet=x64-windows
 #            then: cmake -B build -DCMAKE_TOOLCHAIN_FILE=<vcpkg>/scripts/buildsystems/vcpkg.cmake
 
-# Try CONFIG mode first (vcpkg packages), then fall back to custom module
-find_package(SDL2 CONFIG QUIET)
-if(NOT SDL2_FOUND)
-    list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+# On Windows, require vcpkg's CONFIG package to avoid accidental fallback
+# to the custom FindSDL2.cmake module.
+if(WIN32)
+    find_package(SDL2 CONFIG REQUIRED)
+else()
+    # Non-Windows: try CONFIG mode first, then custom fallback module.
+    find_package(SDL2 CONFIG QUIET)
+    if(NOT SDL2_FOUND)
+        list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+        find_package(SDL2 REQUIRED)
+    endif()
 endif()
-find_package(SDL2 REQUIRED)
+
+if(TARGET SDL2::SDL2)
+    set(SDL2_LIBRARIES SDL2::SDL2)
+endif()
 
 find_package(SDL2_ttf CONFIG QUIET)
 find_package(SDL2_image CONFIG QUIET)

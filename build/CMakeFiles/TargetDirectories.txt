@@ -1,3 +1,0 @@
-/home/felipe/Prog/BubbleShooter/build/CMakeFiles/BubbleShooter.dir
-/home/felipe/Prog/BubbleShooter/build/CMakeFiles/edit_cache.dir
-/home/felipe/Prog/BubbleShooter/build/CMakeFiles/rebuild_cache.dir

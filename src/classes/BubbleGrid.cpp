@@ -55,10 +55,9 @@ namespace classes {
         std::vector<utils::HexCoord> matched;
 
         classes::BubbleColor color = src->color();
-        this->clearVisited();
         visited[origin.r][origin.c] = 1;
         matched = recMatches(origin, color);
-        
+        clearVisited();
         return matched;
     }
 
@@ -86,12 +85,17 @@ namespace classes {
 
     void BubbleGrid::dropFloating() 
     {
-        return;
         for(short c = 0; c < m_cols; c++)
         {
-            ;
-            //if(!isVisited({0, c}) && at({0, c}))
-                //dropFloatingRec({0, c});
+            if(!isVisited({0, c}))
+            {
+                auto bubble = at({0, c});
+                if(isValidBubble(bubble))
+                {
+                    dfsVisited(bubble->gridPos());
+                }
+            }
+
         }
 
         for(short r = 0; r < m_rows; r++)
@@ -102,6 +106,26 @@ namespace classes {
                     removeBubble({r, c})->pop();
             }
         }
+        clearVisited();
+    }
+
+    void BubbleGrid::dfsVisited(utils::HexCoord pos)
+    {
+        visited[pos.r][pos.c] = 1;
+
+        std::vector<utils::HexCoord> neighbours = this->neighbours(pos);
+        for(const auto& neighborCoord : neighbours) 
+        {
+            if (isVisited(neighborCoord))
+                continue;
+
+            auto neighborBubble = this->at(neighborCoord);
+            if(isValidBubble(neighborBubble))
+            {
+                dfsVisited(neighborCoord);
+            }
+        }
+        return;
     }
 
     utils::HexCoord BubbleGrid::snapToGrid(utils::Vec2f pixelPos) const 
