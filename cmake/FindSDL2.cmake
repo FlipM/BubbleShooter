@@ -2,7 +2,7 @@
 # Sets SDL2_FOUND, SDL2_INCLUDE_DIRS, SDL2_LIBRARIES, SDL2_VERSION.
 #
 # Search hints (override via -DSDL2_ROOT=<path>):
-#   Windows: %ProgramFiles%\SDL2, C:\SDL2
+#   Windows: %ProgramFiles%\SDL2, C:\SDL2, vcpkg install dir
 #   Linux:   /usr, /usr/local
 
 include(FindPackageHandleStandardArgs)
@@ -13,6 +13,11 @@ if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_SDL2 QUIET sdl2)
 endif()
 
+# ── Determine vcpkg installation directory from VCPKG_INSTALLED_DIR or environment
+if(NOT DEFINED VCPKG_INSTALLED_DIR AND DEFINED ENV{VCPKG_ROOT})
+    set(VCPKG_INSTALLED_DIR "$ENV{VCPKG_ROOT}/installed")
+endif()
+
 # ── Header ───────────────────────────────────────────────────────────────────
 find_path(SDL2_INCLUDE_DIR
     NAMES SDL.h
@@ -20,6 +25,7 @@ find_path(SDL2_INCLUDE_DIR
         ${SDL2_ROOT}
         ${PC_SDL2_INCLUDE_DIRS}
         ENV SDL2DIR
+        ${VCPKG_INSTALLED_DIR}/x64-windows/include
     PATH_SUFFIXES SDL2 include/SDL2 include
 )
 
@@ -30,6 +36,7 @@ find_library(SDL2_LIBRARY
         ${SDL2_ROOT}
         ${PC_SDL2_LIBRARY_DIRS}
         ENV SDL2DIR
+        ${VCPKG_INSTALLED_DIR}/x64-windows/lib
     PATH_SUFFIXES lib lib64
 )
 
@@ -39,6 +46,7 @@ find_library(SDL2MAIN_LIBRARY
         ${SDL2_ROOT}
         ${PC_SDL2_LIBRARY_DIRS}
         ENV SDL2DIR
+        ${VCPKG_INSTALLED_DIR}/x64-windows/lib
     PATH_SUFFIXES lib lib64
 )
 

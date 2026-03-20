@@ -13,13 +13,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # On Linux:  sudo apt install libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev
 # On Windows (vcpkg + MSVC): vcpkg install sdl2 sdl2-ttf sdl2-image --triplet=x64-windows
 #            then: cmake -B build -DCMAKE_TOOLCHAIN_FILE=<vcpkg>/scripts/buildsystems/vcpkg.cmake
+
+# Try CONFIG mode first (vcpkg packages), then fall back to custom module
 find_package(SDL2 CONFIG QUIET)
-if(TARGET SDL2::SDL2)
-    set(SDL2_LIBRARIES SDL2::SDL2)
-else()
+if(NOT SDL2_FOUND)
     list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
-    find_package(SDL2 REQUIRED)
 endif()
+find_package(SDL2 REQUIRED)
 
 find_package(SDL2_ttf CONFIG QUIET)
 find_package(SDL2_image CONFIG QUIET)
