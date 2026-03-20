@@ -1,5 +1,6 @@
 // core/Renderer.cpp
 #include "Renderer.hpp"
+#include <cmath>
 #include <stdexcept>
 #include <string>
 

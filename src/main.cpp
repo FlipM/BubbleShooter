@@ -2,6 +2,7 @@
 // Constructs the Game object and starts the main loop.
 // All SDL initialisation/teardown is handled via RAII inside Game/Renderer.
 #include "Game.hpp"
+#include <cstdlib>
 #include <exception>
 #include <iostream>
 

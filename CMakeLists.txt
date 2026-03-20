@@ -11,13 +11,18 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # ── SDL2 discovery ───────────────────────────────────────────────────────────
 # On Linux:  sudo apt install libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev
-# On Windows (vcpkg): vcpkg install sdl2 sdl2-ttf sdl2-image --triplet=x64-mingw-static
+# On Windows (vcpkg + MSVC): vcpkg install sdl2 sdl2-ttf sdl2-image --triplet=x64-windows
 #            then: cmake -B build -DCMAKE_TOOLCHAIN_FILE=<vcpkg>/scripts/buildsystems/vcpkg.cmake
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+find_package(SDL2 CONFIG QUIET)
+if(TARGET SDL2::SDL2)
+    set(SDL2_LIBRARIES SDL2::SDL2)
+else()
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+    find_package(SDL2 REQUIRED)
+endif()
 
-find_package(SDL2   REQUIRED)
-find_package(SDL2_ttf   QUIET)
-find_package(SDL2_image QUIET)
+find_package(SDL2_ttf CONFIG QUIET)
+find_package(SDL2_image CONFIG QUIET)
 
 # ── Sources ──────────────────────────────────────────────────────────────────
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
@@ -28,12 +33,12 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
 add_executable(BubbleShooter ${SOURCES})
 
 target_include_directories(BubbleShooter PRIVATE
-    ${SDL2_INCLUDE_DIRS}
     src
 )
 
 target_link_libraries(BubbleShooter PRIVATE
-    ${SDL2_LIBRARIES}
+    $<IF:$<TARGET_EXISTS:SDL2::SDL2main>,SDL2::SDL2main,>
+    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,${SDL2_LIBRARIES}>
 )
 
 if(SDL2_ttf_FOUND)
