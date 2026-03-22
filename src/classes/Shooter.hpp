@@ -7,6 +7,7 @@
 #include "utils/MathUtils.hpp"
 #include <functional>
 #include <memory>
+#include <set>
 
 namespace classes 
 {
@@ -15,8 +16,10 @@ namespace classes
     {
         public:
             /// @param basePos  Centre of the shooter (screen-space pixels).
-            explicit Shooter(utils::Vec2f basePos);
+            explicit Shooter(utils::Vec2f basePos) : m_basePos(basePos) {};
             ~Shooter() = default;
+
+            void initiate(std::vector<classes::BubbleColor> palette);
 
             // ── Update ─────────────────────────────────────────────────────────────
             /// Update aim direction toward the mouse cursor position.
@@ -32,8 +35,8 @@ namespace classes
 
             // ── Bubble management ──────────────────────────────────────────────────
             /// Callback: request a new random bubble colour from the game.
-            using ColorProvider = std::function<BubbleColor()>;
-            void setColorProvider(ColorProvider fn) { m_colorProvider = std::move(fn); }
+            classes::BubbleColor randomColor();
+            void removeColor(BubbleColor color) { m_upcomingColors.erase(color); }
 
             // ── Rendering ──────────────────────────────────────────────────────────
             void draw(SDL_Renderer *renderer) const;
@@ -50,7 +53,7 @@ namespace classes
 
             std::unique_ptr<Bubble> m_current;
             std::unique_ptr<Bubble> m_next;
-            ColorProvider m_colorProvider;
+            std::set<BubbleColor> m_upcomingColors;
 
             int m_arrowLength{80}; ///< Length of the aim arrow in pixels.
 

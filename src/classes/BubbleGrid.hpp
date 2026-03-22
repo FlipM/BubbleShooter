@@ -55,6 +55,7 @@ namespace classes {
 
             void clearVisited();
             [[nodiscard]] bool isVisited(utils::HexCoord pos) const; 
+            [[nodiscard]] bool colorExists(classes::BubbleColor color) const;
 
             // ── Rendering ─────────────────────────────────────────────────────────
             /// Draw the background hex grid lines + all active bubbles.

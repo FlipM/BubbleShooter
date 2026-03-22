@@ -12,7 +12,7 @@ namespace levels
             LearningLevel()
             {
                 //All colors
-                for(classes::BubbleColor color = classes::BubbleColor::Red; color < classes::BubbleColor::Yellow;)
+                for(classes::BubbleColor color = classes::BubbleColor::Red; color < classes::BubbleColor::COUNT;)
                 {
                     level_palette.push_back(static_cast<classes::BubbleColor>(color));
                     color = static_cast<classes::BubbleColor>(static_cast<int>(color) + 1);

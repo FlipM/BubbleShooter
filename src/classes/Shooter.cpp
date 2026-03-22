@@ -5,17 +5,23 @@
 
 namespace classes 
 {
-    static BubbleColor randomColor() 
+    classes::BubbleColor Shooter::randomColor() 
     {
-        return static_cast<BubbleColor>(std::rand() % static_cast<int>(BubbleColor::Yellow));
+        if(m_upcomingColors.empty())
+            return static_cast<BubbleColor>(std::rand() % static_cast<int>(BubbleColor::COUNT));
+
+        auto it = m_upcomingColors.begin();
+        std::advance(it, std::rand() % m_upcomingColors.size());
+        return *it;
     }
 
-    Shooter::Shooter(utils::Vec2f basePos)
-        : m_basePos(basePos), m_colorProvider(randomColor) 
+    void Shooter::initiate(std::vector<classes::BubbleColor> palette) 
     {
-        advance(); // fill current
-        advance(); // fill next
+        m_upcomingColors = std::set<BubbleColor>(palette.begin(), palette.end());
+        advance(); // generate initial current and next bubbles.
+        advance();
     }
+
 
     void Shooter::aimAt(utils::Vec2f mousePos) noexcept 
     {
@@ -46,12 +52,10 @@ namespace classes
     void Shooter::advance() 
     {
         m_current = std::move(m_next);
-        if (m_colorProvider) 
-        {
-            m_next = std::make_unique<Bubble>(m_colorProvider());
-            // Position the "next" bubble in the preview slot.
-            m_next->setPixelPos({m_basePos.x + 60.f, m_basePos.y});
-        }
+        m_next = std::make_unique<Bubble>(randomColor());
+        // Position the "next" bubble in the preview slot.
+        m_next->setPixelPos({m_basePos.x + 60.f, m_basePos.y});
+
         if (m_current) 
         {
             m_current->setPixelPos(m_basePos);

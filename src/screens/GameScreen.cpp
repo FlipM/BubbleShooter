@@ -27,6 +27,7 @@ namespace screens
         std::clog << "[GameScreen] constructed, viewport " << viewport.w << 'x'
                     << viewport.h << '\n';
         m_levelLoader.loadLevel(m_currentStage, m_grid);
+        m_shooter.initiate(m_levelLoader.getStagePalette());
         
     }
 
@@ -150,10 +151,8 @@ namespace screens
         if (!m_flyingBubble)
             return;
 
+        classes::BubbleColor savedColor = m_flyingBubble->color();
         auto coord = m_grid.snapToGrid(m_flyingBubble->pixelPos());
-        std::clog << "[GameScreen] landing bubble at pixel (" << m_flyingBubble->pixelPos().x
-                    << ", " << m_flyingBubble->pixelPos().y << ")\n";
-        std::clog << "[GameScreen] bubble landed at grid (" << coord.r << ", " << coord.c << ")\n";
         m_grid.addBubble(std::move(m_flyingBubble), coord);
 
         // Check for matches.
@@ -170,6 +169,11 @@ namespace screens
                 }
             }
             m_grid.dropFloating();
+            
+            if(!m_grid.colorExists(savedColor))
+            {
+                m_shooter.removeColor(savedColor);
+            }
             // TODO: pop animation, sound, combo multiplier.
         }
     }

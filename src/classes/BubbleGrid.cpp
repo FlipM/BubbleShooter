@@ -187,7 +187,6 @@ namespace classes
         return visited[pos.r][pos.c] == 1;
     }
 
-
     std::vector<utils::HexCoord> BubbleGrid::neighbours(utils::HexCoord pos) const 
     {
         short offset_r = pos.r % 2;
@@ -225,6 +224,19 @@ namespace classes
             int y1 = static_cast<int>(center.y + m_hexSize * std::sin(a1));
             SDL_RenderDrawLine(renderer, x0, y0, x1, y1);
         }
+    }
+
+    bool BubbleGrid::colorExists(classes::BubbleColor color) const
+    {
+        for (const auto &row : m_grid) 
+        {
+            for (const auto &bubble : row) 
+            {
+                if (bubble && bubble->isActive() && bubble->color() == color)
+                    return true;
+            }
+        }
+        return false;
     }
 
 } // namespace classes

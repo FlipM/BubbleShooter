@@ -12,9 +12,7 @@ namespace screens {
         public:
             using Callback = std::function<void()>;
 
-            GameOverScreen(int finalScore, Callback onRetry, Callback onHome,
-                            //Callback resetStage, 
-                            SDL_Rect viewport);
+            GameOverScreen(int finalScore, Callback onRetry, Callback onHome, SDL_Rect viewport);
 
             void handleEvent(const SDL_Event &event,
                             const core::InputHandler &input) override;
