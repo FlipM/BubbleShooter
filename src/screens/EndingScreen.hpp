@@ -19,7 +19,7 @@ namespace screens
 
             void handleEvent(const SDL_Event &event, const core::InputHandler &input) override;
             void update(float deltaSeconds) override;
-            void render(SDL_Renderer *renderer) override;
+            void render(core::Renderer &renderer) override;
 
         private:
             Callback m_onHome;

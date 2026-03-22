@@ -9,6 +9,10 @@
 #include <memory>
 #include <vector>
 
+namespace core {
+    class Renderer;
+}
+
 namespace classes {
 
     class BubbleGrid 
@@ -59,7 +63,7 @@ namespace classes {
 
             // ── Rendering ─────────────────────────────────────────────────────────
             /// Draw the background hex grid lines + all active bubbles.
-            void draw(SDL_Renderer *renderer) const;
+            void draw(core::Renderer &renderer) const;
 
             // ── Accessors ─────────────────────────────────────────────────────────
             [[nodiscard]] int cols() const noexcept { return m_cols; }
@@ -83,7 +87,7 @@ namespace classes {
             [[nodiscard]] utils::Vec2f cellCenter(utils::HexCoord pos) const noexcept;
 
             /// Draw the outline of a single hex cell (background grid decoration).
-            void drawHexOutline(SDL_Renderer *renderer, utils::Vec2f center) const;
+            void drawHexOutline(core::Renderer &renderer, utils::Vec2f center) const;
     };
 
 } // namespace classes

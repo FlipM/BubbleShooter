@@ -1,5 +1,7 @@
 // screens/GameScreen.cpp
 #include "GameScreen.hpp"
+#include "core/Renderer.hpp"
+#include "core/UI.hpp"
 
 namespace screens 
 {
@@ -76,7 +78,7 @@ namespace screens
         checkNextLevel();
     }
 
-    void GameScreen::render(SDL_Renderer *renderer) 
+    void GameScreen::render(core::Renderer &renderer) 
     {
         drawBackground(renderer);
         drawBorders(renderer);
@@ -199,16 +201,16 @@ namespace screens
         }
     }
 
-    void GameScreen::drawBackground(SDL_Renderer *renderer) const 
+    void GameScreen::drawBackground(core::Renderer &renderer) const 
     {
-        SDL_SetRenderDrawColor(renderer, 20, 20, 40, 255);
-        SDL_RenderFillRect(renderer, &m_viewport);
+        renderer.drawRect(m_viewport.x, m_viewport.y, m_viewport.w, m_viewport.h,
+                         core::UI::Color(20, 20, 40, 255));
     }
 
-    void GameScreen::drawBorders(SDL_Renderer *renderer) const 
+    void GameScreen::drawBorders(core::Renderer &renderer) const 
     {
-        SDL_SetRenderDrawColor(renderer, 80, 80, 130, 255);
-        SDL_RenderDrawRect(renderer, &m_viewport);
+        renderer.drawRectOutline(m_viewport.x, m_viewport.y, m_viewport.w, m_viewport.h,
+                                core::UI::Color(80, 80, 130, 255));
     }
 
 } // namespace screens

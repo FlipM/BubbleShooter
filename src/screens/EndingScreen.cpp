@@ -1,4 +1,5 @@
 #include "EndingScreen.hpp"
+#include "core/Renderer.hpp"
 
 namespace screens {
 
@@ -24,11 +25,11 @@ namespace screens {
             m_onHome();
     }
 
-    void EndingScreen::render(SDL_Renderer *renderer) 
+    void EndingScreen::render(core::Renderer &renderer) 
     {
         // Dark overlay.
-        SDL_SetRenderDrawColor(renderer, 10, 5, 25, 240);
-        SDL_RenderFillRect(renderer, &m_viewport);
+        renderer.drawRect(m_viewport.x, m_viewport.y, m_viewport.w, m_viewport.h,
+                         core::UI::Color(10, 5, 25, 240));
     }
 
 } // namespace screens

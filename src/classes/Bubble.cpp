@@ -1,29 +1,31 @@
 // classes/Bubble.cpp
 #include "Bubble.hpp"
+#include "core/Renderer.hpp"
+#include "core/UI.hpp"
 #include <cstdlib>
 #include <iostream>
 
 namespace classes 
 {
 
-    SDL_Color bubbleColorToSDL(BubbleColor c) noexcept 
+    BubbleColorRGB bubbleColorToRGB(BubbleColor c) noexcept 
     {
         switch (c) 
         {
             case BubbleColor::Red:
-                return {220, 50, 50, 255};
+                return {220, 50, 50};
             case BubbleColor::Orange:
-                return {255, 140, 0, 255};
+                return {255, 140, 0};
             case BubbleColor::Yellow:
-                return {255, 220, 0, 255};
+                return {255, 220, 0};
             case BubbleColor::Green:
-                return {50, 200, 80, 255};
+                return {50, 200, 80};
             case BubbleColor::Blue:
-                return {50, 130, 220, 255};
+                return {50, 130, 220};
             case BubbleColor::Purple:
-                return {160, 60, 200, 255};
+                return {160, 60, 200};
             default:
-                return {200, 200, 200, 255};
+                return {200, 200, 200};
         }
     }
 
@@ -42,22 +44,16 @@ namespace classes
         return m_color == color;
     }
 
-    void Bubble::draw(SDL_Renderer *renderer) const 
+    void Bubble::draw(core::Renderer &renderer) const 
     {
         if (!m_active)
             return;
 
-        SDL_Color col = bubbleColorToSDL(m_color);
-        SDL_SetRenderDrawColor(renderer, col.r, col.g, col.b, col.a);
-
-        // Draw filled circle approximation.
-        const int cx = static_cast<int>(m_pixelPos.x);
-        const int cy = static_cast<int>(m_pixelPos.y);
-        for (int dy = -m_radius; dy <= m_radius; ++dy) {
-            int dx = static_cast<int>(
-                std::sqrt(static_cast<float>(m_radius * m_radius - dy * dy)));
-            SDL_RenderDrawLine(renderer, cx - dx, cy + dy, cx + dx, cy + dy);
-        }
+        BubbleColorRGB rgb = bubbleColorToRGB(m_color);
+        core::UI::Color col(rgb.r, rgb.g, rgb.b, 255);
+        renderer.drawCircle(static_cast<int>(m_pixelPos.x), 
+                           static_cast<int>(m_pixelPos.y), 
+                           m_radius, col);
 
         // TODO: draw bubble shine / texture on top.
     }

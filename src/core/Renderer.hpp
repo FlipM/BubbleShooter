@@ -3,6 +3,7 @@
 // All draw methods are stubs — implement rendering logic here.
 #pragma once
 
+#include "UI.hpp"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <memory>
@@ -21,8 +22,14 @@ namespace core
         void operator()(SDL_Renderer *r) const noexcept { SDL_DestroyRenderer(r); }
     };
 
+    struct FontDeleter 
+    {
+        void operator()(TTF_Font *f) const noexcept { if (f) TTF_CloseFont(f); }
+    };
+
     using WindowPtr = std::unique_ptr<SDL_Window, WindowDeleter>;
     using RendererPtr = std::unique_ptr<SDL_Renderer, RendererDeleter>;
+    using FontPtr = std::unique_ptr<TTF_Font, FontDeleter>;
 
     /// Viewport geometry — keeps the game portrait-locked inside letterboxed bars.
     struct Viewport 
@@ -53,19 +60,29 @@ namespace core
 
             // ── Primitive draw stubs ──────────────────────────────────────────────
             /// Draw a filled rectangle (in logical game coordinates).
-            void drawRect(int x, int y, int w, int h, SDL_Color color);
+            void drawRect(int x, int y, int w, int h, UI::Color color);
 
             /// Draw the outline of a rectangle.
-            void drawRectOutline(int x, int y, int w, int h, SDL_Color color);
+            void drawRectOutline(int x, int y, int w, int h, UI::Color color);
 
             /// Draw a circle approximation using points.
-            void drawCircle(int cx, int cy, int radius, SDL_Color color);
+            void drawCircle(int cx, int cy, int radius, UI::Color color);
 
             /// Draw a line between two points.
-            void drawLine(int x1, int y1, int x2, int y2, SDL_Color color);
+            void drawLine(int x1, int y1, int x2, int y2, UI::Color color);
 
             /// Draw a UTF-8 text string at (x,y).  Stub — requires SDL2_ttf.
-            void drawText(const std::string &text, int x, int y, SDL_Color color);
+            void drawText(const std::string &text, int x, int y, UI::Color color);
+
+            // ── UI elements ───────────────────────────────────────────────────────
+            /// Draw a button with optional hover effect.
+            void drawButton(const UI::Button &btn, UI::Color fillColor, UI::Color outlineColor, UI::Color hoverColor);
+
+            /// Draw a filled rectangle background (used for screens).
+            void drawBackground(UI::Color color);
+
+            /// Draw a horizontal gradient bar (for title areas, score bars, etc).
+            void drawGradientBar(int x, int y, int w, int h, UI::Color colorStart, UI::Color colorEnd, bool vertical = false);
 
             // ── Accessors ─────────────────────────────────────────────────────────
             [[nodiscard]] SDL_Renderer *raw() const noexcept { return m_renderer.get(); }
@@ -75,9 +92,13 @@ namespace core
             WindowPtr m_window;
             RendererPtr m_renderer;
             Viewport m_viewport;
+            FontPtr m_font; ///< Cached TTF font (lazy-loaded in first drawText call).
 
             /// Recalculate viewport so game area is centred, preserving aspect ratio.
             void recalculateViewport(int windowW, int windowH);
+
+            /// Lazy-initialize and cache the default font (called on first drawText).
+            void ensureFontLoaded();
     };
 
 } // namespace core

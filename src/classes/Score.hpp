@@ -2,7 +2,9 @@
 // Tracks current and high score during gameplay.
 #pragma once
 
-#include <SDL2/SDL.h>
+namespace core {
+    class Renderer;
+}
 
 namespace classes {
 
@@ -17,9 +19,8 @@ namespace classes {
             [[nodiscard]] int current() const noexcept { return m_current; }
             [[nodiscard]] int highScore() const noexcept { return m_high; }
 
-            /// Draw score overlay at top of game viewport (stub — uses drawText
-            /// placeholder).
-            void draw(SDL_Renderer *renderer, int viewX, int viewY) const;
+            /// Draw score overlay at top of game viewport.
+            void draw(core::Renderer &renderer, int viewX, int viewY) const;
 
         private:
             int m_current{0};

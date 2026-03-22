@@ -3,8 +3,11 @@
 #pragma once
 
 #include "utils/MathUtils.hpp"
-#include <SDL2/SDL.h>
 #include <memory>
+
+namespace core {
+    class Renderer;
+}
 
 namespace classes 
 {
@@ -21,8 +24,12 @@ namespace classes
         COUNT ///< Sentinel — number of colours.
     };
 
-    /// Maps BubbleColor to an SDL_Color for placeholder rendering.
-    [[nodiscard]] SDL_Color bubbleColorToSDL(BubbleColor c) noexcept;
+    /// Maps BubbleColor to an RGB triplet for rendering.
+    struct BubbleColorRGB {
+        std::uint8_t r, g, b;
+    };
+
+    [[nodiscard]] BubbleColorRGB bubbleColorToRGB(BubbleColor c) noexcept;
 
     /// ── Bubble
     /// ───────────────────────────────────────────────────────────────────
@@ -57,8 +64,8 @@ namespace classes
 
             // ── Rendering ─────────────────────────────────────────────────────────
             /// Draw the bubble at its current pixel position.
-            /// @param renderer  raw SDL_Renderer pointer (non-owning).
-            void draw(SDL_Renderer *renderer) const;
+            /// @param renderer  Renderer reference for SDL abstraction.
+            void draw(core::Renderer &renderer) const;
 
             // ── Physics / movement (in-flight) ───────────────────────────────────
             /// Move the bubble by its velocity vector (called while in-flight).

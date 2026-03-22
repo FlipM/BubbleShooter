@@ -3,7 +3,10 @@
 #pragma once
 
 #include "core/InputHandler.hpp"
-#include <SDL2/SDL.h>
+
+namespace core {
+    class Renderer;
+}
 
 namespace screens 
 {
@@ -20,7 +23,7 @@ namespace screens
             virtual void update(float deltaSeconds) = 0;
 
             /// Render this screen's content.
-            virtual void render(SDL_Renderer *renderer) = 0;
+            virtual void render(core::Renderer &renderer) = 0;
 
             // Non-copyable.
             Screen(const Screen &) = delete;

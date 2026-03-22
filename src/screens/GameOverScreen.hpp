@@ -1,8 +1,8 @@
 // screens/GameOverScreen.hpp
 #pragma once
 
-#include "HomeScreen.hpp" // re-use Button struct
 #include "Screen.hpp"
+#include "core/UI.hpp"
 #include <functional>
 
 namespace screens {
@@ -17,15 +17,15 @@ namespace screens {
             void handleEvent(const SDL_Event &event,
                             const core::InputHandler &input) override;
             void update(float deltaSeconds) override;
-            void render(SDL_Renderer *renderer) override;
+            void render(core::Renderer &renderer) override;
 
         private:
             int m_finalScore;
             Callback m_onRetry;
             Callback m_onHome;
             SDL_Rect m_viewport;
-            Button m_retryBtn;
-            Button m_homeBtn;
+            core::UI::Button m_retryBtn;
+            core::UI::Button m_homeBtn;
     };
 
 } // namespace screens

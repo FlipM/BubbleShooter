@@ -9,6 +9,10 @@
 #include <memory>
 #include <set>
 
+namespace core {
+    class Renderer;
+}
+
 namespace classes 
 {
 
@@ -39,7 +43,7 @@ namespace classes
             void removeColor(BubbleColor color) { m_upcomingColors.erase(color); }
 
             // ── Rendering ──────────────────────────────────────────────────────────
-            void draw(SDL_Renderer *renderer) const;
+            void draw(core::Renderer &renderer) const;
 
             // ── Accessors ──────────────────────────────────────────────────────────
             [[nodiscard]] float aimAngle() const noexcept { return m_aimAngle; }
@@ -60,10 +64,10 @@ namespace classes
             /// Advance: next → current, generate new next.
             void advance();
 
-            void drawArrow(SDL_Renderer *renderer) const;
-            void drawCurrent(SDL_Renderer *renderer) const;
-            void drawNext(SDL_Renderer *renderer) const;
-            void drawPlatform(SDL_Renderer *renderer) const;
+            void drawArrow(core::Renderer &renderer) const;
+            void drawCurrent(core::Renderer &renderer) const;
+            void drawNext(core::Renderer &renderer) const;
+            void drawPlatform(core::Renderer &renderer) const;
     };
 
 } // namespace classes

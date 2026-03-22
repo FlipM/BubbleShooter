@@ -9,7 +9,6 @@
 #include "classes/Score.hpp"
 #include "classes/Shooter.hpp"
 #include "levels/LevelLoader.hpp"
-#include <SDL2/SDL.h>
 #include <iostream>
 #include <functional>
 #include <memory>
@@ -28,7 +27,7 @@ namespace screens
 
             void handleEvent(const SDL_Event &event, const core::InputHandler &input) override;
             void update(float deltaSeconds) override;
-            void render(SDL_Renderer *renderer) override;
+            void render(core::Renderer &renderer) override;
 
             [[nodiscard]] int finalScore() const noexcept;
 
@@ -57,7 +56,7 @@ namespace screens
             void checkNextLevel();       ///< Advance stage if current level objectives are met.
             void checkGameOver();        ///< Game-over when bubbles reach shooter row.
 
-            void drawBackground(SDL_Renderer *renderer) const;
-            void drawBorders(SDL_Renderer *renderer) const;
+            void drawBackground(core::Renderer &renderer) const;
+            void drawBorders(core::Renderer &renderer) const;
     };
 } // namespace screens

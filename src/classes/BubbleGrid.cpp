@@ -1,5 +1,7 @@
 // classes/BubbleGrid.cpp
 #include "BubbleGrid.hpp"
+#include "core/Renderer.hpp"
+#include "core/UI.hpp"
 #include <cmath>
 #include <iostream>
 #include <queue>
@@ -147,7 +149,7 @@ namespace classes
         std::clog << "[BubbleGrid] advanceDown() stub\n";
     }
 
-    void BubbleGrid::draw(SDL_Renderer *renderer) const 
+    void BubbleGrid::draw(core::Renderer &renderer) const 
     {
         // Draw hex lines. Odd rows has one less slot. Last row is ommited, since a ball there would end the game.
         for (short r = 0; r < m_rows - 1; ++r) 
@@ -208,11 +210,11 @@ namespace classes
         return result;
     }
 
-    void BubbleGrid::drawHexOutline(SDL_Renderer *renderer,
+    void BubbleGrid::drawHexOutline(core::Renderer &renderer,
                                     utils::Vec2f center) const 
     {
         // Draw six-sided polygon outline.
-        SDL_SetRenderDrawColor(renderer, 60, 60, 80, 100); // subtle dark colour
+        core::UI::Color color(60, 60, 80, 100); // subtle dark colour
         constexpr int sides = 6;
         for (int i = 0; i < sides; ++i) 
         {
@@ -222,7 +224,7 @@ namespace classes
             int y0 = static_cast<int>(center.y + m_hexSize * std::sin(a0));
             int x1 = static_cast<int>(center.x + m_hexSize * std::cos(a1));
             int y1 = static_cast<int>(center.y + m_hexSize * std::sin(a1));
-            SDL_RenderDrawLine(renderer, x0, y0, x1, y1);
+            renderer.drawLine(x0, y0, x1, y1, color);
         }
     }
 

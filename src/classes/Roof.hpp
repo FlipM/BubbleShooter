@@ -4,8 +4,11 @@
 #pragma once
 
 #include "Bubble.hpp"
-#include <SDL2/SDL.h>
 #include <memory>
+
+namespace core {
+    class Renderer;
+}
 
 namespace classes {
 
@@ -28,12 +31,15 @@ namespace classes {
             void attachBubble(std::shared_ptr<Bubble> bubble);
 
             // ── Rendering ─────────────────────────────────────────────────────────
-            void draw(SDL_Renderer *renderer) const;
+            void draw(core::Renderer &renderer) const;
 
-            [[nodiscard]] SDL_Rect rect() const noexcept { return m_rect; }
+            [[nodiscard]] int x() const noexcept { return m_x; }
+            [[nodiscard]] int y() const noexcept { return m_y; }
+            [[nodiscard]] int w() const noexcept { return m_w; }
+            [[nodiscard]] int h() const noexcept { return m_h; }
 
         private:
-            SDL_Rect m_rect;
+            int m_x, m_y, m_w, m_h;
     };
 
 } // namespace classes

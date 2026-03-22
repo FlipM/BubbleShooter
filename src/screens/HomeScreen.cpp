@@ -1,6 +1,6 @@
 // screens/HomeScreen.cpp
 #include "HomeScreen.hpp"
-#include <SDL2/SDL.h>
+#include "core/Renderer.hpp"
 
 namespace screens 
 {
@@ -12,8 +12,8 @@ namespace screens
         const int bw = 200, bh = 50, gap = 20;
         const int by = viewport.y + viewport.h / 2;
 
-        m_startBtn = {{cx - bw / 2, by - bh - gap / 2, bw, bh}, "START"};
-        m_optionsBtn = {{cx - bw / 2, by + gap / 2, bw, bh}, "OPTIONS"};
+        m_startBtn = core::UI::Button(cx - bw / 2, by - bh - gap / 2, bw, bh, "START");
+        m_optionsBtn = core::UI::Button(cx - bw / 2, by + gap / 2, bw, bh, "OPTIONS");
     }
 
     void HomeScreen::handleEvent(const SDL_Event &event,
@@ -44,7 +44,7 @@ namespace screens
         // TODO: animate title, pulsing buttons, particle background, etc.
     }
 
-    void HomeScreen::render(SDL_Renderer *renderer) 
+    void HomeScreen::render(core::Renderer &renderer) 
     {
         drawBackground(renderer);
         drawTitle(renderer);
@@ -52,44 +52,33 @@ namespace screens
         drawButton(renderer, m_optionsBtn);
     }
 
-    void HomeScreen::drawBackground(SDL_Renderer *renderer) const 
+    void HomeScreen::drawBackground(core::Renderer &renderer) const 
     {
         // Gradient simulation: vertical dark-blue to slightly lighter.
-        for (int dy = 0; dy < m_viewport.h; ++dy) 
-        {
-            float t = static_cast<float>(dy) / m_viewport.h;
-            SDL_SetRenderDrawColor(renderer, static_cast<Uint8>(10 + t * 20),
-                                static_cast<Uint8>(10 + t * 30),
-                                static_cast<Uint8>(40 + t * 40), 255);
-            SDL_RenderDrawLine(renderer, m_viewport.x, m_viewport.y + dy,
-                            m_viewport.x + m_viewport.w, m_viewport.y + dy);
-        }
+        renderer.drawGradientBar(m_viewport.x, m_viewport.y, m_viewport.w, m_viewport.h,
+                                core::UI::Color(10, 10, 40, 255),
+                                core::UI::Color(30, 40, 80, 255),
+                                true);
     }
 
-    void HomeScreen::drawTitle(SDL_Renderer *renderer) const 
+    void HomeScreen::drawTitle(core::Renderer &renderer) const 
     {
         // TODO: render "BUBBLE SHOOTER" with SDL2_ttf.
         // Placeholder: a simple coloured bar where the title will sit.
-        SDL_SetRenderDrawColor(renderer, 80, 200, 255, 200);
-        SDL_Rect titleBar{m_viewport.x + m_viewport.w / 4,
-                            m_viewport.y + m_viewport.h / 4, m_viewport.w / 2, 40};
-        SDL_RenderFillRect(renderer, &titleBar);
+        renderer.drawRect(m_viewport.x + m_viewport.w / 4,
+                        m_viewport.y + m_viewport.h / 4, m_viewport.w / 2, 40,
+                        core::UI::Color(80, 200, 255, 200));
     }
 
-    void HomeScreen::drawButton(SDL_Renderer *renderer, const Button &btn) const 
+    void HomeScreen::drawButton(core::Renderer &renderer, const core::UI::Button &btn) const 
     {
-        // Fill: lighter when hovered.
-        SDL_Color fill = btn.hovered ? SDL_Color{100, 180, 255, 255}
-                                    : SDL_Color{50, 110, 200, 255};
-        SDL_SetRenderDrawColor(renderer, fill.r, fill.g, fill.b, fill.a);
-        SDL_RenderFillRect(renderer, &btn.rect);
-
-        // Outline.
-        SDL_SetRenderDrawColor(renderer, 200, 230, 255, 255);
-        SDL_RenderDrawRect(renderer, &btn.rect);
-
+        renderer.drawButton(btn,
+                           core::UI::Color(50, 110, 200, 255),  // fill
+                           core::UI::Color(200, 230, 255, 255), // outline
+                           core::UI::Color(100, 180, 255, 255)); // hover
         // TODO: draw btn.label text with SDL2_ttf.
-        // renderer->drawText(btn.label, btn.rect.x + btn.rect.w / 2, btn.rect.y + btn.rect.h / 2, {255, 255, 255, 255});
+        renderer.drawText(btn.label, btn.x + (btn.width - btn.label.size()) / 2, btn.y + btn.height / 2,
+                          core::UI::Color(255, 255, 255, 255));
     }
 
 } // namespace screens

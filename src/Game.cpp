@@ -73,7 +73,7 @@ void Game::render()
 {
     m_renderer.clear();
     if (m_currentScreen)
-        m_currentScreen->render(m_renderer.raw());
+        m_currentScreen->render(m_renderer);
     m_renderer.present();
 }
 

@@ -1,5 +1,7 @@
 // classes/Shooter.cpp
 #include "Shooter.hpp"
+#include "core/Renderer.hpp"
+#include "core/UI.hpp"
 #include <cmath>
 #include <iostream>
 
@@ -62,7 +64,7 @@ namespace classes
         }
     }
 
-    void Shooter::draw(SDL_Renderer *renderer) const 
+    void Shooter::draw(core::Renderer &renderer) const 
     {
         drawPlatform(renderer);
         drawArrow(renderer);
@@ -70,44 +72,44 @@ namespace classes
         drawNext(renderer);
     }
 
-    void Shooter::drawArrow(SDL_Renderer *renderer) const
+    void Shooter::drawArrow(core::Renderer &renderer) const
     {
         // Draw a dashed line in aim direction as a guide.
         constexpr int segments = 5;
         const float segLen = static_cast<float>(m_arrowLength) / segments;
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 200);
+        core::UI::Color color(255, 255, 255, 200);
         for (int i = 0; i < segments; i += 2) 
         { // dashed: draw even segments
             float t0 = i * segLen;
             float t1 = (i + 1) * segLen;
-            SDL_RenderDrawLine(
-                renderer, static_cast<int>(m_basePos.x + std::cos(m_aimAngle) * t0),
+            renderer.drawLine(
+                static_cast<int>(m_basePos.x + std::cos(m_aimAngle) * t0),
                 static_cast<int>(m_basePos.y + std::sin(m_aimAngle) * t0),
                 static_cast<int>(m_basePos.x + std::cos(m_aimAngle) * t1),
-                static_cast<int>(m_basePos.y + std::sin(m_aimAngle) * t1));
+                static_cast<int>(m_basePos.y + std::sin(m_aimAngle) * t1),
+                color);
         }
     // TODO: draw arrowhead at the tip.
     }
 
-    void Shooter::drawCurrent(SDL_Renderer *renderer) const 
+    void Shooter::drawCurrent(core::Renderer &renderer) const 
     {
         if (m_current)
             m_current->draw(renderer);
     }
 
-    void Shooter::drawNext(SDL_Renderer *renderer) const 
+    void Shooter::drawNext(core::Renderer &renderer) const 
     {
         if (m_next)
             m_next->draw(renderer);
     }
 
-    void Shooter::drawPlatform(SDL_Renderer *renderer) const 
+    void Shooter::drawPlatform(core::Renderer &renderer) const 
     {
         // Draw simple shooter base platform rectangle.
-        SDL_SetRenderDrawColor(renderer, 80, 80, 120, 255);
-        SDL_Rect platform{static_cast<int>(m_basePos.x - 40),
-                            static_cast<int>(m_basePos.y + 20), 80, 20};
-        SDL_RenderFillRect(renderer, &platform);
+        renderer.drawRect(static_cast<int>(m_basePos.x - 40),
+                         static_cast<int>(m_basePos.y + 20), 80, 20,
+                         core::UI::Color(80, 80, 120, 255));
     }
 
 } // namespace classes
