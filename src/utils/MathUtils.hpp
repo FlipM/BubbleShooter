@@ -22,7 +22,6 @@ namespace utils
     const float HALF_APOTHEM = APOTHEM_FACTOR / 2.f;
     constexpr int ROOF_HEIGHT = 24;
 
-    constexpr float ROUNDING_ADJUST = 0.5f; 
     constexpr float HEX_SIZE = 18.5f;
     constexpr float PI = 3.14159265f;
 
@@ -36,7 +35,6 @@ namespace utils
     };
 
     /// Convert hex axial (q, r) → pixel (x, y) for pointy-top hexagons.
-    /// @param size  radius (center to vertex) in pixels.
     /// @param origin pixel position of hex (0,0).
     [[nodiscard]] inline Vec2f hexToPixel(HexCoord hex, Vec2f origin = {0.f, 0.f}) noexcept 
     {
@@ -57,13 +55,13 @@ namespace utils
         // Convert to fractional axial coordinates
         const float frac_r = (py - HALF_APOTHEM) / APOTHEM_FACTOR;
         
-        // Round r to nearest hex (accounting for offset rows)
-        short r = static_cast<short>(std::floor(frac_r + ROUNDING_ADJUST));
+        // Round r to nearest hex
+        short r = static_cast<short>(std::round(frac_r));
         short offset_r = r % 2 + 1;
         
-        // Now calculate c using the rounded r's offset
+        // Calculate fractional column
         const float frac_c = (px - offset_r) / 2.f;
-        short c = static_cast<short>(std::floor(frac_c + ROUNDING_ADJUST));
+        short c = static_cast<short>(std::round(frac_c));
 
         return {r, c};
     }

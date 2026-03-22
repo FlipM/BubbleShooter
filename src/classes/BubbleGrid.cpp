@@ -5,7 +5,8 @@
 #include <queue>
 #include <unordered_set>
 
-namespace classes {
+namespace classes 
+{
 
     BubbleGrid::BubbleGrid(int cols, int rows, float hexSize, utils::Vec2f origin)
         : m_cols(cols), m_rows(rows), m_hexSize(hexSize), m_origin(origin) 

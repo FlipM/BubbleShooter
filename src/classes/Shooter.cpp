@@ -7,7 +7,7 @@ namespace classes
 {
     static BubbleColor randomColor() 
     {
-        return static_cast<BubbleColor>(std::rand() % static_cast<int>(BubbleColor::COUNT));
+        return static_cast<BubbleColor>(std::rand() % static_cast<int>(BubbleColor::Yellow));
     }
 
     Shooter::Shooter(utils::Vec2f basePos)

@@ -9,6 +9,7 @@ namespace screens
         // Grid configuration constants.
         constexpr short GRID_COLS = 10;
         constexpr short GRID_ROWS = 14;
+        constexpr int   ORIGIN_OFFSET_X = 2; // pixels from viewport edge to grid start
     } // namespace
 
     GameScreen::GameScreen(Callback onGameOver, Callback onAdvanceStage, levels::Stage stage, SDL_Rect viewport)
@@ -16,7 +17,7 @@ namespace screens
             m_onAdvanceStage(std::move(onAdvanceStage)),
             m_currentStage(stage),
             m_viewport(viewport),
-            m_grid(GRID_COLS, GRID_ROWS, utils::HEX_SIZE,  {static_cast<float>(viewport.x + 2), 
+            m_grid(GRID_COLS, GRID_ROWS, utils::HEX_SIZE,  {static_cast<float>(viewport.x + ORIGIN_OFFSET_X), 
                     static_cast<float>(viewport.y + utils::ROOF_HEIGHT + 2)}),
             m_shooter({static_cast<float>(viewport.x + viewport.w / 2), static_cast<float>(viewport.y + viewport.h - 70)}),
             m_roof(viewport.x, viewport.y, viewport.w, utils::ROOF_HEIGHT),
@@ -106,10 +107,20 @@ namespace screens
         const float by = m_flyingBubble->pixelPos().y;
         const int r = m_flyingBubble->radius();
 
+        // Calculate grid boundaries (grid has +2 pixel offset from viewport)
+        // Add 1 pixel buffer to prevent bubbles from landing at invalid grid cells
+        const float grid_left = m_viewport.x + ORIGIN_OFFSET_X + 1;
+        const float grid_right = m_viewport.x + m_viewport.w - ORIGIN_OFFSET_X - 1;
+
         // Wall bounce (left/right).
-        if (bx - r <= m_viewport.x || bx + r >= m_viewport.x + m_viewport.w) 
+        if (bx - r <= grid_left || bx + r >= grid_right) 
         {
             m_flyingBubble->onWallBounce();
+            // Clamp bubble position to stay within grid bounds
+            float clamped_x = utils::clamp(m_flyingBubble->pixelPos().x, 
+                                          grid_left + r,
+                                          grid_right - r);
+            m_flyingBubble->setPixelPos({clamped_x, m_flyingBubble->pixelPos().y});
         }
 
         // Roof hit.
@@ -140,6 +151,9 @@ namespace screens
             return;
 
         auto coord = m_grid.snapToGrid(m_flyingBubble->pixelPos());
+        std::clog << "[GameScreen] landing bubble at pixel (" << m_flyingBubble->pixelPos().x
+                    << ", " << m_flyingBubble->pixelPos().y << ")\n";
+        std::clog << "[GameScreen] bubble landed at grid (" << coord.r << ", " << coord.c << ")\n";
         m_grid.addBubble(std::move(m_flyingBubble), coord);
 
         // Check for matches.

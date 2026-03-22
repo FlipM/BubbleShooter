@@ -97,7 +97,6 @@ namespace classes
     {
         // Reflect horizontal velocity component.
         m_velocity.x = -m_velocity.x;
-        // TODO: clamp to viewport boundaries.
     }
 
 } // namespace classes
