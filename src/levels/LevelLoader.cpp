@@ -1,25 +1,37 @@
 #include "LevelLoader.hpp"
+#include "LearningLevel.hpp"
 
-void LevelLoader::loadLevel(Levels level)
+namespace levels 
 {
-    std::unique_ptr<Level> lvl = this->selectStage(level);
-    if(lvl)
-        lvl->fillInitialGrid(grid);
-
-}
-
-std::unique_ptr<Level> LevelLoader::selectStage(Stage stg)
-{
-    switch(stg)
+    void LevelLoader::loadLevel(levels::Stage stg, classes::BubbleGrid &grid)
     {
-        case Stage::LEARNING_1:
-            return std::make_unique<LearningLevel>();
-        default:
-            return nullptr;
-    }
-}
+        m_currentLevel = this->selectStage(stg);
+        if(m_currentLevel)
+            m_currentLevel->fillInitialGrid(grid);
 
-int[] LevelLoader::getStagePalette()
-{
-    return m_currentLevel.getPalette();   
+    }
+
+    bool LevelLoader::isStageCleared(levels::Stage stg, classes::BubbleGrid &grid)
+    {
+        if(m_currentLevel)
+            return m_currentLevel->isCleared(grid);
+
+        return false;
+    }
+
+    std::unique_ptr<Level> LevelLoader::selectStage(Stage stg)
+    {
+        switch(stg)
+        {
+            case levels::Stage::LEARNING_1:
+                return std::make_unique<levels::LearningLevel>();
+            default:
+                return nullptr;
+        }
+    }
+
+    std::vector<classes::BubbleColor> LevelLoader::getStagePalette()
+    {
+        return m_currentLevel->getPalette();   
+    }
 }

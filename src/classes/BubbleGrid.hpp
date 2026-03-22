@@ -31,7 +31,7 @@ namespace classes {
             /// Returns pointer to bubble at (q, r), or nullptr.
             [[nodiscard]] std::shared_ptr<Bubble> at(utils::HexCoord pos) const;
             [[nodiscard]] bool isValidBubble(std::shared_ptr<Bubble> bubblePtr) const;
-            [[nodiscard]] BubbleColor getRandomColor(int[] palette) const;
+            [[nodiscard]] classes::BubbleColor getRandomColor(const std::vector<classes::BubbleColor> &palette) const;
 
             // ── Game logic stubs ──────────────────────────────────────────────────
             /// BFS/DFS from (q, r) collecting connected bubbles of the same colour.

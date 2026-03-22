@@ -24,10 +24,9 @@ namespace screens
             /// @param onGameOver  Called when a game-over condition is met.
             /// @param advanceStage Called when the stage should be advanced.
             /// @param viewport    Pixel rect of the game area (portrait, centred).
-            GameScreen(Callback onGameOver, Callback onAdvanceStage, Callback advanceStage, SDL_Rect viewport);
+            GameScreen(Callback onGameOver, Callback onAdvanceStage, levels::Stage stage, SDL_Rect viewport);
 
-            void handleEvent(const SDL_Event &event,
-                            const core::InputHandler &input) override;
+            void handleEvent(const SDL_Event &event, const core::InputHandler &input) override;
             void update(float deltaSeconds) override;
             void render(SDL_Renderer *renderer) override;
 

@@ -44,10 +44,10 @@ namespace classes {
         return bubblePtr && bubblePtr->isActive();
     }
 
-    BubbleColor BubbleGrid::getRandomColor(const std::vector<short> &palette) const
+    classes::BubbleColor BubbleGrid::getRandomColor(const std::vector<classes::BubbleColor> &palette) const
     {        
         int randomIndex = rand() % palette.size();
-        return static_cast<BubbleColor>(palette[randomIndex]);
+        return static_cast<classes::BubbleColor>(palette[randomIndex]);
     }
 
     std::vector<utils::HexCoord> BubbleGrid::findMatches(utils::HexCoord origin) 

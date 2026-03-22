@@ -4,6 +4,7 @@
 #include "screens/GameScreen.hpp"
 #include "screens/HomeScreen.hpp"
 #include "screens/OptionsScreen.hpp"
+#include "screens/EntryLevelScreen.hpp"
 #include <SDL2/SDL.h>
 #include <iostream>
 
@@ -101,7 +102,7 @@ std::unique_ptr<screens::Screen> Game::makeScreen(GameState state,
 
         case GameState::ENTRY_LEVEL:
             return std::make_unique<screens::EntryLevelScreen>(
-                [this] { changeState(GameState::PLAYING); }, , vp);
+                [this] { changeState(GameState::PLAYING); }, m_currentStage, vp);
 
         case GameState::OPTIONS:
             return std::make_unique<screens::OptionsScreen>(
@@ -113,8 +114,8 @@ std::unique_ptr<screens::Screen> Game::makeScreen(GameState state,
             // We capture 'this' safely — screen lifetime is owned by this Game.
             auto *gs = new screens::GameScreen(
                 [this] { changeState(GameState::GAME_OVER, 0); },
-                [this] { changeState(GameState::ENTRY_LEVEL); },
                 [this] { advanceStage(); },
+                m_currentStage,
                 vp);
             return std::unique_ptr<screens::GameScreen>(gs);
         }
@@ -124,10 +125,20 @@ std::unique_ptr<screens::Screen> Game::makeScreen(GameState state,
                 scoreForGameOver, 
                 [this] { changeState(GameState::PLAYING); },
                 [this] { changeState(GameState::HOME); },
-                [this] { resetStage(); },
+                //[this] { resetStage(); },
                 vp);
     }
   return nullptr; // unreachable
+}
+
+void Game::advanceStage()
+{
+    if(m_currentStage < levels::Stage::LEARNING_1)
+        m_currentStage = static_cast<levels::Stage>(static_cast<int>(m_currentStage) + 1);
+    else
+        m_currentStage = levels::Stage::LEARNING_1;
+
+    changeState(GameState::ENTRY_LEVEL); 
 }
 
 SDL_Rect Game::viewportRect() const noexcept 

@@ -36,8 +36,7 @@ class Game
 
         /// Transition to a new game state, constructing the appropriate Screen.
         void changeState(GameState newState, int scoreForGameOver = 0);
-
-        void advanceStage(levels::Stage newStage) { m_currentStage++; }
+        void advanceStage();
         void resetStage() { m_currentStage = levels::Stage::LEARNING_1; }
 
 

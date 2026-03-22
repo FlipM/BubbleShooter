@@ -2,9 +2,13 @@
 #pragma once
 
 #include "Screen.hpp"
+#include "levels/LevelLoader.hpp"
 #include <functional>
 
-namespace screens {
+namespace screens 
+{
+
+    constexpr float ENTRY_LEVEL_DURATION = 3.f; // seconds before auto-start
 
     class EntryLevelScreen final : public Screen 
     {
@@ -23,6 +27,7 @@ namespace screens {
             levels::Stage m_initStage;
             SDL_Rect m_viewport;
             int m_finalScore;
+            float timer;
     };
 
 } // namespace screens

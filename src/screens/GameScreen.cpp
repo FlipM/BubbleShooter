@@ -11,15 +11,16 @@ namespace screens
         constexpr short GRID_ROWS = 14;
     } // namespace
 
-    GameScreen::GameScreen(Callback onGameOver, Callback onAdvanceStage, Callback advanceStage, SDL_Rect viewport)
+    GameScreen::GameScreen(Callback onGameOver, Callback onAdvanceStage, levels::Stage stage, SDL_Rect viewport)
         :   m_onGameOver(std::move(onGameOver)), 
-            m_onAdvanceStage(std::move(onAdvanceStage)), 
-            m_advanceStage(std::move(advanceStage)), 
+            m_onAdvanceStage(std::move(onAdvanceStage)),
+            m_currentStage(stage),
             m_viewport(viewport),
             m_grid(GRID_COLS, GRID_ROWS, utils::HEX_SIZE,  {static_cast<float>(viewport.x + 2), 
                     static_cast<float>(viewport.y + utils::ROOF_HEIGHT + 2)}),
             m_shooter({static_cast<float>(viewport.x + viewport.w / 2), static_cast<float>(viewport.y + viewport.h - 70)}),
-            m_roof(viewport.x, viewport.y, viewport.w, utils::ROOF_HEIGHT) 
+            m_roof(viewport.x, viewport.y, viewport.w, utils::ROOF_HEIGHT),
+            m_levelLoader(stage)
     {
         // TODO: populate initial grid with random bubbles.
         std::clog << "[GameScreen] constructed, viewport " << viewport.w << 'x'

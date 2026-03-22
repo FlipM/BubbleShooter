@@ -1,36 +1,24 @@
 #pragma once
 
-#include "classes/BubbleGrid.hpp"
+#include "Level.hpp"
 #include <memory>
 #include <string>
 
 
 namespace levels 
 {
-    enum class Stage
-    {
-        LEARNING_1,
-        LEVEL_2,
-        LEVEL_3,
-        LEVEL_4,
-        LEVEL_5,
-        LEVEL_6,
-        LEVEL_7,
-        LEVEL_8,
-        LEVEL_9,
-        LEVEL_10,
-        COUNT
-    };
-
     class LevelLoader 
     {
         public:
-            void loadLevel(Stage stg, std::shared_ptr<classes::BubbleGrid> &grid);
-            bool isStageCleared(Stage stg, std::shared_ptr<classes::BubbleGrid> &grid);
-            std::unique_ptr<Level> selectStage(Stage stg);
-            int[] getStagePalette();
+            LevelLoader(levels::Stage stg = levels::Stage::LEARNING_1) : m_currentLevel(selectStage(stg)) {};
+            ~LevelLoader() = default;
+
+            void loadLevel(Stage stg, classes::BubbleGrid &grid);
+            bool isStageCleared(Stage stg, classes::BubbleGrid &grid);
+            std::unique_ptr<levels::Level> selectStage(Stage stg);
+            std::vector<classes::BubbleColor> getStagePalette();
 
         private:
-            levels::Level m_currentLevel;
+            std::unique_ptr<levels::Level> m_currentLevel;
     };
 } // namespace levels
