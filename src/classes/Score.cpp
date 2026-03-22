@@ -4,7 +4,8 @@
 #include <iostream>
 #include <string>
 
-namespace classes {
+namespace classes 
+{
 
     void Score::addPoints(int pts) 
     {
@@ -12,6 +13,8 @@ namespace classes {
         if (m_current > m_high)
             m_high = m_current;
         // TODO: milestone triggers (e.g., every 1000 pts → bonus bubble)
+        std::clog << "[Score] current=" << m_current << " high=" << m_high << '\n';
+
     }
 
     void Score::reset() { m_current = 0; }
@@ -24,7 +27,6 @@ namespace classes {
         SDL_Rect bar{viewX + 4, viewY + 4, m_current / 10 + 10, 8};
         SDL_RenderFillRect(renderer, &bar);
 
-        std::clog << "[Score] current=" << m_current << " high=" << m_high << '\n';
     }
 
 } // namespace classes

@@ -5,6 +5,7 @@
 #include "screens/HomeScreen.hpp"
 #include "screens/OptionsScreen.hpp"
 #include "screens/EntryLevelScreen.hpp"
+#include "screens/EndingScreen.hpp"
 #include <SDL2/SDL.h>
 #include <iostream>
 
@@ -127,18 +128,27 @@ std::unique_ptr<screens::Screen> Game::makeScreen(GameState state,
                 [this] { changeState(GameState::HOME); },
                 //[this] { resetStage(); },
                 vp);
+
+        case GameState::GAME_ENDING:
+            return std::make_unique<screens::EndingScreen>(
+                [this] { changeState(GameState::HOME); }, vp);
     }
   return nullptr; // unreachable
 }
 
 void Game::advanceStage()
 {
-    if(m_currentStage < levels::Stage::LEARNING_1)
-        m_currentStage = static_cast<levels::Stage>(static_cast<int>(m_currentStage) + 1);
-    else
-        m_currentStage = levels::Stage::LEARNING_1;
+    m_currentStage = static_cast<levels::Stage>(static_cast<int>(m_currentStage) + 1);
 
-    changeState(GameState::ENTRY_LEVEL); 
+    if(m_currentStage >= levels::Stage::COUNT)
+    {
+        m_currentStage = levels::Stage::LEARNING_1;
+        changeState(GameState::GAME_ENDING);
+    }
+    else
+        changeState(GameState::ENTRY_LEVEL); 
+    
+    return;
 }
 
 SDL_Rect Game::viewportRect() const noexcept 

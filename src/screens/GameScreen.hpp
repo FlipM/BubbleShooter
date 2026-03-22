@@ -35,7 +35,6 @@ namespace screens
         private:
             Callback m_onGameOver;
             Callback m_onAdvanceStage;
-            Callback m_advanceStage;
             SDL_Rect m_viewport;
 
             // ── Game objects ───────────────────────────────────────────────────────

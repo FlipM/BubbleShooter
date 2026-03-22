@@ -26,6 +26,7 @@ namespace levels
             case levels::Stage::LEARNING_1:
                 return std::make_unique<levels::LearningLevel>();
             default:
+            case levels::Stage::COUNT:
                 return nullptr;
         }
     }

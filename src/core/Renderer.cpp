@@ -77,12 +77,57 @@ namespace core {
         SDL_RenderDrawLine(m_renderer.get(), x1, y1, x2, y2);
     }
 
-    void Renderer::drawText(const std::string & /*text*/, int /*x*/, int /*y*/,
-                            SDL_Color /*color*/) 
+    void Renderer::drawText(const std::string &text, int x, int y, SDL_Color color) 
     {
-        // TODO: integrate SDL2_ttf — load font via ResourceManager,
-        // TTF_RenderUTF8_Blended, etc. Placeholder: does nothing until SDL2_ttf is
-        // wired in.
+        if (text.empty()) return;
+
+        // Ensure SDL_ttf is initialized (lazy init).
+        if (TTF_WasInit() == 0) {
+            if (TTF_Init() == -1) {
+                throw std::runtime_error(std::string("TTF_Init failed: ") + TTF_GetError());
+            }
+        }
+
+        // Try a few common font locations. Adjust path or load a font once elsewhere for better control.
+        const char *fontPaths[] = 
+        {
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", // Linux
+            "/Library/Fonts/Arial.ttf",                        // macOS
+            "C:\\Windows\\Fonts\\arial.ttf",                   // Windows
+            nullptr
+        };
+
+        TTF_Font *font = nullptr;
+        for (int i = 0; fontPaths[i] != nullptr; ++i) 
+        {
+            font = TTF_OpenFont(fontPaths[i], 24);
+            if (font) break;
+        }
+        if (!font) {
+            throw std::runtime_error(std::string("TTF_OpenFont failed: ") + TTF_GetError());
+        }
+
+        // Render text to surface, create texture, render, and clean up.
+        SDL_Surface *surf = TTF_RenderUTF8_Blended(font, text.c_str(), color);
+        if (!surf) {
+            TTF_CloseFont(font);
+            throw std::runtime_error(std::string("TTF_RenderUTF8_Blended failed: ") + SDL_GetError());
+        }
+
+        SDL_Texture *tex = SDL_CreateTextureFromSurface(m_renderer.get(), surf);
+        if (!tex) {
+            SDL_FreeSurface(surf);
+            TTF_CloseFont(font);
+            throw std::runtime_error(std::string("SDL_CreateTextureFromSurface failed: ") + SDL_GetError());
+        }
+
+        SDL_Rect dst{ x, y, surf->w, surf->h };
+        SDL_FreeSurface(surf);
+
+        SDL_RenderCopy(m_renderer.get(), tex, nullptr, &dst);
+
+        SDL_DestroyTexture(tex);
+        TTF_CloseFont(font);
     }
 
     void Renderer::recalculateViewport(int windowW, int windowH) 

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Screen.hpp"
+#include <core/Renderer.hpp>
 #include <functional>
 #include <string>
 

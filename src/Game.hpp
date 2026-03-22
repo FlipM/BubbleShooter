@@ -18,7 +18,8 @@ enum class GameState
     OPTIONS, 
     ENTRY_LEVEL,
     PLAYING, 
-    GAME_OVER 
+    GAME_OVER,
+    GAME_ENDING
 };
 
 class Game 

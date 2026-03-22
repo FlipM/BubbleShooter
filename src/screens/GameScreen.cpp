@@ -177,7 +177,6 @@ namespace screens
         if (m_levelLoader.isStageCleared(m_currentStage, m_grid)) 
         {
             std::clog << "[GameScreen] stage cleared, advancing\n";
-            m_advanceStage();
             m_onAdvanceStage();
         }
     }

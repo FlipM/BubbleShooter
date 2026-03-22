@@ -89,6 +89,7 @@ namespace screens
         SDL_RenderDrawRect(renderer, &btn.rect);
 
         // TODO: draw btn.label text with SDL2_ttf.
+        // renderer->drawText(btn.label, btn.rect.x + btn.rect.w / 2, btn.rect.y + btn.rect.h / 2, {255, 255, 255, 255});
     }
 
 } // namespace screens

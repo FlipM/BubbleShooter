@@ -25,7 +25,6 @@ namespace screens {
             int m_finalScore;
             Callback m_onRetry;
             Callback m_onHome;
-            //Callback m_resetStage;
             SDL_Rect m_viewport;
             Button m_retryBtn;
             Button m_homeBtn;
