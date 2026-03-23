@@ -21,10 +21,13 @@ namespace levels
 
             void fillInitialGrid(classes::BubbleGrid &grid) override;
             bool isCleared(classes::BubbleGrid &grid) override;
+            int shootLimit() const override;
             std::vector<classes::BubbleColor> getPalette() override;
 
 
         private:
+
+            int m_shootLimit{10};
 
 
     };

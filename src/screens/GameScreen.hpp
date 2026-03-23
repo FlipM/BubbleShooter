@@ -43,18 +43,20 @@ namespace screens
             classes::Score m_score;
             levels::LevelLoader m_levelLoader;
             levels::Stage m_currentStage;
-            std::unique_ptr<classes::Bubble>
-                m_flyingBubble; ///< Bubble currently in flight.
+            std::unique_ptr<classes::Bubble> m_flyingBubble; 
+
+            // ── Game values ────────────────────────────────────────────────────────
+            int m_shootcount{0};
 
             // ── State ──────────────────────────────────────────────────────────────
             bool m_paused{false};
 
             // ── Helpers ────────────────────────────────────────────────────────────
             void handleShoot();          ///< Trigger: fire the shooter.
-            void updateFlight(float dt); ///< Move flying bubble, check collisions.
+            bool updateFlight(float dt); ///< Move flying bubble, check collisions. True if bubble landed.
             void landBubble();           ///< Attach flying bubble to grid, check matches.
             void checkNextLevel();       ///< Advance stage if current level objectives are met.
-            void checkGameOver();        ///< Game-over when bubbles reach shooter row.
+            bool checkGameOver();        ///< Game-over when bubbles reach shooter row.
 
             void drawBackground(core::Renderer &renderer) const;
             void drawBorders(core::Renderer &renderer) const;

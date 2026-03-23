@@ -30,6 +30,11 @@ namespace levels
         return true;
     }
 
+    int LearningLevel::shootLimit() const
+    {
+        return m_shootLimit;
+    }
+
     std::vector<classes::BubbleColor> LearningLevel::getPalette()
     {
         return level_palette;

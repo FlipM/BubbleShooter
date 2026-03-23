@@ -8,6 +8,7 @@
 #include <functional>
 #include <memory>
 #include <vector>
+#include <set>
 
 namespace core {
     class Renderer;
@@ -52,7 +53,7 @@ namespace classes {
             [[nodiscard]] utils::HexCoord snapToGrid(utils::Vec2f pixelPos) const;
 
             /// Advance the whole grid downward by one row (ratchet mechanic).
-            void advanceDown();
+            void advanceDown(const std::set<classes::BubbleColor> &shooterColors);
 
             /// Get flat-top hex neighbour coords (axial coordinates).
             [[nodiscard]] std::vector<utils::HexCoord> neighbours(utils::HexCoord pos) const;

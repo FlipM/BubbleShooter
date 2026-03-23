@@ -68,14 +68,20 @@ namespace screens
         // Move flying bubble.
         if (m_flyingBubble) 
         {
-            updateFlight(deltaSeconds);
+            if(updateFlight(deltaSeconds))
+            {
+                if (m_levelLoader.exceededShootLimit(m_shootcount))
+                {
+                    m_grid.advanceDown(m_shooter.remainingColors());
+                    m_shootcount = 0; // reset shoot count after advancing grid
+                }
+            }
         }
 
-        // TODO: advance grid down at timed intervals.
         // TODO: update particle effects, animations.
 
-        checkGameOver();
-        checkNextLevel();
+        if(!checkGameOver())
+            checkNextLevel();
     }
 
     void GameScreen::render(core::Renderer &renderer) 
@@ -95,6 +101,7 @@ namespace screens
     void GameScreen::handleShoot() 
     {
         m_flyingBubble = m_shooter.shoot();
+        m_shootcount++;
         if (m_flyingBubble) 
         {
             std::clog << "[GameScreen] bubble fired\n";
@@ -102,7 +109,7 @@ namespace screens
         }
     }
 
-    void GameScreen::updateFlight(float dt) 
+    bool GameScreen::updateFlight(float dt) 
     {
         m_flyingBubble->updateMovement(dt);
 
@@ -131,7 +138,7 @@ namespace screens
         {
             m_flyingBubble->onCollisionWithRoof();
             landBubble();
-            return;
+            return true;
         }
 
         utils::HexCoord flyingCoord = m_grid.snapToGrid(m_flyingBubble->pixelPos());
@@ -143,9 +150,10 @@ namespace screens
             {
                 m_flyingBubble->onCollisionWithBubble(*neighborBubble);
                 landBubble();
-                return;
+                return true;
             }
         }
+        return false; // still flying
     }
 
     void GameScreen::landBubble() 
@@ -180,7 +188,7 @@ namespace screens
         }
     }
 
-    void GameScreen::checkGameOver() 
+    bool GameScreen::checkGameOver() 
     {
         for (short col = 0; col < GRID_COLS; ++col) 
         {
@@ -188,8 +196,10 @@ namespace screens
             {
                 std::clog << "[GameScreen] game over condition met\n";
                 m_onGameOver();
+                return true;
             }
         }
+        return false;
     }
 
     void GameScreen::checkNextLevel() 

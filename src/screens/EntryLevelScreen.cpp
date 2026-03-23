@@ -6,9 +6,9 @@ namespace screens {
     EntryLevelScreen::EntryLevelScreen(Callback onPlay, levels::Stage initStage, SDL_Rect viewport)
         :   m_onPlay(std::move(onPlay)),
             m_initStage(initStage),
-            m_viewport(viewport) 
+            m_viewport(viewport)
     {
-
+        timer = 0.f;
     }
 
     void EntryLevelScreen::handleEvent(const SDL_Event &event,

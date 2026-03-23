@@ -17,8 +17,7 @@ namespace screens {
         m_homeBtn = core::UI::Button(cx - 100, mx + 80, 200, 45, "HOME");
     }
 
-    void GameOverScreen::handleEvent(const SDL_Event &event,
-                                    const core::InputHandler &input) 
+    void GameOverScreen::handleEvent(const SDL_Event &event, const core::InputHandler &input) 
     {
         if (event.type == SDL_MOUSEMOTION) 
         {

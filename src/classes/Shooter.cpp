@@ -64,6 +64,15 @@ namespace classes
         }
     }
 
+    void Shooter::removeColor(BubbleColor color) 
+    {
+        m_upcomingColors.erase(color);
+        while(m_next && m_next->color() == color) 
+        {
+            advance(); // if the next bubble is of the removed color, advance to get a new next bubble.
+        }
+    }
+
     void Shooter::draw(core::Renderer &renderer) const 
     {
         drawPlatform(renderer);

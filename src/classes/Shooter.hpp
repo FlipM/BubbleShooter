@@ -40,7 +40,10 @@ namespace classes
             // ── Bubble management ──────────────────────────────────────────────────
             /// Callback: request a new random bubble colour from the game.
             classes::BubbleColor randomColor();
-            void removeColor(BubbleColor color) { m_upcomingColors.erase(color); }
+            void removeColor(BubbleColor color);
+            std::set<classes::BubbleColor> remainingColors() const { return m_upcomingColors; }
+
+             // ── Non-copyable, movable ───────────────────────────────────────────────
 
             // ── Rendering ──────────────────────────────────────────────────────────
             void draw(core::Renderer &renderer) const;

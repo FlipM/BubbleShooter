@@ -19,6 +19,7 @@ namespace levels
             virtual ~Level() = default;
             virtual void fillInitialGrid(classes::BubbleGrid&grid) = 0;
             virtual bool isCleared(classes::BubbleGrid &grid) = 0;
+            virtual int shootLimit() const = 0;
             virtual std::vector<classes::BubbleColor> getPalette() = 0;
 
              // Non-copyable.

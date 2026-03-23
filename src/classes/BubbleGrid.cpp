@@ -143,10 +143,34 @@ namespace classes
         return utils::pixelToHex(pixelPos, m_origin);
     }
 
-    void BubbleGrid::advanceDown() 
+    void BubbleGrid::advanceDown(const std::set<classes::BubbleColor> &shooterColors) 
     {
-        // TODO: shift all rows down by one, add a new row at the top.
-        std::clog << "[BubbleGrid] advanceDown() stub\n";
+        // Start from second last row and move down each bubble by one row. Last row has no bubbles, as the game would have ended by now.
+        for(short r = m_rows - 3; r >= 0; --r) 
+        {
+            for (short c = 0; c < m_cols; ++c) 
+            {
+                auto bubble = at({r, c});
+                if (isValidBubble(bubble)) 
+                {
+                    // Move bubble down by 2 rows. This is not ideal, but it simplifies the logic
+                    bubble->setGridPos({r + 2, c});
+                    bubble->setPixelPos(cellCenter({r + 2, c}));
+                    m_grid[r + 2][c] = std::move(m_grid[r][c]);
+                    m_grid[r][c] = nullptr;
+                }
+            }
+        }
+
+        std::vector<classes::BubbleColor> colorVect(shooterColors.begin(), shooterColors.end());
+        for (short c = 0; c < m_cols; ++c) 
+        {
+            for (short r = 0; r < 2; ++r) 
+            {
+                classes::BubbleColor color = getRandomColor(colorVect);
+                this->addBubble(std::make_unique<classes::Bubble>(color), {r, c});
+            }
+        }
     }
 
     void BubbleGrid::draw(core::Renderer &renderer) const 
