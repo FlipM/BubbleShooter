@@ -61,6 +61,7 @@ namespace core
             // ── Primitive draw stubs ──────────────────────────────────────────────
             /// Draw a filled rectangle (in logical game coordinates).
             void drawRect(int x, int y, int w, int h, UI::Color color);
+            void drawPlate(int x, int y, int w, int h, const std::string text, UI::Color color, UI::Color textColor = UI::WHITE_COLOR);
 
             /// Draw the outline of a rectangle.
             void drawRectOutline(int x, int y, int w, int h, UI::Color color);
@@ -99,6 +100,9 @@ namespace core
 
             /// Lazy-initialize and cache the default font (called on first drawText).
             void ensureFontLoaded();
+
+            /// Measure the dimensions of a UTF-8 text string.
+            std::pair<int, int> measureText(int x, int y, int width, int height, const std::string &text);
     };
 
 } // namespace core

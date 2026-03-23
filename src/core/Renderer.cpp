@@ -47,6 +47,15 @@ namespace core {
 
     void Renderer::present() { SDL_RenderPresent(m_renderer.get()); }
 
+    void Renderer::drawPlate(int x, int y, int w, int h, const std::string text, UI::Color color, UI::Color textColor)
+    {
+        // Draw a filled rectangle with a white outline to simulate a plate.
+        drawRect(x, y, w, h, color);
+        //drawRectOutline(x, y, w, h, textColor);
+        auto textCoords = measureText(x, y, w, h, text);
+        drawText(text, textCoords.first, textCoords.second, textColor);
+    }
+
     void Renderer::drawRect(int x, int y, int w, int h, UI::Color color)
     {
         SDL_SetRenderDrawColor(m_renderer.get(), color.r, color.g, color.b, color.a);
@@ -144,7 +153,9 @@ namespace core {
         // Draw outline.
         drawRectOutline(btn.x, btn.y, btn.width, btn.height, outlineColor);
         
-        // TODO: draw label text centered in button.
+        // Draw label text centered in button.
+        auto textCoordinates = measureText(btn.x, btn.y, btn.width, btn.height, btn.label);
+        drawText(btn.label, textCoordinates.first, textCoordinates.second, UI::Color(255, 255, 255, 255));
     }
 
     void Renderer::drawBackground(UI::Color color)
@@ -179,6 +190,17 @@ namespace core {
                 drawLine(x + dx, y, x + dx, y + h, color);
             }
         }
+    }
+
+    std::pair< int, int > Renderer::measureText(int x, int y, int width, int height, const std::string &text)
+    {
+        int textWidth, textHeight;
+        TTF_SizeUTF8(m_font.get(), text.c_str(), &textWidth, &textHeight);
+        
+        // Calculate center position
+        int textX = x + (width - textWidth) / 2;
+        int textY = y + (height - textHeight) / 2;
+        return {textX, textY};
     }
 
     void Renderer::ensureFontLoaded()

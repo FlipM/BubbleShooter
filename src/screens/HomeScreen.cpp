@@ -65,9 +65,10 @@ namespace screens
     {
         // TODO: render "BUBBLE SHOOTER" with SDL2_ttf.
         // Placeholder: a simple coloured bar where the title will sit.
-        renderer.drawRect(m_viewport.x + m_viewport.w / 4,
-                        m_viewport.y + m_viewport.h / 4, m_viewport.w / 2, 40,
-                        core::UI::Color(80, 200, 255, 200));
+        renderer.drawPlate(m_viewport.x + m_viewport.w / 4,
+                            m_viewport.y + m_viewport.h / 4, m_viewport.w / 2, 40,
+                            "BUBBLE SHOOTER",
+                            core::UI::Color(80, 200, 255, 200));
     }
 
     void HomeScreen::drawButton(core::Renderer &renderer, const core::UI::Button &btn) const 
@@ -76,9 +77,6 @@ namespace screens
                            core::UI::Color(50, 110, 200, 255),  // fill
                            core::UI::Color(200, 230, 255, 255), // outline
                            core::UI::Color(100, 180, 255, 255)); // hover
-        // TODO: draw btn.label text with SDL2_ttf.
-        renderer.drawText(btn.label, btn.x + (btn.width - btn.label.size()) / 2, btn.y + btn.height / 2,
-                          core::UI::Color(255, 255, 255, 255));
     }
 
 } // namespace screens

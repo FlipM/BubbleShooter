@@ -26,7 +26,8 @@ namespace screens
             Callback m_onPlay;
             levels::Stage m_initStage;
             SDL_Rect m_viewport;
-            int m_finalScore;
+            levels::LevelLoader m_levelLoader;
+            
             float timer;
     };
 
