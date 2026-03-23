@@ -5,15 +5,17 @@ namespace levels
     void LearningLevel::fillInitialGrid(classes::BubbleGrid &grid)
     {
         // Simple pattern for testing: 3 rows of alternating colors.
-        for (short r = 0; r < 3; ++r) 
+        classes::BubbleColor color = classes::BubbleColor::Red;
+        for (short r = 0; r < 5; r+=2) 
         {
-            for (short c = 0; c < grid.cols(); ++c) 
+            for (short c = 0; c < grid.cols() - 2; c += 3) 
             {
-                classes::BubbleColor color = grid.getRandomColor(level_palette);
-                grid.addBubble(std::make_unique<classes::Bubble>(color), {r, c});
+                makeTriplet(grid, {r, c}, color, false);
+                color = classes::getNextColor(color);
+                makeTriplet(grid, {r+1, c+1}, color, true);
+                color = classes::getNextColor(color);
             }
         }
-
     }
 
     bool LearningLevel::isCleared(classes::BubbleGrid &grid)
@@ -38,6 +40,18 @@ namespace levels
     std::vector<classes::BubbleColor> LearningLevel::getPalette()
     {
         return level_palette;
+    }
+
+    void LearningLevel::makeTriplet(classes::BubbleGrid &grid, utils::HexCoord origin, classes::BubbleColor color, bool inverse)
+    {
+        short nextC = origin.c + 1;
+        short otherR = origin.r + (inverse ? -1 : 1);
+
+        // Place 3 bubbles of the same color in a cluster for testing matches.
+        grid.addBubble(std::make_unique<classes::Bubble>(color), origin);
+        grid.addBubble(std::make_unique<classes::Bubble>(color), {origin.r, nextC});
+        grid.addBubble(std::make_unique<classes::Bubble>(color), {otherR, (inverse ? nextC : origin.c)});
+        
     }
     
 }

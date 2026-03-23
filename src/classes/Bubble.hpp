@@ -25,11 +25,13 @@ namespace classes
     };
 
     /// Maps BubbleColor to an RGB triplet for rendering.
-    struct BubbleColorRGB {
+    struct BubbleColorRGB 
+    {
         std::uint8_t r, g, b;
     };
 
     [[nodiscard]] BubbleColorRGB bubbleColorToRGB(BubbleColor c) noexcept;
+    [[nodiscard]] BubbleColor getNextColor(BubbleColor c) noexcept;
 
     /// ── Bubble
     /// ───────────────────────────────────────────────────────────────────

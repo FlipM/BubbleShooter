@@ -12,7 +12,7 @@ namespace levels
             LearningLevel()
             {
                 //All colors
-                for(classes::BubbleColor color = classes::BubbleColor::Red; color < classes::BubbleColor::Blue;)
+                for(classes::BubbleColor color = classes::BubbleColor::Red; color < classes::BubbleColor::COUNT;)
                 {
                     level_palette.push_back(static_cast<classes::BubbleColor>(color));
                     color = static_cast<classes::BubbleColor>(static_cast<int>(color) + 1);
@@ -28,6 +28,7 @@ namespace levels
         private:
 
             int m_shootLimit{10};
+            void makeTriplet(classes::BubbleGrid &grid, utils::HexCoord origin, classes::BubbleColor color, bool inverse);
 
 
     };

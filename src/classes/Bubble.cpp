@@ -29,8 +29,15 @@ namespace classes
         }
     }
 
-    Bubble::Bubble(BubbleColor color, utils::HexCoord gridPos)
-        : m_color(color), m_gridPos(gridPos) {}
+    
+    BubbleColor getNextColor(BubbleColor c) noexcept
+    {
+        if (c == BubbleColor::Purple)
+            return BubbleColor::Red;
+        return static_cast<BubbleColor>(static_cast<int>(c) + 1);
+    }
+
+    Bubble::Bubble(BubbleColor color, utils::HexCoord gridPos) : m_color(color), m_gridPos(gridPos) {}
 
     void Bubble::pop() 
     {
