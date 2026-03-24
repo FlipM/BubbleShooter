@@ -14,8 +14,8 @@ namespace utils
     /// Hex cell in axial coordinates.
     struct HexCoord 
     {
-        short r{0}; ///< row
-        short c{0}; ///< column
+        int r{0}; ///< row
+        int c{0}; ///< column
     };
 
     const float APOTHEM_FACTOR = std::sqrt(3.f);
@@ -24,8 +24,6 @@ namespace utils
 
     constexpr float HEX_SIZE = 18.5f;
     constexpr float PI = 3.14159265f;
-
-
 
     /// Screen-space 2D point.
     struct Vec2f 
@@ -56,12 +54,12 @@ namespace utils
         const float frac_r = (py - HALF_APOTHEM) / APOTHEM_FACTOR;
         
         // Round r to nearest hex
-        short r = static_cast<short>(std::round(frac_r));
-        short offset_r = r % 2 + 1;
+        int r = static_cast<int>(std::round(frac_r));
+        int offset_r = r % 2 + 1;
         
         // Calculate fractional column
         const float frac_c = (px - offset_r) / 2.f;
-        short c = static_cast<short>(std::round(frac_c));
+        int c = static_cast<int>(std::round(frac_c));
 
         return {r, c};
     }

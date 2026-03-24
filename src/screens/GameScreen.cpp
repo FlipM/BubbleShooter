@@ -9,8 +9,8 @@ namespace screens
     namespace 
     {
         // Grid configuration constants.
-        constexpr short GRID_COLS = 10;
-        constexpr short GRID_ROWS = 14;
+        constexpr int GRID_COLS = 10;
+        constexpr int GRID_ROWS = 14;
         constexpr int   ORIGIN_OFFSET_X = 2; // pixels from viewport edge to grid start
     } // namespace
 
@@ -190,7 +190,7 @@ namespace screens
 
     bool GameScreen::checkGameOver() 
     {
-        for (short col = 0; col < GRID_COLS; ++col) 
+        for (int col = 0; col < GRID_COLS; ++col) 
         {
             if(m_grid.at({GRID_ROWS - 1, col})) 
             {

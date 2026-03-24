@@ -56,6 +56,7 @@ namespace classes
 
             void setGridPos(utils::HexCoord p) noexcept { m_gridPos = p; }
             void setPixelPos(utils::Vec2f p) noexcept { m_pixelPos = p; }
+            void setColor(BubbleColor c) noexcept { m_color = c; }
 
             // ── Lifecycle ─────────────────────────────────────────────────────────
             /// Mark bubble for removal and play pop animation (stub).

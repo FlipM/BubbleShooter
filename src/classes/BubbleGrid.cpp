@@ -14,7 +14,7 @@ namespace classes
         : m_cols(cols), m_rows(rows), m_hexSize(hexSize), m_origin(origin) 
     {
         m_grid.assign(rows, std::vector<std::shared_ptr<Bubble>>(cols, nullptr));
-        visited.assign(rows, std::vector<short>(cols, 0));
+        visited.assign(rows, std::vector<int>(cols, 0));
     }
 
     void BubbleGrid::addBubble(std::unique_ptr<Bubble> bubble,
@@ -94,7 +94,7 @@ namespace classes
 
     void BubbleGrid::dropFloating() 
     {
-        for(short c = 0; c < m_cols; c++)
+        for(int c = 0; c < m_cols; c++)
         {
             if(!isVisited({0, c}))
             {
@@ -107,9 +107,9 @@ namespace classes
 
         }
 
-        for(short r = 0; r < m_rows; r++)
+        for(int r = 0; r < m_rows; r++)
         {
-            for(short c = 0; c < m_cols; c++)
+            for(int c = 0; c < m_cols; c++)
             {
                 if(!isVisited({r, c}) && at({r, c}))
                     removeBubble({r, c})->pop();
@@ -146,9 +146,9 @@ namespace classes
     void BubbleGrid::advanceDown(const std::set<classes::BubbleColor> &shooterColors) 
     {
         // Start from second last row and move down each bubble by one row. Last row has no bubbles, as the game would have ended by now.
-        for(short r = m_rows - 3; r >= 0; --r) 
+        for(int r = m_rows - 3; r >= 0; --r) 
         {
-            for (short c = 0; c < m_cols; ++c) 
+            for (int c = 0; c < m_cols; ++c) 
             {
                 auto bubble = at({r, c});
                 if (isValidBubble(bubble)) 
@@ -163,9 +163,9 @@ namespace classes
         }
 
         std::vector<classes::BubbleColor> colorVect(shooterColors.begin(), shooterColors.end());
-        for (short c = 0; c < m_cols; ++c) 
+        for (int c = 0; c < m_cols; ++c) 
         {
-            for (short r = 0; r < 2; ++r) 
+            for (int r = 0; r < 2; ++r) 
             {
                 classes::BubbleColor color = getRandomColor(colorVect);
                 this->addBubble(std::make_unique<classes::Bubble>(color), {r, c});
@@ -176,9 +176,9 @@ namespace classes
     void BubbleGrid::draw(core::Renderer &renderer) const 
     {
         // Draw hex lines. Odd rows has one less slot. Last row is ommited, since a ball there would end the game.
-        for (short r = 0; r < m_rows - 1; ++r) 
+        for (int r = 0; r < m_rows - 1; ++r) 
         {
-            for (short c = 0; c < m_cols; ++c) 
+            for (int c = 0; c < m_cols; ++c) 
             {
                 drawHexOutline(renderer, cellCenter({r, c}));
             }
@@ -202,7 +202,7 @@ namespace classes
 
     void BubbleGrid::clearVisited()
     {
-        for(short r = 0; r < m_rows; r++)
+        for(int r = 0; r < m_rows; r++)
         {
             std::fill(visited[r].begin(), visited[r].end(), 0);
         }
@@ -215,7 +215,7 @@ namespace classes
 
     std::vector<utils::HexCoord> BubbleGrid::neighbours(utils::HexCoord pos) const 
     {
-        short offset_r = pos.r % 2;
+        int offset_r = pos.r % 2;
 
         static constexpr utils::HexCoord dirs[6] = {{ 0, 1},   { 0, -1},  // samle line
                                                     {-1, 0},   {-1,  1},  // prev line

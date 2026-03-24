@@ -9,11 +9,11 @@ namespace screens {
     {
             std::clog << "[EndingScreen] constructed, viewport " << viewport.w << 'x'
                         << viewport.h << '\n';
+            timer = 0.f;
     }
 
     void EndingScreen::handleEvent(const SDL_Event &event, const core::InputHandler &input) 
     {
-        
         (void)input;
     }
 

@@ -79,7 +79,7 @@ namespace classes {
 
             /// Storage: m_grid[row][col].  Null means empty cell.
             std::vector<std::vector<std::shared_ptr<Bubble>>> m_grid;
-            std::vector<std::vector<short>> visited;
+            std::vector<std::vector<int>> visited;
 
             void dfsVisited(utils::HexCoord pos);
 
