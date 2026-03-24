@@ -26,16 +26,7 @@ namespace levels
 
     bool LearningLevel::isCleared(classes::BubbleGrid &grid)
     {
-        // Level is cleared when all bubbles are popped.
-        for (int r = 0; r < grid.rows(); ++r) 
-        {
-            for (int c = 0; c < grid.cols(); ++c) 
-            {
-                if (grid.at({r, c}))
-                    return false;
-            }
-        }
-        return true;
+        return grid.isEmpty();
     }
 
     int LearningLevel::shootLimit() const

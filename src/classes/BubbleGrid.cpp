@@ -17,8 +17,7 @@ namespace classes
         visited.assign(rows, std::vector<int>(cols, 0));
     }
 
-    void BubbleGrid::addBubble(std::unique_ptr<Bubble> bubble,
-                            utils::HexCoord pos) 
+    void BubbleGrid::addBubble(std::unique_ptr<Bubble> bubble, utils::HexCoord pos) 
     {
         if (pos.r < 0 || pos.r >= m_rows || pos.c < 0 || pos.c >= m_cols)
             return;
@@ -263,6 +262,19 @@ namespace classes
             }
         }
         return false;
+    }
+
+    bool BubbleGrid::isEmpty() const
+    {
+        for (const auto &row : m_grid) 
+        {
+            for (const auto &bubble : row) 
+            {
+                if (bubble && bubble->isActive())
+                    return false;
+            }
+        }
+        return true;
     }
 
 } // namespace classes

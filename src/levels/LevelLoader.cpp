@@ -1,5 +1,6 @@
 #include "LevelLoader.hpp"
 #include "LearningLevel.hpp"
+#include "CascadeLevel.hpp"
 
 namespace levels 
 {
@@ -32,8 +33,13 @@ namespace levels
         {
             case levels::Stage::LEARNING_1:
                 return std::make_unique<levels::LearningLevel>();
+                
+            case levels::Stage::CASCADE_2:
+                return std::make_unique<levels::CascadeLevel>();
+
             default:
             case levels::Stage::COUNT:
+                std::clog << "[LevelLoader] invalid stage selected\n";
                 return nullptr;
         }
     }

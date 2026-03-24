@@ -10,6 +10,7 @@ namespace levels
     enum class Stage
     {
         LEARNING_1,
+        CASCADE_2,
         COUNT
     };
     
