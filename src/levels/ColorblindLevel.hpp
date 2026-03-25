@@ -8,13 +8,13 @@ namespace levels
 {
     class ColorblindLevel final : public Level
     {
-        const int rowsToFill = 6;
+        const int rowsToFill = 3;
 
         public:
             ColorblindLevel()
             {
                 //All colors
-                for(classes::BubbleColor color = classes::BubbleColor::Red; color < classes::BubbleColor::COUNT;)
+                for(classes::BubbleColor color = classes::BubbleColor::Red; color < classes::BubbleColor::Blue;)
                 {
                     level_palette.push_back(static_cast<classes::BubbleColor>(color));
                     color = static_cast<classes::BubbleColor>(static_cast<int>(color) + 1);

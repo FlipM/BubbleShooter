@@ -169,12 +169,14 @@ namespace screens
         if (!m_flyingBubble)
             return;
 
-        classes::BubbleColor savedColor = m_flyingBubble->color();
         auto coord = m_grid.snapToGrid(m_flyingBubble->pixelPos());
         m_grid.addBubble(std::move(m_flyingBubble), coord);
 
         // Check for matches.
         auto matched = m_grid.findMatches(coord);
+        auto src = m_grid.at(coord);
+        auto savedColor = src->color();
+
         if (matched.size() >= 3) 
         {
             m_score.addPoints(static_cast<int>(matched.size()) * 10);
@@ -187,6 +189,7 @@ namespace screens
                 }
             }
             m_grid.dropFloating();
+        
             
             if(!m_grid.colorExists(savedColor))
             {
@@ -198,7 +201,6 @@ namespace screens
         {
             if(m_levelLoader.changeColor())
             {
-                auto src = m_grid.at(coord);
                 src->setColor(m_shooter.randomColor());
             }
         }

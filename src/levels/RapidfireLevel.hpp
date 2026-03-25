@@ -8,7 +8,7 @@ namespace levels
 {
     class RapidfireLevel final : public Level
     {
-        const int rowsToFill = 6;
+        const int rowsToFill = 3;
 
         public:
             RapidfireLevel()
