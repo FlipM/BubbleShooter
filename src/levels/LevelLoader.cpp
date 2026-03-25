@@ -1,6 +1,7 @@
 #include "LevelLoader.hpp"
 #include "LearningLevel.hpp"
 #include "CascadeLevel.hpp"
+#include "RapidfireLevel.hpp"
 
 namespace levels 
 {
@@ -27,6 +28,17 @@ namespace levels
         return false;
     }
 
+    bool LevelLoader::exceededShootingTime(float &elapsedTime) const
+    {
+        if(m_currentLevel && m_currentLevel->exceededShootingTime(elapsedTime))
+        {
+            elapsedTime = 0.0f; // Reset timer for next shot.
+            return true;
+        }
+
+        return false;
+    }
+
     std::unique_ptr<Level> LevelLoader::selectStage(Stage stg)
     {
         switch(stg)
@@ -36,6 +48,9 @@ namespace levels
                 
             case levels::Stage::CASCADE_2:
                 return std::make_unique<levels::CascadeLevel>();
+                
+            case levels::Stage::RAPIDFIRE_3:
+                return std::make_unique<levels::RapidfireLevel>();
 
             default:
             case levels::Stage::COUNT:

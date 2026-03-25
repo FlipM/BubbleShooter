@@ -59,8 +59,6 @@ namespace screens
         if (m_paused)
             return;
 
-        // Update shooter aim toward current mouse position.
-        // (SDL_GetMouseState used directly as a simple placeholder.)
         int mx, my;
         SDL_GetMouseState(&mx, &my);
         m_shooter.aimAt({static_cast<float>(mx), static_cast<float>(my)});
@@ -75,6 +73,15 @@ namespace screens
                     m_grid.advanceDown(m_shooter.remainingColors());
                     m_shootcount = 0; // reset shoot count after advancing grid
                 }
+            }
+        }
+        // Handle rapid-fire time limit (if applicable).
+        else 
+        {
+            nonShootTime += deltaSeconds;
+            if(m_levelLoader.exceededShootingTime(nonShootTime))
+            {
+                handleShoot();
             }
         }
 
@@ -102,6 +109,7 @@ namespace screens
     {
         m_flyingBubble = m_shooter.shoot();
         m_shootcount++;
+        nonShootTime = 0.f;
         if (m_flyingBubble) 
         {
             std::clog << "[GameScreen] bubble fired\n";
@@ -119,8 +127,8 @@ namespace screens
 
         // Calculate grid boundaries (grid has +2 pixel offset from viewport)
         // Add 1 pixel buffer to prevent bubbles from landing at invalid grid cells
-        const float grid_left = m_viewport.x + ORIGIN_OFFSET_X + 1;
-        const float grid_right = m_viewport.x + m_viewport.w - ORIGIN_OFFSET_X - 1;
+        const float grid_left = static_cast<float>(m_viewport.x + ORIGIN_OFFSET_X + 1);
+        const float grid_right = static_cast<float>(m_viewport.x + m_viewport.w - ORIGIN_OFFSET_X - 1);
 
         // Wall bounce (left/right).
         if (bx - r <= grid_left || bx + r >= grid_right) 

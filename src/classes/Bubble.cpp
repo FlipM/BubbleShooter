@@ -24,6 +24,8 @@ namespace classes
                 return {50, 130, 220};
             case BubbleColor::Purple:
                 return {160, 60, 200};
+            case BubbleColor::Gray:
+                return {100, 100, 100};
             default:
                 return {200, 200, 200};
         }
@@ -80,11 +82,11 @@ namespace classes
         float dx = m_pixelPos.x - other.m_pixelPos.x;
         float dy = m_pixelPos.y - other.m_pixelPos.y;
         float distanceSq = dx * dx + dy * dy;
-        float radiusSum = m_radius + other.m_radius;
+        float radiusSum = static_cast<float>(m_radius + other.m_radius);
         return distanceSq <= radiusSum * radiusSum;
     }
 
-    void Bubble::onCollisionWithBubble(Bubble & other) 
+    void Bubble::onCollisionWithBubble(Bubble &other) 
     {
         // TODO: snap to nearest grid cell, trigger BubbleGrid::findMatches().
         std::clog << "[Bubble] onCollisionWithBubble() stub\n";

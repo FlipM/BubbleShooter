@@ -172,6 +172,22 @@ namespace classes
         }
     }
 
+    void BubbleGrid::fillInitialGrid(const std::vector<classes::BubbleColor> &palette, int rowsToFill) 
+    {
+        if (rowsToFill >= m_rows)
+            rowsToFill = m_rows - 1; 
+            
+        
+        for (int r = 0; r < rowsToFill; ++r) 
+        {
+            for (int c = 0; c < m_cols; ++c) 
+            {
+                classes::BubbleColor color = getRandomColor(palette);
+                addBubble(std::make_unique<classes::Bubble>(color), {r, c});
+            }
+        }
+    }
+
     void BubbleGrid::draw(core::Renderer &renderer) const 
     {
         // Draw hex lines. Odd rows has one less slot. Last row is ommited, since a ball there would end the game.

@@ -12,9 +12,9 @@ namespace levels
             color = classes::getNextColor(color);
         }
 
-        semiFillColumn(grid, 1, 1, 3, classes::BubbleColor::Yellow);
-        semiFillColumn(grid, 5, 8, 3, classes::BubbleColor::Red);
-        semiFillColumn(grid, 9, 5, 3, classes::BubbleColor::Orange);
+        semiFillColumn(grid, 1, 1, 3, classes::BubbleColor::Gray);
+        semiFillColumn(grid, 5, 8, 3, classes::BubbleColor::Gray);
+        semiFillColumn(grid, 9, 5, 3, classes::BubbleColor::Gray);
 
     }
 

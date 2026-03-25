@@ -55,6 +55,8 @@ namespace classes {
             /// Advance the whole grid downward by one row (ratchet mechanic).
             void advanceDown(const std::set<classes::BubbleColor> &shooterColors);
 
+            void fillInitialGrid(const std::vector<classes::BubbleColor> &pallete, int rowsToFill);
+
             /// Get flat-top hex neighbour coords (axial coordinates).
             [[nodiscard]] std::vector<utils::HexCoord> neighbours(utils::HexCoord pos) const;
 

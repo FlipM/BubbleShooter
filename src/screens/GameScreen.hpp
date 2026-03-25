@@ -47,6 +47,7 @@ namespace screens
 
             // ── Game values ────────────────────────────────────────────────────────
             int m_shootcount{0};
+            float nonShootTime{0.f}; // Time elapsed since last shot, for rapid-fire levels.
 
             // ── State ──────────────────────────────────────────────────────────────
             bool m_paused{false};

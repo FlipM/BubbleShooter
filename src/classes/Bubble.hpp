@@ -21,7 +21,8 @@ namespace classes
         Green,
         Blue,
         Purple,
-        COUNT ///< Sentinel — number of colours.
+        COUNT, ///< Sentinel — number of colours.
+        Gray // Special color for bubbles that do not pop
     };
 
     /// Maps BubbleColor to an RGB triplet for rendering.
