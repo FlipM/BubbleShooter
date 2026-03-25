@@ -8,6 +8,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace core 
 {
@@ -74,6 +75,7 @@ namespace core
 
             /// Draw a UTF-8 text string at (x,y).  Stub — requires SDL2_ttf.
             void drawText(const std::string &text, int x, int y, UI::Color color);
+            void drawTextVector(const std::vector<std::string> &lines, int x, int y, UI::Color color, int lineSpacing);
 
             // ── UI elements ───────────────────────────────────────────────────────
             /// Draw a button with optional hover effect.

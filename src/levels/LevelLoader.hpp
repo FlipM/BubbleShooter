@@ -19,6 +19,10 @@ namespace levels
             bool exceededShootLimit(int shootCount) const;
             bool exceededShootingTime(float &elapsedTime) const;
             bool changeColor() const;
+            
+            std::string getStageName(Stage stg) const;
+            std::vector<std::string> getStageDescription(Stage stg) const;
+
             std::unique_ptr<levels::Level> selectStage(Stage stg);
             std::vector<classes::BubbleColor> getStagePalette();
 

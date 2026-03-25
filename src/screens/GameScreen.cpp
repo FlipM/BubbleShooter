@@ -233,13 +233,13 @@ namespace screens
     void GameScreen::drawBackground(core::Renderer &renderer) const 
     {
         renderer.drawRect(m_viewport.x, m_viewport.y, m_viewport.w, m_viewport.h,
-                         core::UI::Color(20, 20, 40, 255));
+                         core::UI::GAME_BACKGROUND);
     }
 
     void GameScreen::drawBorders(core::Renderer &renderer) const 
     {
         renderer.drawRectOutline(m_viewport.x, m_viewport.y, m_viewport.w, m_viewport.h,
-                                core::UI::Color(80, 80, 130, 255));
+                                core::UI::GAME_BORDER);
     }
 
 } // namespace screens

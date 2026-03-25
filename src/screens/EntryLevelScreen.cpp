@@ -30,7 +30,16 @@ namespace screens {
     {
         // Dark overlay.
         renderer.drawRect(m_viewport.x, m_viewport.y, m_viewport.w, m_viewport.h,
-                         core::UI::Color(10, 5, 25, 240));
+                         core::UI::ENTRY_LEVEL_BACKGROUND);
+
+        // Stage name.
+        std::string stageName = m_levelLoader.getStageName(m_initStage);
+        renderer.drawPlate(m_viewport.x + 50, m_viewport.y + 50, m_viewport.w - 100, 100, stageName,
+                          core::UI::LIGHT_BLUE,core::UI::WHITE_COLOR);
+
+        renderer.drawTextVector(m_levelLoader.getStageDescription(m_initStage),
+                            m_viewport.x + 50, m_viewport.y + 300,
+                            core::UI::WHITE_COLOR, 25);
     }
 
 } // namespace screens

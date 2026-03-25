@@ -87,6 +87,14 @@ namespace core {
         SDL_RenderDrawLine(m_renderer.get(), x1, y1, x2, y2);
     }
 
+    void Renderer::drawTextVector(const std::vector<std::string> &lines, int x, int y, UI::Color color, int lineSpacing) 
+    {
+        for (size_t i = 0; i < lines.size(); ++i) 
+        {
+            drawText(lines[i], x, y + static_cast<int>(i * lineSpacing), color);
+        }
+    }
+
     void Renderer::drawText(const std::string &text, int x, int y, UI::Color color) 
     {
         if (text.empty()) return;

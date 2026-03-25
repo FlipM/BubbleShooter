@@ -56,8 +56,8 @@ namespace screens
     {
         // Gradient simulation: vertical dark-blue to slightly lighter.
         renderer.drawGradientBar(m_viewport.x, m_viewport.y, m_viewport.w, m_viewport.h,
-                                core::UI::Color(10, 10, 40, 255),
-                                core::UI::Color(30, 40, 80, 255),
+                                core::UI::DARKEST_BLUE,
+                                core::UI::DARK_BLUE,
                                 true);
     }
 
@@ -68,15 +68,15 @@ namespace screens
         renderer.drawPlate(m_viewport.x + m_viewport.w / 4,
                             m_viewport.y + m_viewport.h / 4, m_viewport.w / 2, 40,
                             "BUBBLE SHOOTER",
-                            core::UI::Color(80, 200, 255, 200));
+                            core::UI::LIGHT_BLUE);
     }
 
     void HomeScreen::drawButton(core::Renderer &renderer, const core::UI::Button &btn) const 
     {
         renderer.drawButton(btn,
-                           core::UI::Color(50, 110, 200, 255),  // fill
-                           core::UI::Color(200, 230, 255, 255), // outline
-                           core::UI::Color(100, 180, 255, 255)); // hover
+                           core::UI::BLUE,  // fill
+                           core::UI::LIGHTEST_BLUE, // outline
+                           core::UI::LIGHT_BLUE); // hover
     }
 
 } // namespace screens

@@ -69,8 +69,56 @@ namespace levels
         }
     }
 
+    std::string LevelLoader::getStageName(Stage stg) const
+    {
+        switch(stg)
+        {
+            case levels::Stage::LEARNING_1:
+                return "Learning";
+                
+            case levels::Stage::CASCADE_2:
+                return "Cascade";
+                
+            case levels::Stage::RAPIDFIRE_3:
+                return "Rapidfire";
+                
+            case levels::Stage::COLORBLIND_4:
+                return "Colorblind";
+
+            default:
+            case levels::Stage::COUNT:
+                std::clog << "[LevelLoader] invalid stage for name\n";
+                return "Unknown Stage";
+        }
+    }
+
+    std::vector<std::string> LevelLoader::getStageDescription(Stage stg) const
+    {
+        switch(stg)
+        {
+            case levels::Stage::LEARNING_1:
+                return {"Left-click to shoot bubbles.", "Match 3 or more to pop them."};
+                
+            case levels::Stage::CASCADE_2:
+                return {"Gray bubbles do not pop,", "but they fall without support!"};
+                
+            case levels::Stage::RAPIDFIRE_3:
+                return {"Be quick!"};
+                
+            case levels::Stage::COLORBLIND_4:
+                return {"Do not trust the colors!"};
+
+            default:
+            case levels::Stage::COUNT:
+                std::clog << "[LevelLoader] invalid stage for description\n";
+                return {"No description available."};
+        }
+    }
+
     std::vector<classes::BubbleColor> LevelLoader::getStagePalette()
     {
         return m_currentLevel->getPalette();   
     }
+
+
 }

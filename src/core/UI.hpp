@@ -23,7 +23,22 @@ namespace core
                 : r(r_), g(g_), b(b_), a(a_) {}
         };
 
+        
+        // ── General Colors ──────────────────────────────────────────────────────────
+
         const core::UI::Color WHITE_COLOR  = core::UI::Color(255, 255, 255, 255);
+        const core::UI::Color LIGHTEST_BLUE  = core::UI::Color(200, 230, 255, 255);
+        const core::UI::Color LIGHT_BLUE  = core::UI::Color(100, 180, 255, 255);
+        const core::UI::Color BLUE  = core::UI::Color(50, 110, 200, 255);
+        const core::UI::Color DARKEST_BLUE  = core::UI::Color(10, 10, 40, 255);
+        const core::UI::Color DARK_BLUE  = core::UI::Color(30, 40, 80, 255);
+
+        // ── Specific Colors ─────────────────────────────────────────────────────────
+
+        const core::UI::Color GAME_BACKGROUND  = core::UI::Color(20, 20, 40, 255);
+        const core::UI::Color GAME_BORDER  = core::UI::Color(80, 80, 130, 255);
+        const core::UI::Color ENTRY_LEVEL_BACKGROUND  = core::UI::Color(10, 5, 25, 240);
+
 
 
         /// UI Button: rectangular clickable region with label and hover state.
