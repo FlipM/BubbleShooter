@@ -2,6 +2,7 @@
 #include "LearningLevel.hpp"
 #include "CascadeLevel.hpp"
 #include "RapidfireLevel.hpp"
+#include "ColorblindLevel.hpp"
 
 namespace levels 
 {
@@ -39,6 +40,12 @@ namespace levels
         return false;
     }
 
+    bool LevelLoader::changeColor() const
+    {
+        // Only Rapidfire level changes colors.
+        return m_currentLevel && m_currentLevel->changeColorAtLanding();
+    }
+
     std::unique_ptr<Level> LevelLoader::selectStage(Stage stg)
     {
         switch(stg)
@@ -51,6 +58,9 @@ namespace levels
                 
             case levels::Stage::RAPIDFIRE_3:
                 return std::make_unique<levels::RapidfireLevel>();
+                
+            case levels::Stage::COLORBLIND_4:
+                return std::make_unique<levels::ColorblindLevel>();
 
             default:
             case levels::Stage::COUNT:

@@ -6,12 +6,12 @@
 
 namespace levels 
 {
-    class RapidfireLevel final : public Level
+    class ColorblindLevel final : public Level
     {
         const int rowsToFill = 6;
 
         public:
-            RapidfireLevel()
+            ColorblindLevel()
             {
                 //All colors
                 for(classes::BubbleColor color = classes::BubbleColor::Red; color < classes::BubbleColor::COUNT;)
@@ -24,16 +24,12 @@ namespace levels
             void fillInitialGrid(classes::BubbleGrid &grid) override;
             bool isCleared(classes::BubbleGrid &grid) override;
             int shootLimit() const override;
-            bool exceededShootingTime(float &elapsedTime) const override;
+            bool changeColorAtLanding() const override { return true; }
             std::vector<classes::BubbleColor> getPalette() override;
 
 
         private:
-            const int m_shootLimit{20};
-            const float timeLimit{1.f};
-
-            
-
+            const int m_shootLimit{15};
 
     };
 

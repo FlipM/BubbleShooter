@@ -194,6 +194,15 @@ namespace screens
             }
             // TODO: pop animation, sound, combo multiplier.
         }
+        else
+        {
+            if(m_levelLoader.changeColor())
+            {
+                auto src = m_grid.at(coord);
+                src->setColor(m_shooter.randomColor());
+            }
+        }
+
     }
 
     bool GameScreen::checkGameOver() 

@@ -18,6 +18,7 @@ namespace levels
             bool isStageCleared(Stage stg, classes::BubbleGrid &grid);
             bool exceededShootLimit(int shootCount) const;
             bool exceededShootingTime(float &elapsedTime) const;
+            bool changeColor() const;
             std::unique_ptr<levels::Level> selectStage(Stage stg);
             std::vector<classes::BubbleColor> getStagePalette();
 

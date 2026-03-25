@@ -12,6 +12,7 @@ namespace levels
         LEARNING_1,
         CASCADE_2,
         RAPIDFIRE_3,
+        COLORBLIND_4,
         COUNT
     };
     
@@ -23,6 +24,7 @@ namespace levels
             virtual bool isCleared(classes::BubbleGrid &grid) = 0;
             virtual int shootLimit() const = 0;
             virtual bool exceededShootingTime(float &elapsedTime) const { return false; }
+            virtual bool changeColorAtLanding() const { return false; }
             virtual std::vector<classes::BubbleColor> getPalette() = 0;
 
              // Non-copyable.
