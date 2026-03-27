@@ -15,7 +15,7 @@ namespace screens
         public:
             using Callback = std::function<void()>;
 
-            EntryLevelScreen(Callback onPlay, levels::Stage initStage, SDL_Rect viewport);
+            EntryLevelScreen(Callback onPlay, levels::GameData &gameData, SDL_Rect viewport);
 
             void handleEvent(const SDL_Event &event,
                             const core::InputHandler &input) override;
@@ -24,7 +24,7 @@ namespace screens
 
         private:
             Callback m_onPlay;
-            levels::Stage m_initStage;
+            levels::GameData &m_gd;
             SDL_Rect m_viewport;
             levels::LevelLoader m_levelLoader;
             

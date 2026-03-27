@@ -4,7 +4,8 @@
 
 #include "core/InputHandler.hpp"
 
-namespace core {
+namespace core 
+{
     class Renderer;
 }
 

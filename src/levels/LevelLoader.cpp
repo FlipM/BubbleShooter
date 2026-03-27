@@ -6,14 +6,13 @@
 
 namespace levels 
 {
-    void LevelLoader::loadLevel(levels::Stage stg, classes::BubbleGrid &grid)
+    void LevelLoader::loadLevel( classes::BubbleGrid &grid)
     {
-        m_currentLevel = this->selectStage(stg);
         if(m_currentLevel)
             m_currentLevel->fillInitialGrid(grid);
     }
 
-    bool LevelLoader::isStageCleared(levels::Stage stg, classes::BubbleGrid &grid)
+    bool LevelLoader::isStageCleared(classes::BubbleGrid &grid)
     {
         if(m_currentLevel)
             return m_currentLevel->isCleared(grid);

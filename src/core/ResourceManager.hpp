@@ -7,8 +7,8 @@
 #include <string>
 #include <unordered_map>
 
-namespace core {
-
+namespace core 
+{
     struct TextureDeleter 
     {
         void operator()(SDL_Texture *t) const noexcept { SDL_DestroyTexture(t); }

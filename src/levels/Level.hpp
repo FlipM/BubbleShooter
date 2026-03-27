@@ -1,12 +1,12 @@
 #pragma once
 
 #include "classes/BubbleGrid.hpp"
+#include "classes/Score.hpp"
 #include <memory>
 #include <string>
 
 namespace levels 
 {
-
     enum class Stage
     {
         LEARNING_1,
@@ -14,6 +14,12 @@ namespace levels
         RAPIDFIRE_3,
         COLORBLIND_4,
         COUNT
+    };
+
+    struct GameData
+    {
+        classes::Score score;
+        Stage currentStage{Stage::LEARNING_1};
     };
     
     class Level

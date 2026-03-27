@@ -14,21 +14,19 @@ namespace screens
         constexpr int   ORIGIN_OFFSET_X = 2; // pixels from viewport edge to grid start
     } // namespace
 
-    GameScreen::GameScreen(Callback onGameOver, Callback onAdvanceStage, levels::Stage stage, SDL_Rect viewport)
+    GameScreen::GameScreen(Callback onGameOver, Callback onAdvanceStage, levels::GameData &gameData, SDL_Rect viewport)
         :   m_onGameOver(std::move(onGameOver)), 
             m_onAdvanceStage(std::move(onAdvanceStage)),
-            m_currentStage(stage),
+            m_gd(gameData),
             m_viewport(viewport),
             m_grid(GRID_COLS, GRID_ROWS, utils::HEX_SIZE,  {static_cast<float>(viewport.x + ORIGIN_OFFSET_X), 
                     static_cast<float>(viewport.y + utils::ROOF_HEIGHT + 2)}),
             m_shooter({static_cast<float>(viewport.x + viewport.w / 2), static_cast<float>(viewport.y + viewport.h - 70)}),
             m_roof(viewport.x, viewport.y, viewport.w, utils::ROOF_HEIGHT),
-            m_levelLoader(stage)
+            m_levelLoader(gameData.currentStage)
     {
-        // TODO: populate initial grid with random bubbles.
-        std::clog << "[GameScreen] constructed, viewport " << viewport.w << 'x'
-                    << viewport.h << '\n';
-        m_levelLoader.loadLevel(m_currentStage, m_grid);
+        std::clog << "[GameScreen] constructed, viewport " << viewport.w << 'x' << viewport.h << '\n';
+        m_levelLoader.loadLevel(m_grid);
         m_shooter.initiate(m_levelLoader.getStagePalette());
         
     }
@@ -100,10 +98,10 @@ namespace screens
         m_shooter.draw(renderer);
         if (m_flyingBubble)
             m_flyingBubble->draw(renderer);
-        m_score.draw(renderer, m_viewport.x, m_viewport.y);
+        m_gd.score.draw(renderer, m_viewport.x, m_viewport.y, m_viewport.w);
     }
 
-    int GameScreen::finalScore() const noexcept { return m_score.current(); }
+    int GameScreen::finalScore() const noexcept { return m_gd.score.current(); }
 
     void GameScreen::handleShoot() 
     {
@@ -179,7 +177,7 @@ namespace screens
 
         if (matched.size() >= 3) 
         {
-            m_score.addPoints(static_cast<int>(matched.size()) * 10);
+            m_gd.score.addPoints(static_cast<int>(matched.size()) * 10);
             for (auto &c : matched) 
             {
                 // Needs to be sure that the bubble is still there and active before popping
@@ -223,7 +221,7 @@ namespace screens
 
     void GameScreen::checkNextLevel() 
     {  
-        if (m_levelLoader.isStageCleared(m_currentStage, m_grid)) 
+        if (m_levelLoader.isStageCleared(m_grid)) 
         {
             std::clog << "[GameScreen] stage cleared, advancing\n";
             m_onAdvanceStage();

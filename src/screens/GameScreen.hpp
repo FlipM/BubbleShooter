@@ -23,7 +23,7 @@ namespace screens
             /// @param onGameOver  Called when a game-over condition is met.
             /// @param advanceStage Called when the stage should be advanced.
             /// @param viewport    Pixel rect of the game area (portrait, centred).
-            GameScreen(Callback onGameOver, Callback onAdvanceStage, levels::Stage stage, SDL_Rect viewport);
+            GameScreen(Callback onGameOver, Callback onAdvanceStage, levels::GameData &gameData, SDL_Rect viewport);
 
             void handleEvent(const SDL_Event &event, const core::InputHandler &input) override;
             void update(float deltaSeconds) override;
@@ -40,9 +40,8 @@ namespace screens
             classes::BubbleGrid m_grid;
             classes::Shooter m_shooter;
             classes::Roof m_roof;
-            classes::Score m_score;
-            levels::LevelLoader m_levelLoader;
-            levels::Stage m_currentStage;
+            levels::LevelLoader m_levelLoader;            
+            levels::GameData &m_gd;
             std::unique_ptr<classes::Bubble> m_flyingBubble; 
 
             // ── Game values ────────────────────────────────────────────────────────

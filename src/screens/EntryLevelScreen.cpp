@@ -3,9 +3,9 @@
 
 namespace screens {
 
-    EntryLevelScreen::EntryLevelScreen(Callback onPlay, levels::Stage initStage, SDL_Rect viewport)
+    EntryLevelScreen::EntryLevelScreen(Callback onPlay, levels::GameData &gameData, SDL_Rect viewport)
         :   m_onPlay(std::move(onPlay)),
-            m_initStage(initStage),
+            m_gd(gameData),
             m_viewport(viewport)
     {
         timer = 0.f;
@@ -33,11 +33,11 @@ namespace screens {
                          core::UI::ENTRY_LEVEL_BACKGROUND);
 
         // Stage name.
-        std::string stageName = m_levelLoader.getStageName(m_initStage);
+        std::string stageName = m_levelLoader.getStageName(m_gd.currentStage);
         renderer.drawPlate(m_viewport.x + 50, m_viewport.y + 50, m_viewport.w - 100, 100, stageName,
                           core::UI::LIGHT_BLUE,core::UI::WHITE_COLOR);
 
-        renderer.drawTextVector(m_levelLoader.getStageDescription(m_initStage),
+        renderer.drawTextVector(m_levelLoader.getStageDescription(m_gd.currentStage),
                             m_viewport.x + 50, m_viewport.y + 300,
                             core::UI::WHITE_COLOR, 25);
     }

@@ -5,8 +5,7 @@
 namespace core 
 {
 
-    ResourceManager::ResourceManager(SDL_Renderer *renderer)
-        : m_renderer(renderer) {}
+    ResourceManager::ResourceManager(SDL_Renderer *renderer) : m_renderer(renderer) {}
 
     TexturePtr ResourceManager::getTexture(const std::string &id,
                                 const std::string &filePath) 

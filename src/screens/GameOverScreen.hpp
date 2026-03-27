@@ -3,6 +3,7 @@
 
 #include "Screen.hpp"
 #include "core/UI.hpp"
+#include "levels/LevelLoader.hpp"
 #include <functional>
 
 namespace screens {
@@ -12,7 +13,7 @@ namespace screens {
         public:
             using Callback = std::function<void()>;
 
-            GameOverScreen(int finalScore, Callback onRetry, Callback onHome, SDL_Rect viewport);
+            GameOverScreen(Callback onRetry, Callback onHome, levels::GameData &gd, SDL_Rect viewport);
 
             void handleEvent(const SDL_Event &event,
                             const core::InputHandler &input) override;
@@ -20,10 +21,10 @@ namespace screens {
             void render(core::Renderer &renderer) override;
 
         private:
-            int m_finalScore;
             Callback m_onRetry;
             Callback m_onHome;
             SDL_Rect m_viewport;
+            levels::GameData &m_gd;
             core::UI::Button m_retryBtn;
             core::UI::Button m_homeBtn;
     };

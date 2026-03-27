@@ -40,10 +40,10 @@ void Game::run()
     }
 }
 
-void Game::changeState(GameState newState, int scoreForGameOver) 
+void Game::changeState(GameState newState) 
 {
     m_state = newState;
-    m_currentScreen = makeScreen(newState, scoreForGameOver);
+    m_currentScreen = makeScreen(newState);
 }
 
 // ── private ──────────────────────────────────────────────────────────────────
@@ -89,8 +89,7 @@ void Game::calcDelta()
         m_deltaSeconds = 0.05f;
 }
 
-std::unique_ptr<screens::Screen> Game::makeScreen(GameState state,
-                                                  int scoreForGameOver) 
+std::unique_ptr<screens::Screen> Game::makeScreen(GameState state) 
 {
     const SDL_Rect vp = viewportRect();
 
@@ -103,7 +102,7 @@ std::unique_ptr<screens::Screen> Game::makeScreen(GameState state,
 
         case GameState::ENTRY_LEVEL:
             return std::make_unique<screens::EntryLevelScreen>(
-                [this] { changeState(GameState::PLAYING); }, m_currentStage, vp);
+                [this] { changeState(GameState::PLAYING); }, m_gameData, vp);
 
         case GameState::OPTIONS:
             return std::make_unique<screens::OptionsScreen>(
@@ -111,22 +110,18 @@ std::unique_ptr<screens::Screen> Game::makeScreen(GameState state,
 
         case GameState::PLAYING: 
         {
-            // GameScreen calls back with the score when game is over.
-            // We capture 'this' safely — screen lifetime is owned by this Game.
-            auto *gs = new screens::GameScreen(
-                [this] { changeState(GameState::GAME_OVER, 0); },
+            return std::make_unique<screens::GameScreen>(
+                [this] { gameOver(); },
                 [this] { advanceStage(); },
-                m_currentStage,
+                m_gameData,
                 vp);
-            return std::unique_ptr<screens::GameScreen>(gs);
         }
 
         case GameState::GAME_OVER:
             return std::make_unique<screens::GameOverScreen>(
-                scoreForGameOver, 
                 [this] { changeState(GameState::PLAYING); },
                 [this] { changeState(GameState::HOME); },
-                //[this] { resetStage(); },
+                m_gameData,
                 vp);
 
         case GameState::GAME_ENDING:
@@ -138,17 +133,24 @@ std::unique_ptr<screens::Screen> Game::makeScreen(GameState state,
 
 void Game::advanceStage()
 {
-    m_currentStage = static_cast<levels::Stage>(static_cast<int>(m_currentStage) + 1);
+    m_gameData.currentStage = static_cast<levels::Stage>(static_cast<int>(m_gameData.currentStage) + 1);
 
-    if(m_currentStage >= levels::Stage::COUNT)
+    if(m_gameData.currentStage >= levels::Stage::COUNT)
     {
-        m_currentStage = levels::Stage::LEARNING_1;
+        m_gameData.currentStage = levels::Stage::LEARNING_1;
         changeState(GameState::GAME_ENDING);
     }
     else
         changeState(GameState::ENTRY_LEVEL); 
     
     return;
+}
+
+void Game::gameOver()
+{
+    m_gameData.score.reset();
+    m_gameData.currentStage = levels::Stage::LEARNING_1;
+    changeState(GameState::GAME_OVER);
 }
 
 SDL_Rect Game::viewportRect() const noexcept 

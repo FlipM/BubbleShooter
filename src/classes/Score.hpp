@@ -2,14 +2,18 @@
 // Tracks current and high score during gameplay.
 #pragma once
 
-namespace core {
+#include <format>
+
+namespace core 
+{
     class Renderer;
 }
 
-namespace classes {
-
+namespace classes 
+{
     class Score 
     {
+        const int HIGHSCORE_WIDTH = 200;
         public:
             Score() = default;
 
@@ -20,7 +24,7 @@ namespace classes {
             [[nodiscard]] int highScore() const noexcept { return m_high; }
 
             /// Draw score overlay at top of game viewport.
-            void draw(core::Renderer &renderer, int viewX, int viewY) const;
+            void draw(core::Renderer &renderer, int viewX, int viewY, int viewWidth) const;
 
         private:
             int m_current{0};

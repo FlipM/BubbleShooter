@@ -20,12 +20,13 @@ namespace classes
 
     void Score::reset() { m_current = 0; }
 
-    void Score::draw(core::Renderer &renderer, int viewX, int viewY) const 
+    void Score::draw(core::Renderer &renderer, int viewX, int viewY, int viewWidth) const 
     {
-        // TODO: render score text using SDL2_ttf once ResourceManager font is ready.
-        // Placeholder: draw a small rectangle indicator at top of viewport.
-        renderer.drawRect(viewX + 4, viewY + 4, m_current / 10 + 10, 8,
-                         core::UI::Color(200, 200, 60, 200));
+        // Place the current score at the top-left, and the high score at the top-right of the game viewport.
+        std::string scoreText = "Score: " + std::format("{:10d}", m_current);
+        std::string highScoreText = "High Score: " + std::format("{:10d}", m_high);
+        renderer.drawText(scoreText, viewX + 4, viewY + 4, core::UI::WHITE_COLOR);
+        renderer.drawText(highScoreText, viewX + viewWidth - classes::Score::HIGHSCORE_WIDTH, viewY + 4, core::UI::WHITE_COLOR);
     }
 
 } // namespace classes

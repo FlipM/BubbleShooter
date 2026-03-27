@@ -36,9 +36,11 @@ class Game
         void run();
 
         /// Transition to a new game state, constructing the appropriate Screen.
-        void changeState(GameState newState, int scoreForGameOver = 0);
+        void changeState(GameState newState);
+        void gameOver();
         void advanceStage();
-        void resetStage() { m_currentStage = levels::Stage::LEARNING_1; }
+        void resetStage() { m_gameData.currentStage = levels::Stage::LEARNING_1; }
+        
 
 
     private:
@@ -46,10 +48,10 @@ class Game
         core::InputHandler m_input;
         core::Settings m_settings;
         core::ResourceManager m_resources;
+        levels::GameData m_gameData;
 
         std::unique_ptr<screens::Screen> m_currentScreen;
         GameState m_state{GameState::HOME};
-        levels::Stage m_currentStage{levels::Stage::LEARNING_1};
         bool m_running{true};
 
         // ── Frame timing ──────────────────────────────────────────────────────
@@ -63,7 +65,7 @@ class Game
 
         /// Build the screen object matching `state`.
         [[nodiscard]] std::unique_ptr<screens::Screen>
-        makeScreen(GameState state, int scoreForGameOver = 0);
+        makeScreen(GameState state);
 
         [[nodiscard]] SDL_Rect viewportRect() const noexcept;
 };

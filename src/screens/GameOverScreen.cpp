@@ -2,12 +2,13 @@
 #include "GameOverScreen.hpp"
 #include "core/Renderer.hpp"
 
-namespace screens {
+namespace screens 
+{
 
-    GameOverScreen::GameOverScreen(int finalScore, Callback onRetry, Callback onHome, SDL_Rect viewport)
-        :   m_finalScore(finalScore), 
+    GameOverScreen::GameOverScreen(Callback onRetry, Callback onHome, levels::GameData &gd, SDL_Rect viewport) :
             m_onRetry(std::move(onRetry)),
-            m_onHome(std::move(onHome)), 
+            m_onHome(std::move(onHome)),
+            m_gd(gd),
             m_viewport(viewport) 
     {
         const int cx = viewport.x + viewport.w / 2;
@@ -53,7 +54,7 @@ namespace screens {
 
         // Score placeholder bar (width encodes score value).
         renderer.drawRect(m_viewport.x + m_viewport.w / 4,
-                         m_viewport.y + m_viewport.h / 4 + 60, m_finalScore / 5 + 20, 20,
+                         m_viewport.y + m_viewport.h / 4 + 60, m_gd.score.highScore() / 5 + 20, 20,
                          core::UI::Color(200, 200, 60, 200));
 
         // Buttons.

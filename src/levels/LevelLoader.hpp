@@ -14,8 +14,8 @@ namespace levels
             LevelLoader(levels::Stage stg = levels::Stage::LEARNING_1) : m_currentLevel(selectStage(stg)) {};
             ~LevelLoader() = default;
 
-            void loadLevel(Stage stg, classes::BubbleGrid &grid);
-            bool isStageCleared(Stage stg, classes::BubbleGrid &grid);
+            void loadLevel(classes::BubbleGrid &grid);
+            bool isStageCleared(classes::BubbleGrid &grid);
             bool exceededShootLimit(int shootCount) const;
             bool exceededShootingTime(float &elapsedTime) const;
             bool changeColor() const;
