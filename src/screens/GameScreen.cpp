@@ -193,6 +193,8 @@ namespace screens
                     b->pop();
                 }
             }
+            std::clog << "[Bubble] popped" << matched.size() << " bubbles — color " << static_cast<int>(savedColor) << '\n';
+
             m_grid.dropFloating();
         
             

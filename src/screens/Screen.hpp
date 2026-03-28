@@ -17,8 +17,7 @@ namespace screens
             virtual ~Screen() = default;
 
             /// Process one SDL event (called once per event per frame).
-            virtual void handleEvent(const SDL_Event &event,
-                                    const core::InputHandler &input) = 0;
+            virtual void handleEvent(const SDL_Event &event, const core::InputHandler &input) = 0;
 
             /// Update game logic for this frame.
             virtual void update(float deltaSeconds) = 0;

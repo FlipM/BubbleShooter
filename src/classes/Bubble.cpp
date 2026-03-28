@@ -43,9 +43,7 @@ namespace classes
 
     void Bubble::pop() 
     {
-        // TODO: trigger pop animation (shrink + fade), then set m_active = false.
         m_active = false;
-        std::clog << "[Bubble] pop() — color " << static_cast<int>(m_color) << '\n';
     }
 
     bool Bubble::matches(const BubbleColor &color) const noexcept 

@@ -42,6 +42,13 @@ namespace core
         const core::UI::Color SETTINGS_ON = core::UI::Color(80, 220, 80, 255);
         const core::UI::Color SETTINGS_OFF = core::UI::Color(80, 80, 80, 255);
 
+        // ── UI Elements ─────────────────────────────────────────────────────────────
+
+        constexpr int   PLATE_DEFAULT_HEIGHT    = 100;
+        constexpr float PLATE_WIDTH_DISP        = 0.1f;
+        constexpr float PLATE_HEIGHT_DISP       = 0.1f;
+        constexpr float PLATE_WIDTH             = 0.8f;
+
 
 
         /// UI Button: rectangular clickable region with label and hover state.

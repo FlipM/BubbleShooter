@@ -1,7 +1,8 @@
 #include "EntryLevelScreen.hpp"
 #include "core/Renderer.hpp"
 
-namespace screens {
+namespace screens 
+{
 
     EntryLevelScreen::EntryLevelScreen(Callback onPlay, levels::GameData &gameData, SDL_Rect viewport)
         :   m_onPlay(std::move(onPlay)),
@@ -30,18 +31,25 @@ namespace screens {
 
     void EntryLevelScreen::render(core::Renderer &renderer) 
     {
+        int mx = m_viewport.x;
+        int my = m_viewport.y;
+        int mw = m_viewport.w;
+        int mh = m_viewport.h;
+
         // Dark overlay.
-        renderer.drawRect(m_viewport.x, m_viewport.y, m_viewport.w, m_viewport.h,
-                         core::UI::ENTRY_LEVEL_BACKGROUND);
+        renderer.drawRect(mx, my, mw, mh, core::UI::ENTRY_LEVEL_BACKGROUND);
 
         // Stage name.
         std::string stageName = m_levelLoader.getStageName(m_gd.currentStage);
-        renderer.drawPlate(m_viewport.x + 50, m_viewport.y + 50, m_viewport.w - 100, 100, stageName,
-                          core::UI::LIGHT_BLUE,core::UI::WHITE_COLOR);
+        renderer.drawPlate(mx + mw * core::UI::PLATE_WIDTH_DISP, 
+            my + mh * core::UI::PLATE_HEIGHT_DISP, 
+            mw * core::UI::PLATE_WIDTH, 
+            core::UI::PLATE_DEFAULT_HEIGHT, stageName, core::UI::LIGHT_BLUE,core::UI::WHITE_COLOR);
 
         renderer.drawTextVector(m_levelLoader.getStageDescription(m_gd.currentStage),
-                            m_viewport.x + 50, m_viewport.y + 300,
-                            core::UI::WHITE_COLOR, 25);
+            mx + mw * core::UI::PLATE_WIDTH_DISP, 
+            my + (mh * core::UI::PLATE_HEIGHT_DISP * 3),
+            core::UI::WHITE_COLOR, 25);
     }
 
 } // namespace screens

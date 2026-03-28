@@ -27,9 +27,30 @@ namespace screens {
 
     void EndingScreen::render(core::Renderer &renderer) 
     {
+        int mx = m_viewport.x;
+        int my = m_viewport.y;
+        int mw = m_viewport.w;
+        int mh = m_viewport.h;
         // Dark overlay.
-        renderer.drawRect(m_viewport.x, m_viewport.y, m_viewport.w, m_viewport.h,
-                         core::UI::Color(10, 5, 25, 240));
+        renderer.drawRect(mx, my, mw, mh, core::UI::DARKEST_BLUE);
+
+        renderer.drawPlate(mx + mw * core::UI::PLATE_WIDTH_DISP, 
+            my + mh * core::UI::PLATE_HEIGHT_DISP,   
+            mw * core::UI::PLATE_WIDTH, 
+            core::UI::PLATE_DEFAULT_HEIGHT, 
+            "CONGRATULATIONS!", core::UI::RED);
+
+        const std::vector<std::string> finalMessages = 
+        {
+            "Thank you for playing!",
+            "I hope you enjoyed as much as",
+            "I enjoyed making it."  
+        };
+
+        renderer.drawTextVector(finalMessages, 
+            mx + mw * core::UI::PLATE_WIDTH_DISP,
+            my + (mh * core::UI::PLATE_HEIGHT_DISP * 3), 
+            core::UI::LIGHT_BLUE, 24);
     }
 
 } // namespace screens

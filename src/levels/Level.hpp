@@ -10,10 +10,10 @@ namespace levels
     enum class Stage
     {
         LEARNING_1,
+        COUNT,
         CASCADE_2,
         RAPIDFIRE_3,
         COLORBLIND_4,
-        COUNT
     };
 
     struct GameData

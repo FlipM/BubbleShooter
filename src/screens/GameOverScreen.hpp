@@ -25,8 +25,8 @@ namespace screens {
         private:
             Callback m_onRetry;
             Callback m_onHome;
-            SDL_Rect m_viewport;
             levels::GameData &m_gd;
+            SDL_Rect m_viewport;
             core::UI::Button m_retryBtn;
             core::UI::Button m_homeBtn;
     };
