@@ -14,10 +14,12 @@ namespace screens
         constexpr int   ORIGIN_OFFSET_X = 2; // pixels from viewport edge to grid start
     } // namespace
 
-    GameScreen::GameScreen(Callback onGameOver, Callback onAdvanceStage, levels::GameData &gameData, SDL_Rect viewport)
+    GameScreen::GameScreen(Callback onGameOver, Callback onAdvanceStage, levels::GameData &gameData, 
+                           core::Renderer &renderer, SDL_Rect viewport)
         :   m_onGameOver(std::move(onGameOver)), 
             m_onAdvanceStage(std::move(onAdvanceStage)),
             m_gd(gameData),
+            m_renderer(&renderer),
             m_viewport(viewport),
             m_grid(GRID_COLS, GRID_ROWS, utils::HEX_SIZE,  {static_cast<float>(viewport.x + ORIGIN_OFFSET_X), 
                     static_cast<float>(viewport.y + utils::ROOF_HEIGHT + 2)}),
@@ -28,7 +30,6 @@ namespace screens
         std::clog << "[GameScreen] constructed, viewport " << viewport.w << 'x' << viewport.h << '\n';
         m_levelLoader.loadLevel(m_grid);
         m_shooter.initiate(m_levelLoader.getStagePalette());
-        
     }
 
     void GameScreen::handleEvent(const SDL_Event &event,
@@ -57,9 +58,14 @@ namespace screens
         if (m_paused)
             return;
 
+        if (!m_renderer)
+            return;  // Renderer not yet initialized
+
         int mx, my;
         SDL_GetMouseState(&mx, &my);
-        m_shooter.aimAt({static_cast<float>(mx), static_cast<float>(my)});
+        float logicalX, logicalY;
+        SDL_RenderWindowToLogical(m_renderer->raw(), mx, my, &logicalX, &logicalY);
+        m_shooter.aimAt({static_cast<float>(logicalX), static_cast<float>(logicalY)});
 
         // Move flying bubble.
         if (m_flyingBubble) 

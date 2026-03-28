@@ -32,6 +32,7 @@ namespace core
         const core::UI::Color BLUE  = core::UI::Color(50, 110, 200, 255);
         const core::UI::Color DARKEST_BLUE  = core::UI::Color(10, 10, 40, 255);
         const core::UI::Color DARK_BLUE  = core::UI::Color(30, 40, 80, 255);
+        const core::UI::Color RED  = core::UI::Color(220, 50, 50, 255);
 
         // ── Specific Colors ─────────────────────────────────────────────────────────
 

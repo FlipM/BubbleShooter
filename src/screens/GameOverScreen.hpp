@@ -10,6 +10,8 @@ namespace screens {
 
     class GameOverScreen final : public Screen 
     {
+        const int GAME_OVER_PLATE_HEIGHT = 40;
+
         public:
             using Callback = std::function<void()>;
 

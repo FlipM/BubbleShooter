@@ -42,6 +42,8 @@ void Game::run()
 
 void Game::changeState(GameState newState) 
 {
+
+
     m_state = newState;
     m_currentScreen = makeScreen(newState);
 }
@@ -98,15 +100,20 @@ std::unique_ptr<screens::Screen> Game::makeScreen(GameState state)
         case GameState::HOME:
             return std::make_unique<screens::HomeScreen>(
                 [this] { changeState(GameState::ENTRY_LEVEL); },
-                [this] { changeState(GameState::OPTIONS); }, vp);
+                [this] { changeState(GameState::OPTIONS); }, 
+                vp);
 
         case GameState::ENTRY_LEVEL:
             return std::make_unique<screens::EntryLevelScreen>(
-                [this] { changeState(GameState::PLAYING); }, m_gameData, vp);
+                [this] { changeState(GameState::PLAYING); }, 
+                m_gameData, 
+                vp);
 
         case GameState::OPTIONS:
             return std::make_unique<screens::OptionsScreen>(
-                m_settings.get(), [this] { changeState(GameState::HOME); }, vp);
+                m_settings.get(), 
+                [this] { changeState(GameState::HOME); }, 
+                vp);
 
         case GameState::PLAYING: 
         {
@@ -114,21 +121,23 @@ std::unique_ptr<screens::Screen> Game::makeScreen(GameState state)
                 [this] { gameOver(); },
                 [this] { advanceStage(); },
                 m_gameData,
+                m_renderer,
                 vp);
         }
 
         case GameState::GAME_OVER:
             return std::make_unique<screens::GameOverScreen>(
-                [this] { changeState(GameState::PLAYING); },
+                [this] { changeState(GameState::ENTRY_LEVEL); },
                 [this] { changeState(GameState::HOME); },
                 m_gameData,
                 vp);
 
         case GameState::GAME_ENDING:
             return std::make_unique<screens::EndingScreen>(
-                [this] { changeState(GameState::HOME); }, vp);
+                [this] { changeState(GameState::HOME); }, 
+                vp);
     }
-  return nullptr; // unreachable
+    return nullptr; // unreachable
 }
 
 void Game::advanceStage()
@@ -148,7 +157,6 @@ void Game::advanceStage()
 
 void Game::gameOver()
 {
-    m_gameData.score.reset();
     m_gameData.currentStage = levels::Stage::LEARNING_1;
     changeState(GameState::GAME_OVER);
 }

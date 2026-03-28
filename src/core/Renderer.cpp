@@ -22,6 +22,7 @@ namespace core {
                                     SDL_GetError());
         }
         m_window.reset(raw_win);
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 
         SDL_Renderer *raw_ren = SDL_CreateRenderer(
             m_window.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
@@ -30,6 +31,7 @@ namespace core {
                                     SDL_GetError());
         }
         m_renderer.reset(raw_ren);
+        SDL_RenderSetLogicalSize(m_renderer.get(), windowW, windowH);
 
         recalculateViewport(windowW, windowH);
     }

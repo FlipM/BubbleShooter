@@ -9,6 +9,8 @@ namespace screens {
             m_viewport(viewport)
     {
         timer = 0.f;
+        if (m_gd.currentStage >= levels::Stage::LEARNING_1)
+            m_gd.score.reset();
     }
 
     void EntryLevelScreen::handleEvent(const SDL_Event &event,

@@ -10,6 +10,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[])
 {
     try 
     {
+        std::srand(static_cast<unsigned int>(std::time(nullptr)));
         Game game("Bubble Shooter");
         game.run();
     } 

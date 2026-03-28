@@ -43,29 +43,26 @@ namespace screens
 
     void GameOverScreen::render(core::Renderer &renderer) 
     {
+        int mx = m_viewport.x,
+            my = m_viewport.y,
+            mw = m_viewport.w,
+            mh = m_viewport.h;
         // Dark overlay.
-        renderer.drawRect(m_viewport.x, m_viewport.y, m_viewport.w, m_viewport.h,
-                         core::UI::Color(10, 5, 25, 240));
+        renderer.drawRect(mx, my, mw, mh, core::UI::ENTRY_LEVEL_BACKGROUND);
 
         // "GAME OVER" placeholder bar.
-        renderer.drawRect(m_viewport.x + m_viewport.w / 4,
-                         m_viewport.y + m_viewport.h / 4, m_viewport.w / 2, 40,
-                         core::UI::Color(220, 50, 50, 255));
+        renderer.drawPlate(mx + mw / 4,
+                         my + mh / 4, mw / 2, GAME_OVER_PLATE_HEIGHT, 
+                         "GAME OVER", core::UI::RED, core::UI::WHITE_COLOR);
 
         // Score placeholder bar (width encodes score value).
-        renderer.drawRect(m_viewport.x + m_viewport.w / 4,
-                         m_viewport.y + m_viewport.h / 4 + 60, m_gd.score.highScore() / 5 + 20, 20,
-                         core::UI::Color(200, 200, 60, 200));
+        renderer.drawText("Score: " + std::to_string(m_gd.score.current()), 
+            mx + mw / 4, my + mh / 4  + 2*GAME_OVER_PLATE_HEIGHT, core::UI::WHITE_COLOR);
+        
 
         // Buttons.
-        renderer.drawButton(m_retryBtn,
-                           core::UI::Color(60, 100, 200, 255),  // fill
-                           core::UI::Color(200, 230, 255, 255), // outline
-                           core::UI::Color(120, 180, 255, 255)); // hover
-        renderer.drawButton(m_homeBtn,
-                           core::UI::Color(60, 100, 200, 255),  // fill
-                           core::UI::Color(200, 230, 255, 255), // outline
-                           core::UI::Color(120, 180, 255, 255)); // hover
+        renderer.drawButton(m_retryBtn, core::UI::BLUE, core::UI::LIGHTEST_BLUE, core::UI::LIGHT_BLUE); 
+        renderer.drawButton(m_homeBtn,  core::UI::BLUE, core::UI::LIGHTEST_BLUE, core::UI::LIGHT_BLUE); 
     }
 
 } // namespace screens
