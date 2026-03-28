@@ -11,14 +11,16 @@ namespace screens
 {
     class OptionsScreen final : public Screen 
     {
+        const int ROW_HOR_DISPLACEMENT = 100;
+        const int ROW_WIDTH  = 200;
+        const int ROW_HEIGHT = 45;
+
         public:
             using Callback = std::function<void()>;
 
-            OptionsScreen(core::GameSettings &settings, Callback onBack,
-                            SDL_Rect viewport);
+            OptionsScreen(core::GameSettings &settings, Callback onBack, SDL_Rect viewport);
 
-            void handleEvent(const SDL_Event &event,
-                            const core::InputHandler &input) override;
+            void handleEvent(const SDL_Event &event, const core::InputHandler &input) override;
             void update(float deltaSeconds) override;
             void render(core::Renderer &renderer) override;
 
@@ -27,11 +29,8 @@ namespace screens
             Callback m_onBack;
             SDL_Rect m_viewport;
             core::UI::Button m_backBtn;
-            core::UI::Button m_soundBtn; ///< Toggles sound on/off.
+            core::UI::Button m_soundBtn; 
 
-            // TODO: sliders for brightness, volume.
-
-            void drawRow(core::Renderer &renderer, const char *label,
-                int x, int y, int w, int h, bool value) const;
+            void drawRow(core::Renderer &renderer, const core::UI::Button &btn, bool value) const;
     };
 } // namespace screens

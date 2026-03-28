@@ -39,11 +39,14 @@ namespace core
         const core::UI::Color GAME_BACKGROUND  = core::UI::Color(20, 20, 40, 255);
         const core::UI::Color GAME_BORDER  = core::UI::Color(80, 80, 130, 255);
         const core::UI::Color ENTRY_LEVEL_BACKGROUND  = core::UI::Color(10, 5, 25, 240);
+        const core::UI::Color SETTINGS_ON = core::UI::Color(80, 220, 80, 255);
+        const core::UI::Color SETTINGS_OFF = core::UI::Color(80, 80, 80, 255);
 
 
 
         /// UI Button: rectangular clickable region with label and hover state.
-        struct Button {
+        struct Button 
+        {
             int x{0}, y{0};          ///< Top-left position
             int width{0}, height{0}; ///< Size
             std::string label;       ///< Button text
@@ -54,8 +57,14 @@ namespace core
                 : x(x_), y(y_), width(w_), height(h_), label(label_) {}
 
             /// Check if point (mx, my) is inside the button.
-            [[nodiscard]] bool contains(int mx, int my) const noexcept {
+            [[nodiscard]] bool contains(int mx, int my) const noexcept 
+            {
                 return mx >= x && mx <= x + width && my >= y && my <= y + height;
+            }
+
+            void SetLabel(const std::string &newLabel) 
+            {
+                label = newLabel;
             }
         };
 
