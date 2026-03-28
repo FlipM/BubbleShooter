@@ -24,7 +24,7 @@ namespace levels
             void fillInitialGrid(classes::BubbleGrid &grid) override;
             bool isCleared(classes::BubbleGrid &grid) override;
             int shootLimit() const override;
-            bool exceededShootingTime(float &elapsedTime) const override;
+            float shootingTimeLimit() const override { return timeLimit; }
             std::vector<classes::BubbleColor> getPalette() override;
 
 

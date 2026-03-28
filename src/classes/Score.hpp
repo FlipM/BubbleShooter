@@ -14,6 +14,7 @@ namespace classes
     class Score 
     {
         const int HIGHSCORE_WIDTH = 200;
+        const int MAX_SCORE = 99999999;
         public:
             Score() = default;
 

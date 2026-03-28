@@ -17,7 +17,7 @@ namespace levels
             void loadLevel(classes::BubbleGrid &grid);
             bool isStageCleared(classes::BubbleGrid &grid);
             bool exceededShootLimit(int shootCount) const;
-            bool exceededShootingTime(float &elapsedTime) const;
+            bool exceededTimeLimit(float &elapsedTime) const;
             bool changeColor() const;
             
             std::string getStageName(Stage stg) const;

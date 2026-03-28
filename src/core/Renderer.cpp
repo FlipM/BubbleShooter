@@ -214,7 +214,8 @@ namespace core {
     void Renderer::ensureFontLoaded()
     {
         // Already loaded.
-        if (m_font) {
+        if (m_font) 
+        {
             return;
         }
 
@@ -238,7 +239,7 @@ namespace core {
         TTF_Font *font = nullptr;
         for (int i = 0; fontPaths[i] != nullptr; ++i) 
         {
-            font = TTF_OpenFont(fontPaths[i], 24);
+            font = TTF_OpenFont(fontPaths[i], 20);
             if (font) {
                 std::clog << "[Renderer] Font loaded from: " << fontPaths[i] << '\n';
                 break;

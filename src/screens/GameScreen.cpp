@@ -77,7 +77,7 @@ namespace screens
         else 
         {
             nonShootTime += deltaSeconds;
-            if(m_levelLoader.exceededShootingTime(nonShootTime))
+            if(m_levelLoader.exceededTimeLimit(nonShootTime))
             {
                 handleShoot();
             }
@@ -133,10 +133,10 @@ namespace screens
         {
             m_flyingBubble->onWallBounce();
             // Clamp bubble position to stay within grid bounds
-            float clamped_x = utils::clamp(m_flyingBubble->pixelPos().x, 
+            float clamped_x = utils::clamp(bx, 
                                           grid_left + r,
                                           grid_right - r);
-            m_flyingBubble->setPixelPos({clamped_x, m_flyingBubble->pixelPos().y});
+            m_flyingBubble->setPixelPos({clamped_x, by});
         }
 
         // Roof hit.
@@ -177,7 +177,7 @@ namespace screens
 
         if (matched.size() >= 3) 
         {
-            m_gd.score.addPoints(static_cast<int>(matched.size()) * 10);
+            m_gd.score.addPoints(static_cast<int>(matched.size()) * 100);
             for (auto &c : matched) 
             {
                 // Needs to be sure that the bubble is still there and active before popping

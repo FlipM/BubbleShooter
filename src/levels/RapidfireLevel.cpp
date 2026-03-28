@@ -19,17 +19,6 @@ namespace levels
         return m_shootLimit;
     }
 
-    bool RapidfireLevel::exceededShootingTime(float &elapsedTime) const
-    {
-    
-        if (elapsedTime > timeLimit)
-        {
-            elapsedTime = 0.0f; // Reset timer for next shot.
-            return true;
-        }
-        return false;
-    }
-
     std::vector<classes::BubbleColor> RapidfireLevel::getPalette()
     {
         return level_palette;

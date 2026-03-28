@@ -29,7 +29,7 @@ namespace levels
             virtual void fillInitialGrid(classes::BubbleGrid&grid) = 0;
             virtual bool isCleared(classes::BubbleGrid &grid) = 0;
             virtual int shootLimit() const = 0;
-            virtual bool exceededShootingTime(float &elapsedTime) const { return false; }
+            virtual float shootingTimeLimit() const { return -1.f; }
             virtual bool changeColorAtLanding() const { return false; }
             virtual std::vector<classes::BubbleColor> getPalette() = 0;
 

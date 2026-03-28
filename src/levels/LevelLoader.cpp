@@ -28,9 +28,9 @@ namespace levels
         return false;
     }
 
-    bool LevelLoader::exceededShootingTime(float &elapsedTime) const
+    bool LevelLoader::exceededTimeLimit(float &elapsedTime) const
     {
-        if(m_currentLevel && m_currentLevel->exceededShootingTime(elapsedTime))
+        if(m_currentLevel && m_currentLevel->shootingTimeLimit() > 0.f && m_currentLevel->shootingTimeLimit() < elapsedTime)
         {
             elapsedTime = 0.0f; // Reset timer for next shot.
             return true;
