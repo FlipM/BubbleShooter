@@ -4,12 +4,18 @@
 #pragma once
 
 #include "Bubble.hpp"
+#include "core/Renderer.hpp"
+#include "core/UI.hpp"
+#include "core/ResourceManager.hpp"
 #include "utils/MathUtils.hpp"
 #include <functional>
 #include <memory>
 #include <set>
+#include <cmath>
+#include <iostream>
 
-namespace core {
+namespace core 
+{
     class Renderer;
 }
 

@@ -58,6 +58,7 @@ endif()
 
 find_package(SDL2_ttf CONFIG QUIET)
 find_package(SDL2_image CONFIG QUIET)
+find_package(SDL2_mixer CONFIG QUIET)
 
 # ── Sources ──────────────────────────────────────────────────────────────────
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
@@ -86,6 +87,12 @@ if(SDL2_image_FOUND)
     target_include_directories(BubbleShooter PRIVATE ${SDL2_IMAGE_INCLUDE_DIRS})
     target_link_libraries(BubbleShooter PRIVATE SDL2_image::SDL2_image)
     target_compile_definitions(BubbleShooter PRIVATE HAS_SDL2_IMAGE)
+endif()
+
+if(SDL2_mixer_FOUND)
+    target_include_directories(BubbleShooter PRIVATE ${SDL2_MIXER_INCLUDE_DIRS})
+    target_link_libraries(BubbleShooter PRIVATE SDL2_mixer::SDL2_mixer)
+    target_compile_definitions(BubbleShooter PRIVATE HAS_SDL2_MIXER)
 endif()
 
 # ── Windows-specific: avoid console window in Release ────────────────────────

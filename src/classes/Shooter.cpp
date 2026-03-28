@@ -1,9 +1,5 @@
 // classes/Shooter.cpp
 #include "Shooter.hpp"
-#include "core/Renderer.hpp"
-#include "core/UI.hpp"
-#include <cmath>
-#include <iostream>
 
 namespace classes 
 {
@@ -48,7 +44,6 @@ namespace classes
         advance(); // next → current, generate new next
         return launched;
 
-        // TODO: prevent shooting again until the in-flight bubble lands.
     }
 
     void Shooter::advance() 

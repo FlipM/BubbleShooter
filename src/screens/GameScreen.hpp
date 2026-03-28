@@ -9,6 +9,7 @@
 #include "classes/Score.hpp"
 #include "classes/Shooter.hpp"
 #include "levels/LevelLoader.hpp"
+#include "core/ResourceManager.hpp"
 #include <iostream>
 #include <functional>
 #include <memory>
@@ -23,7 +24,9 @@ namespace screens
             /// @param onGameOver  Called when a game-over condition is met.
             /// @param advanceStage Called when the stage should be advanced.
             /// @param viewport    Pixel rect of the game area (portrait, centred).
-            GameScreen(Callback onGameOver, Callback onAdvanceStage, levels::GameData &gameData, core::Renderer &renderer, SDL_Rect viewport);
+            /// @param resourceMgr ResourceManager for audio playback.
+            GameScreen(Callback onGameOver, Callback onAdvanceStage, levels::GameData &gameData, 
+                       core::ResourceManager &resourceMgr, SDL_Rect viewport);
 
             void handleEvent(const SDL_Event &event, const core::InputHandler &input) override;
             void update(float deltaSeconds) override;
@@ -35,6 +38,7 @@ namespace screens
             Callback m_onGameOver;
             Callback m_onAdvanceStage;
             SDL_Rect m_viewport;
+            core::ResourceManager* m_resources{nullptr};
 
             // ── Game objects ───────────────────────────────────────────────────────
             classes::BubbleGrid m_grid;
@@ -50,7 +54,6 @@ namespace screens
 
             // ── State ──────────────────────────────────────────────────────────────
             bool m_paused{false};
-            core::Renderer* m_renderer{nullptr};
 
             // ── Helpers ────────────────────────────────────────────────────────────
             void handleShoot();          ///< Trigger: fire the shooter.

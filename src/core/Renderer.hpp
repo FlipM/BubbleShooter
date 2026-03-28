@@ -18,6 +18,7 @@ namespace core
     {
         void operator()(SDL_Window *w) const noexcept { SDL_DestroyWindow(w); }
     };
+    
     struct RendererDeleter 
     {
         void operator()(SDL_Renderer *r) const noexcept { SDL_DestroyRenderer(r); }
@@ -95,7 +96,7 @@ namespace core
             WindowPtr m_window;
             RendererPtr m_renderer;
             Viewport m_viewport;
-            FontPtr m_font; ///< Cached TTF font (lazy-loaded in first drawText call).
+            FontPtr m_font; 
 
             /// Recalculate viewport so game area is centred, preserving aspect ratio.
             void recalculateViewport(int windowW, int windowH);

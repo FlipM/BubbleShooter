@@ -1,11 +1,15 @@
 // core/ResourceManager.hpp
-// Caches SDL textures and TTF fonts by string ID using shared_ptr.
+// Centralize the loading and caching of textures, fonts, and audio resources. 
+// Uses shared_ptr to allow multiple users to share ownership of the same resource
 #pragma once
 
+#include "Renderer.hpp"
+#include "SoundPlayer.hpp"
 #include <SDL2/SDL.h>
 #include <memory>
 #include <string>
 #include <unordered_map>
+
 
 namespace core 
 {
@@ -13,34 +17,38 @@ namespace core
     {
         void operator()(SDL_Texture *t) const noexcept { SDL_DestroyTexture(t); }
     };
-    using TexturePtr = std::shared_ptr<SDL_Texture>;
 
     class ResourceManager 
     {
+        const std::string FONT_PATH = "assets/fonts/";
+        const std::string SOUND_PATH = "assets/sounds/";
+        const std::string SOUND_EXT = ".wav";
+
         public:
-            explicit ResourceManager(SDL_Renderer *renderer);
+            explicit ResourceManager(Renderer &renderer, SoundPlayer &soundPlayer);
             ~ResourceManager() = default;
 
             // Non-copyable.
             ResourceManager(const ResourceManager &) = delete;
             ResourceManager &operator=(const ResourceManager &) = delete;
 
-            /// Returns cached texture, loading from `filePath` on first access.
-            /// Returns nullptr (stub) if file is missing — caller must handle.
-            [[nodiscard]] TexturePtr getTexture(const std::string &id,
-                                                const std::string &filePath);
-
-            /// Invalidates a single resource.
-            void unload(const std::string &id);
+            Renderer *getRenderer() { return &m_renderer; } 
+            
+            
 
             /// Purge all cached resources.
             void clear();
 
-            // TODO: getFont(id, path, ptSize) → TTF_Font wrapper
+            /// Play a sound effect by ID, loading from file on first access.
+            void play(const std::string &id, int loops = 0);
+
 
         private:
-            SDL_Renderer *m_renderer{nullptr}; ///< Non-owning — lifetime managed by Renderer.
-            std::unordered_map<std::string, TexturePtr> m_textures;
+            Renderer &m_renderer;
+            SoundPlayer &m_soundPlayer;
+        #ifdef HAS_SDL2_MIXER
+            std::unordered_map<std::string, SoundPlayer::SoundPtr> m_sounds;
+        #endif
     };
 
 } // namespace core

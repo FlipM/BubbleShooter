@@ -9,6 +9,10 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 
+#ifdef HAS_SDL2_MIXER
+#include <SDL2/SDL_mixer.h>
+#endif
+
 namespace 
 {
     constexpr int WINDOW_W = 1080;
@@ -16,9 +20,13 @@ namespace
 } // namespace
 
 Game::Game(const std::string &title)
-    : m_renderer(title, WINDOW_W, WINDOW_H), m_resources(m_renderer.raw()) 
+    : m_renderer(title, WINDOW_W, WINDOW_H), 
+      m_resources(m_renderer, m_soundPlayer) 
 {
     m_settings.load("settings.ini");
+#ifdef HAS_SDL2_MIXER
+    m_soundPlayer.init();
+#endif
     m_lastTick = SDL_GetPerformanceCounter();
     changeState(GameState::HOME);
 }
@@ -26,6 +34,9 @@ Game::Game(const std::string &title)
 Game::~Game() 
 {
     m_settings.save("settings.ini");
+#ifdef HAS_SDL2_MIXER
+    Mix_CloseAudio();
+#endif
     SDL_Quit();
 }
 
@@ -47,8 +58,6 @@ void Game::changeState(GameState newState)
     m_state = newState;
     m_currentScreen = makeScreen(newState);
 }
-
-// ── private ──────────────────────────────────────────────────────────────────
 
 void Game::processEvents() 
 {
@@ -112,7 +121,7 @@ std::unique_ptr<screens::Screen> Game::makeScreen(GameState state)
         case GameState::OPTIONS:
             return std::make_unique<screens::OptionsScreen>(
                 m_settings.get(), 
-                [this] { changeState(GameState::HOME); }, 
+                [this] { processSettings(); }, 
                 vp);
 
         case GameState::PLAYING: 
@@ -121,7 +130,7 @@ std::unique_ptr<screens::Screen> Game::makeScreen(GameState state)
                 [this] { gameOver(); },
                 [this] { advanceStage(); },
                 m_gameData,
-                m_renderer,
+                m_resources,
                 vp);
         }
 
@@ -147,11 +156,14 @@ void Game::advanceStage()
     if(m_gameData.currentStage >= levels::Stage::COUNT)
     {
         m_gameData.currentStage = levels::Stage::LEARNING_1;
+        m_resources.play("gameWin");
         changeState(GameState::GAME_ENDING);
     }
     else
+    {
+        m_resources.play("stageClear");
         changeState(GameState::ENTRY_LEVEL); 
-    
+    }
     return;
 }
 
@@ -159,6 +171,21 @@ void Game::gameOver()
 {
     m_gameData.currentStage = levels::Stage::LEARNING_1;
     changeState(GameState::GAME_OVER);
+}
+
+void Game::processSettings()
+{
+    changeState(GameState::HOME);
+#ifdef HAS_SDL2_MIXER
+    if(m_settings.get().soundEnabled)
+    {
+        m_soundPlayer.setSoundVolume(1.0f);
+    }
+    else
+    {
+        m_soundPlayer.setSoundVolume(0.0f);
+    }
+#endif
 }
 
 SDL_Rect Game::viewportRect() const noexcept 

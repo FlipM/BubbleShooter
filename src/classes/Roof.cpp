@@ -10,7 +10,6 @@ namespace classes {
 
     bool Roof::collides(const Bubble &bubble) const noexcept 
     {
-        const int bx = static_cast<int>(bubble.pixelPos().x);
         const int by = static_cast<int>(bubble.pixelPos().y);
         const int r = bubble.radius();
 

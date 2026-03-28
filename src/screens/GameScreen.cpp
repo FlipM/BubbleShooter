@@ -15,17 +15,17 @@ namespace screens
     } // namespace
 
     GameScreen::GameScreen(Callback onGameOver, Callback onAdvanceStage, levels::GameData &gameData, 
-                           core::Renderer &renderer, SDL_Rect viewport)
+                           core::ResourceManager &resourceMgr, SDL_Rect viewport)
         :   m_onGameOver(std::move(onGameOver)), 
             m_onAdvanceStage(std::move(onAdvanceStage)),
-            m_gd(gameData),
-            m_renderer(&renderer),
             m_viewport(viewport),
+            m_resources(&resourceMgr),
             m_grid(GRID_COLS, GRID_ROWS, utils::HEX_SIZE,  {static_cast<float>(viewport.x + ORIGIN_OFFSET_X), 
                     static_cast<float>(viewport.y + utils::ROOF_HEIGHT + 2)}),
             m_shooter({static_cast<float>(viewport.x + viewport.w / 2), static_cast<float>(viewport.y + viewport.h - 70)}),
             m_roof(viewport.x, viewport.y, viewport.w, utils::ROOF_HEIGHT),
-            m_levelLoader(gameData.currentStage)
+            m_levelLoader(gameData.currentStage),
+            m_gd(gameData)
     {
         std::clog << "[GameScreen] constructed, viewport " << viewport.w << 'x' << viewport.h << '\n';
         m_levelLoader.loadLevel(m_grid);
@@ -58,13 +58,13 @@ namespace screens
         if (m_paused)
             return;
 
-        if (!m_renderer)
+        if (!m_resources)
             return;  // Renderer not yet initialized
 
         int mx, my;
         SDL_GetMouseState(&mx, &my);
         float logicalX, logicalY;
-        SDL_RenderWindowToLogical(m_renderer->raw(), mx, my, &logicalX, &logicalY);
+        SDL_RenderWindowToLogical(m_resources->getRenderer()->raw(), mx, my, &logicalX, &logicalY);
         m_shooter.aimAt({static_cast<float>(logicalX), static_cast<float>(logicalY)});
 
         // Move flying bubble.
@@ -114,13 +114,14 @@ namespace screens
         m_flyingBubble = m_shooter.shoot();
         m_shootcount++;
         nonShootTime = 0.f;
+        m_resources->play("bubbleShot");
+
         if (m_flyingBubble) 
         {
             std::clog << "[GameScreen] bubble fired\n";
-            // TODO: play shoot sound via audio system.
         }
-    }
-
+    }    
+    
     bool GameScreen::updateFlight(float dt) 
     {
         m_flyingBubble->updateMovement(dt);
@@ -199,7 +200,8 @@ namespace screens
             {
                 m_shooter.removeColor(savedColor);
             }
-            // TODO: pop animation, sound, combo multiplier.
+            
+            m_resources->play("bubblePop");
         }
         else
         {
@@ -219,6 +221,7 @@ namespace screens
             {
                 std::clog << "[GameScreen] game over condition met\n";
                 m_onGameOver();
+                m_resources->play("gameOver");
                 return true;
             }
         }

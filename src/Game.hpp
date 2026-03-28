@@ -7,6 +7,7 @@
 #include "core/Renderer.hpp"
 #include "core/ResourceManager.hpp"
 #include "core/Settings.hpp"
+#include "core/SoundPlayer.hpp"
 #include "levels/LevelLoader.hpp"
 #include "screens/Screen.hpp"
 #include <memory>
@@ -37,16 +38,19 @@ class Game
 
         /// Transition to a new game state, constructing the appropriate Screen.
         void changeState(GameState newState);
-        void gameOver();
-        void advanceStage();
-        void resetStage() { m_gameData.currentStage = levels::Stage::LEARNING_1; }
         
+        /// Access resource manager for loading/playing sounds and music.
+        [[nodiscard]] core::ResourceManager &getResourceManager() noexcept 
+        { 
+            return m_resources; 
+        }
 
 
     private:
         core::Renderer m_renderer;
         core::InputHandler m_input;
         core::Settings m_settings;
+        core::SoundPlayer m_soundPlayer;
         core::ResourceManager m_resources;
         levels::GameData m_gameData;
 
@@ -64,8 +68,12 @@ class Game
         void calcDelta();
 
         /// Build the screen object matching `state`.
-        [[nodiscard]] std::unique_ptr<screens::Screen>
-        makeScreen(GameState state);
+        [[nodiscard]] std::unique_ptr<screens::Screen> makeScreen(GameState state);
+
+        void gameOver();
+        void advanceStage();
+        void resetStage() { m_gameData.currentStage = levels::Stage::LEARNING_1; }
+        void processSettings();
 
         [[nodiscard]] SDL_Rect viewportRect() const noexcept;
 };
