@@ -161,7 +161,7 @@ namespace screens
             auto neighborBubble = m_grid.at(neighborCoord);
             if (neighborBubble != nullptr && m_flyingBubble->collides(*neighborBubble)) 
             {
-                m_flyingBubble->onCollisionWithBubble(*neighborBubble);
+                m_flyingBubble->onCollisionWithBubble();
                 landBubble();
                 return true;
             }

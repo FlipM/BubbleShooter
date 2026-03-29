@@ -35,8 +35,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # ── SDL2 discovery ───────────────────────────────────────────────────────────
-# On Linux:  sudo apt install libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev
-# On Windows (vcpkg + MSVC): vcpkg install sdl2 sdl2-ttf sdl2-image --triplet=x64-windows
+# On Linux:  sudo apt install libsdl2-dev libsdl2-ttf-dev libsdl2-mixer-dev
+# On Windows (vcpkg + MSVC): vcpkg install sdl2 sdl2-ttf sdl2-mixer --triplet=x64-windows
 #            then: cmake -B build -DCMAKE_TOOLCHAIN_FILE=<vcpkg>/scripts/buildsystems/vcpkg.cmake
 
 # On Windows, require vcpkg's CONFIG package to avoid accidental fallback
@@ -57,7 +57,6 @@ if(TARGET SDL2::SDL2)
 endif()
 
 find_package(SDL2_ttf CONFIG QUIET)
-find_package(SDL2_image CONFIG QUIET)
 find_package(SDL2_mixer CONFIG QUIET)
 
 # ── Sources ──────────────────────────────────────────────────────────────────
@@ -80,13 +79,6 @@ target_link_libraries(BubbleShooter PRIVATE
 if(SDL2_ttf_FOUND)
     target_include_directories(BubbleShooter PRIVATE ${SDL2_TTF_INCLUDE_DIRS})
     target_link_libraries(BubbleShooter PRIVATE SDL2_ttf::SDL2_ttf)
-    target_compile_definitions(BubbleShooter PRIVATE HAS_SDL2_TTF)
-endif()
-
-if(SDL2_image_FOUND)
-    target_include_directories(BubbleShooter PRIVATE ${SDL2_IMAGE_INCLUDE_DIRS})
-    target_link_libraries(BubbleShooter PRIVATE SDL2_image::SDL2_image)
-    target_compile_definitions(BubbleShooter PRIVATE HAS_SDL2_IMAGE)
 endif()
 
 if(SDL2_mixer_FOUND)

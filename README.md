@@ -13,8 +13,9 @@ To generate the executable, issue the following commands via terminal (powershel
 
     $ cmake -B build
     $ cmake -build build
+    $ cp build/bin/BubbleShooter .
 
-The executable should be in the build directory.
+The last command is VERY important, as the executable is going to search for the asset folder that is not available at "build/bin/". An alternative is to run directly with ./build/bin/directory.
 
 # Technical decisions
 

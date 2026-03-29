@@ -3,11 +3,11 @@
 #pragma once
 
 #include "utils/MathUtils.hpp"
+#include "core/Renderer.hpp"
+#include "core/UI.hpp"
+#include <cstdlib>
+#include <iostream>
 #include <memory>
-
-namespace core {
-    class Renderer;
-}
 
 namespace classes 
 {
@@ -34,8 +34,6 @@ namespace classes
     [[nodiscard]] BubbleColorRGB bubbleColorToRGB(BubbleColor c) noexcept;
     [[nodiscard]] BubbleColor getNextColor(BubbleColor c) noexcept;
 
-    /// ── Bubble
-    /// ───────────────────────────────────────────────────────────────────
     class Bubble 
     {
         public:
@@ -48,7 +46,8 @@ namespace classes
             Bubble(Bubble &&) = default;
             Bubble &operator=(Bubble &&) = default;
 
-            // ── State ─────────────────────────────────────────────────────────────
+            // ── Getters and Setters ─────────────────────────────────────────
+
             [[nodiscard]] BubbleColor color() const noexcept { return m_color; }
             [[nodiscard]] utils::HexCoord gridPos() const noexcept { return m_gridPos; }
             [[nodiscard]] utils::Vec2f pixelPos() const noexcept { return m_pixelPos; }
@@ -58,37 +57,21 @@ namespace classes
             void setGridPos(utils::HexCoord p) noexcept { m_gridPos = p; }
             void setPixelPos(utils::Vec2f p) noexcept { m_pixelPos = p; }
             void setColor(BubbleColor c) noexcept { m_color = c; }
-
-            // ── Lifecycle ─────────────────────────────────────────────────────────
-            /// Mark bubble for removal and play pop animation (stub).
-            void pop();
-
-            /// True if this bubble matches the colour of another (for chain detection).
-            [[nodiscard]] bool matches(const BubbleColor &color) const noexcept;
-
-            // ── Rendering ─────────────────────────────────────────────────────────
-            /// Draw the bubble at its current pixel position.
-            /// @param renderer  Renderer reference for SDL abstraction.
-            void draw(core::Renderer &renderer) const;
-
-            // ── Physics / movement (in-flight) ───────────────────────────────────
-            /// Move the bubble by its velocity vector (called while in-flight).
-            void updateMovement(float deltaSeconds);
-
-            /// Set launch velocity (px/s).
             void setVelocity(utils::Vec2f vel) noexcept { m_velocity = vel; }
 
-
-            bool collides(const Bubble &other) const noexcept;
+            // ── Functionality ────────────────────────────────────────────
             
-            // ── Interaction triggers (stubs) ──────────────────────────────────────
-            /// Called when this bubble collides with another bubble on the grid.
-            void onCollisionWithBubble(Bubble &other);
 
-            /// Called when this bubble hits the roof.
+            [[nodiscard]] bool matches(const BubbleColor &color) const noexcept;
+            void pop();
+            void updateMovement(float deltaSeconds);
+            bool collides(const Bubble &other) const noexcept;
+            void draw(core::Renderer &renderer) const;
+            
+            // ── Interaction triggers ──────────────────────────────────────
+            
+            void onCollisionWithBubble();
             void onCollisionWithRoof();
-
-            /// Called when this bubble hits a side wall (reflect).
             void onWallBounce();
 
         private:
@@ -99,7 +82,6 @@ namespace classes
             int m_radius{static_cast<int>(utils::HEX_SIZE)}; ///< Radius of the bubble in pixels (for collision).
             bool m_active{true};
 
-            // TODO: animation state (pop timer, scale, alpha)
     };
 
 } // namespace classes

@@ -1,9 +1,5 @@
 // classes/Bubble.cpp
 #include "Bubble.hpp"
-#include "core/Renderer.hpp"
-#include "core/UI.hpp"
-#include <cstdlib>
-#include <iostream>
 
 namespace classes 
 {
@@ -31,7 +27,8 @@ namespace classes
         }
     }
 
-    
+    /// Get the next color in the palette, wrapping around after Purple 
+    /// since count and gray are not part of the main palette.
     BubbleColor getNextColor(BubbleColor c) noexcept
     {
         if (c == BubbleColor::Purple)
@@ -41,36 +38,41 @@ namespace classes
 
     Bubble::Bubble(BubbleColor color, utils::HexCoord gridPos) : m_color(color), m_gridPos(gridPos) {}
 
+    /// Mark bubble for removal and play pop animation (stub).
     void Bubble::pop() 
     {
         m_active = false;
     }
 
+    /// True if this bubble matches the colour of another (for chain detection).
     bool Bubble::matches(const BubbleColor &color) const noexcept 
     {
         return m_color == color;
     }
 
+    /// Draw the bubble at its current pixel position.
+    /// @param renderer  Renderer reference for SDL abstraction.
     void Bubble::draw(core::Renderer &renderer) const 
     {
         if (!m_active)
             return;
 
         BubbleColorRGB rgb = bubbleColorToRGB(m_color);
-        core::UI::Color col(rgb.r, rgb.g, rgb.b, 255);
+        core::UI::Color col(rgb.r, rgb.g, rgb.b, SDL_ALPHA_OPAQUE);
         renderer.drawCircle(static_cast<int>(m_pixelPos.x), 
                            static_cast<int>(m_pixelPos.y), 
                            m_radius, col);
 
     }
 
+    /// Move the bubble by its velocity vector (called while in-flight).
     void Bubble::updateMovement(float deltaSeconds) 
     {
-        // TODO: integrate velocity, check wall bounce, check grid landing.
         m_pixelPos.x += m_velocity.x * deltaSeconds;
         m_pixelPos.y += m_velocity.y * deltaSeconds;
     }
 
+    /// Check if this bubble collides with another bubble.
     bool Bubble::collides(const Bubble &other) const noexcept 
     {        
         if (!m_active || !other.m_active)
@@ -83,18 +85,19 @@ namespace classes
         return distanceSq <= radiusSum * radiusSum;
     }
 
-    void Bubble::onCollisionWithBubble(Bubble &other) 
+    /// Called when this bubble collides with another bubble on the grid.
+    void Bubble::onCollisionWithBubble() 
     {
-        // TODO: snap to nearest grid cell, trigger BubbleGrid::findMatches().
         std::clog << "[Bubble] onCollisionWithBubble() stub\n";
     }
 
+    /// Called when this bubble hits the roof.
     void Bubble::onCollisionWithRoof() 
     {
-        // TODO: snap to the roof row, attach to grid.
         std::clog << "[Bubble] onCollisionWithRoof() stub\n";
     }
 
+    /// Called when this bubble hits a side wall (reflect).
     void Bubble::onWallBounce()
     {
         // Reflect horizontal velocity component.
