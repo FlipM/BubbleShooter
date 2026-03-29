@@ -1,8 +1,20 @@
 # Introduction
-This repository presents a bubble shooter game, implemented in C++ using the SDL library. It does not make use of any external engine. Many development patterns were used in this project (SOLID, Singleton, Event, and so on). It can compiled in windows and LINUX, requiring only the installation of the SDL library packages. 
+This repository presents a bubble shooter game, implemented in C++ using the SDL library. It does not make use of any external engine. Many development patterns were used in this project (SOLID, Singleton, Event, and so on). It can compiled in windows and LINUX, requiring only the installation of the SDL library packages. Includes a test suite for the critical functions.
 
-#
+# Compiling and running the game
 
+The game is self-contained in one executable. It can be obtained with CMAKE (3.21), by compilation, requiring the following:
+
+    - SDL, with the TTF package (and MIXER, to be able to play sounds). Installation instructions are present on the CMakeLists.txt file.
+    - a C++20 compiler
+    - Catch2 (testing only)
+
+To generate the executable, issue the following commands via terminal (powershell): 
+
+    $ cmake -B build
+    $ cmake -build build
+
+The executable should be in the build directory.
 
 # Technical decisions
 
@@ -18,6 +30,10 @@ This repository presents a bubble shooter game, implemented in C++ using the SDL
 
     I hid the grid outline and the "loosing" line on purpose, to increase the challenge a bit. Can be turned into a setting in the future.
 
+=> Cannon angle-limit
+
+    Shooting too close to the horizontal line makes the bubble slowly advance towards the top. Since no other shot is possible until it stops flying, this can generate an annoying situation. The solution was to limit the angle in which the player can shoot the bubble. 
+
 # Technical debt/backlog
 
 => Aesthetics and UX
@@ -32,6 +48,9 @@ This repository presents a bubble shooter game, implemented in C++ using the SDL
 
     In bubble shooters, it is a common practice to allow the launcher to only have bubbles with the colors that are present in the grid. I implemented this mechanic when the color is eliminated via popping, but not via dropping (when the bubble is not supported/connected to the roof). It is a uncommon edge case that has little impact in the gameplay, so it will be left for future work.
 
+=> Tests
+
+    I added unit tests for the most important methods and mechanics. It is enough for the MVP to comprove the stability and functionality of the game. Complete workflow or regression tests must be added in the future.
 
 # Aknowledgements
 
