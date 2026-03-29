@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <exception>
 #include <iostream>
+#include <ctime>
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) 
 {

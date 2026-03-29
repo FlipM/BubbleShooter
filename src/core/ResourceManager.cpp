@@ -5,9 +5,14 @@
 namespace core 
 {
 
+    constexpr const char *SOUND_PATH = "assets/sounds/"; ///< Path to sound files.
+    constexpr const char *SOUND_EXT = ".wav";            ///< Sound file extension.
+
+    /// Initialize with references to renderer and sound player.
     ResourceManager::ResourceManager(Renderer &renderer, SoundPlayer &soundPlayer) 
         : m_renderer(renderer), m_soundPlayer(soundPlayer) {}
 
+    /// Clear all cached sound effects.
     void ResourceManager::clear() 
     {
 #ifdef HAS_SDL2_MIXER
@@ -15,6 +20,8 @@ namespace core
 #endif
     }
 
+    /// Load and play a sound effect by ID.
+    /// Caches sound on first access.
     void ResourceManager::play(const std::string &id, int loops) 
     {
 
@@ -37,7 +44,6 @@ namespace core
             }
             m_soundPlayer.playSound(sound, loops);
 #endif
-        return;
     }
 
 } // namespace core

@@ -1,6 +1,5 @@
 // Game.hpp
-// Central game object: owns the SDL context, runs the main loop,
-// and manages screen transitions via a state machine.
+// Central game object: manages SDL context, main loop, and screen state machine.
 #pragma once
 
 #include "core/InputHandler.hpp"
@@ -33,18 +32,12 @@ class Game
         Game(const Game &) = delete;
         Game &operator=(const Game &) = delete;
 
-        /// Enters the main loop. Returns when the user quits.
+        // ── Game Management ────────────────────────────────────────────────────
         void run();
-
-        /// Transition to a new game state, constructing the appropriate Screen.
         void changeState(GameState newState);
-        
-        /// Access resource manager for loading/playing sounds and music.
-        [[nodiscard]] core::ResourceManager &getResourceManager() noexcept 
-        { 
-            return m_resources; 
-        }
 
+        // ── Getters ────────────────────────────────────────────────────────────
+        [[nodiscard]] core::ResourceManager &getResourceManager() noexcept   { return m_resources; }
 
     private:
         core::Renderer m_renderer;
@@ -58,21 +51,20 @@ class Game
         GameState m_state{GameState::HOME};
         bool m_running{true};
 
-        // ── Frame timing ──────────────────────────────────────────────────────
         Uint64 m_lastTick{0};
         float m_deltaSeconds{0.f};
 
+        // ── Frame Update and screen management ─────────────────────────────────
         void processEvents();
         void update();
         void render();
         void calcDelta();
-
-        /// Build the screen object matching `state`.
         [[nodiscard]] std::unique_ptr<screens::Screen> makeScreen(GameState state);
 
+        // ── Game Logic ─────────────────────────────────────────────────────────
         void gameOver();
         void advanceStage();
-        void resetStage() { m_gameData.currentStage = levels::Stage::LEARNING_1; }
+        void resetStage();
         void processSettings();
 
         [[nodiscard]] SDL_Rect viewportRect() const noexcept;

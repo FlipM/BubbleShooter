@@ -1,15 +1,16 @@
 // core/Renderer.cpp
 #include "Renderer.hpp"
-#include <cmath>
 #include <iostream>
-#include <stdexcept>
-#include <string>
 
-namespace core {
 
+namespace core 
+{
+    constexpr const char *FONT_PATH = "assets/fonts/DejaVuSans.ttf";
+    constexpr int FONT_SIZE = 20;
+
+    /// Initialize the SDL renderer with window.
     Renderer::Renderer(const std::string &title, int windowW, int windowH) 
     {
-        
         if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) 
         {
             throw std::runtime_error(std::string("SDL_Init failed: ") + SDL_GetError());
@@ -38,28 +39,29 @@ namespace core {
         recalculateViewport(windowW, windowH);
     }
 
+    /// Clear frame buffer with background colors.
     void Renderer::clear() 
     {
-        // Fill whole window black (letterbox bars).
-        SDL_SetRenderDrawColor(m_renderer.get(), 0, 0, 0, 255);
+        SDL_SetRenderDrawColor(m_renderer.get(), 0, 0, 0, SDL_ALPHA_OPAQUE);
         SDL_RenderClear(m_renderer.get());
-
-        // Fill game viewport with a dark-blue background.
-        drawRect(m_viewport.x, m_viewport.y, m_viewport.width, m_viewport.height,
-                UI::Color(20, 20, 40, 255));
+        drawRect(m_viewport.x, m_viewport.y, m_viewport.width, m_viewport.height, core::UI::GAME_BACKGROUND);
     }
 
-    void Renderer::present() { SDL_RenderPresent(m_renderer.get()); }
+    /// Present the rendered frame to screen.
+    void Renderer::present() 
+    { 
+        SDL_RenderPresent(m_renderer.get()); 
+    }
 
+    /// Draw a filled rectangle with text overlay.
     void Renderer::drawPlate(int x, int y, int w, int h, const std::string text, UI::Color color, UI::Color textColor)
     {
-        // Draw a filled rectangle with a white outline to simulate a plate.
         drawRect(x, y, w, h, color);
-        //drawRectOutline(x, y, w, h, textColor);
         auto textCoords = measureText(x, y, w, h, text);
         drawText(text, textCoords.first, textCoords.second, textColor);
     }
 
+    /// Draw a filled rectangle.
     void Renderer::drawRect(int x, int y, int w, int h, UI::Color color)
     {
         SDL_SetRenderDrawColor(m_renderer.get(), color.r, color.g, color.b, color.a);
@@ -67,6 +69,7 @@ namespace core {
         SDL_RenderFillRect(m_renderer.get(), &rect);
     }
 
+    /// Draw a rectangle outline.
     void Renderer::drawRectOutline(int x, int y, int w, int h, UI::Color color) 
     {
         SDL_SetRenderDrawColor(m_renderer.get(), color.r, color.g, color.b, color.a);
@@ -74,9 +77,9 @@ namespace core {
         SDL_RenderDrawRect(m_renderer.get(), &rect);
     }
 
+    /// Draw a filled circle using line rasterization.
     void Renderer::drawCircle(int cx, int cy, int radius, UI::Color color) 
     {
-        // TODO: replace with textured bubble sprite; for now draw a rough circle.
         SDL_SetRenderDrawColor(m_renderer.get(), color.r, color.g, color.b, color.a);
         for (int dy = -radius; dy <= radius; ++dy) 
         {
@@ -85,12 +88,14 @@ namespace core {
         }
     }
 
+    /// Draw a line between two points.
     void Renderer::drawLine(int x1, int y1, int x2, int y2, UI::Color color)
     {
         SDL_SetRenderDrawColor(m_renderer.get(), color.r, color.g, color.b, color.a);
         SDL_RenderDrawLine(m_renderer.get(), x1, y1, x2, y2);
     }
 
+    /// Render multiple text lines with line spacing.
     void Renderer::drawTextVector(const std::vector<std::string> &lines, int x, int y, UI::Color color, int lineSpacing) 
     {
         for (size_t i = 0; i < lines.size(); ++i) 
@@ -99,17 +104,62 @@ namespace core {
         }
     }
 
+    /// Render a button with label and optional hover effect.
+    void Renderer::drawButton(const UI::Button &btn, UI::Color fillColor, UI::Color outlineColor, UI::Color hoverColor)
+    {
+        UI::Color actualFill = btn.hovered ? hoverColor : fillColor;
+        
+        drawRect(btn.x, btn.y, btn.width, btn.height, actualFill);
+        drawRectOutline(btn.x, btn.y, btn.width, btn.height, outlineColor);
+        
+        auto textCoordinates = measureText(btn.x, btn.y, btn.width, btn.height, btn.label);
+        drawText(btn.label, textCoordinates.first, textCoordinates.second, UI::WHITE_COLOR);
+    }
+
+    /// Fill viewport background with specified color.
+    void Renderer::drawBackground(UI::Color color)
+    {
+        drawRect(m_viewport.x, m_viewport.y, m_viewport.width, m_viewport.height, color);
+    }
+
+    /// Draw a gradient bar (horizontal or vertical).
+    void Renderer::drawGradientBar(int x, int y, int w, int h, UI::Color colorStart, UI::Color colorEnd, bool vertical)
+    {
+        if (vertical) {
+            for (int dy = 0; dy < h; ++dy) {
+                float t = static_cast<float>(dy) / h;
+                UI::Color color(
+                    static_cast<std::uint8_t>(colorStart.r + (colorEnd.r - colorStart.r) * t),
+                    static_cast<std::uint8_t>(colorStart.g + (colorEnd.g - colorStart.g) * t),
+                    static_cast<std::uint8_t>(colorStart.b + (colorEnd.b - colorStart.b) * t),
+                    static_cast<std::uint8_t>(colorStart.a + (colorEnd.a - colorStart.a) * t)
+                );
+                drawLine(x, y + dy, x + w, y + dy, color);
+            }
+        } else {
+            for (int dx = 0; dx < w; ++dx) {
+                float t = static_cast<float>(dx) / w;
+                UI::Color color(
+                    static_cast<std::uint8_t>(colorStart.r + (colorEnd.r - colorStart.r) * t),
+                    static_cast<std::uint8_t>(colorStart.g + (colorEnd.g - colorStart.g) * t),
+                    static_cast<std::uint8_t>(colorStart.b + (colorEnd.b - colorStart.b) * t),
+                    static_cast<std::uint8_t>(colorStart.a + (colorEnd.a - colorStart.a) * t)
+                );
+                drawLine(x + dx, y, x + dx, y + h, color);
+            }
+        }
+    }
+
+    /// Render UTF-8 text string at screen position.
     void Renderer::drawText(const std::string &text, int x, int y, UI::Color color) 
     {
         if (text.empty()) return;
 
         if (!m_font) {
-            // Font loading failed; silently skip text rendering.
             std::clog << "[Renderer] Font not available, skipping drawText\n";
             return;
         }
 
-        // Render text to surface, create texture, render, and clean up.
         SDL_Color sdlColor{color.r, color.g, color.b, color.a};
         SDL_Surface *surf = TTF_RenderUTF8_Blended(m_font.get(), text.c_str(), sdlColor);
         if (!surf) {
@@ -130,9 +180,9 @@ namespace core {
         SDL_DestroyTexture(tex);
     }
 
+    /// Recalculate viewport maintaining aspect ratio and centering.
     void Renderer::recalculateViewport(int windowW, int windowH) 
     {
-        // Keep the game area portrait (9:19.5 ≈ phone ratio). Scale to fit height.
         const float gameAspect = static_cast<float>(m_viewport.width) /
                                 static_cast<float>(m_viewport.height);
         int gameH = windowH;
@@ -149,76 +199,23 @@ namespace core {
         m_viewport.y = (windowH - gameH) / 2;
     }
 
-    void Renderer::drawButton(const UI::Button &btn, UI::Color fillColor, UI::Color outlineColor, UI::Color hoverColor)
-    {
-        // Use hover color if button is hovered.
-        UI::Color actualFill = btn.hovered ? hoverColor : fillColor;
-        
-        // Draw fill.
-        drawRect(btn.x, btn.y, btn.width, btn.height, actualFill);
-        
-        // Draw outline.
-        drawRectOutline(btn.x, btn.y, btn.width, btn.height, outlineColor);
-        
-        // Draw label text centered in button.
-        auto textCoordinates = measureText(btn.x, btn.y, btn.width, btn.height, btn.label);
-        drawText(btn.label, textCoordinates.first, textCoordinates.second, UI::Color(255, 255, 255, 255));
-    }
-
-    void Renderer::drawBackground(UI::Color color)
-    {
-        drawRect(m_viewport.x, m_viewport.y, m_viewport.width, m_viewport.height, color);
-    }
-
-    void Renderer::drawGradientBar(int x, int y, int w, int h, UI::Color colorStart, UI::Color colorEnd, bool vertical)
-    {
-        if (vertical) {
-            // Vertical gradient (top to bottom)
-            for (int dy = 0; dy < h; ++dy) {
-                float t = static_cast<float>(dy) / h;
-                UI::Color color(
-                    static_cast<std::uint8_t>(colorStart.r + (colorEnd.r - colorStart.r) * t),
-                    static_cast<std::uint8_t>(colorStart.g + (colorEnd.g - colorStart.g) * t),
-                    static_cast<std::uint8_t>(colorStart.b + (colorEnd.b - colorStart.b) * t),
-                    static_cast<std::uint8_t>(colorStart.a + (colorEnd.a - colorStart.a) * t)
-                );
-                drawLine(x, y + dy, x + w, y + dy, color);
-            }
-        } else {
-            // Horizontal gradient (left to right)
-            for (int dx = 0; dx < w; ++dx) {
-                float t = static_cast<float>(dx) / w;
-                UI::Color color(
-                    static_cast<std::uint8_t>(colorStart.r + (colorEnd.r - colorStart.r) * t),
-                    static_cast<std::uint8_t>(colorStart.g + (colorEnd.g - colorStart.g) * t),
-                    static_cast<std::uint8_t>(colorStart.b + (colorEnd.b - colorStart.b) * t),
-                    static_cast<std::uint8_t>(colorStart.a + (colorEnd.a - colorStart.a) * t)
-                );
-                drawLine(x + dx, y, x + dx, y + h, color);
-            }
-        }
-    }
-
-    std::pair< int, int > Renderer::measureText(int x, int y, int width, int height, const std::string &text)
+    /// Calculate center position for text within a bounding box.
+    std::pair<int, int> Renderer::measureText(int x, int y, int width, int height, const std::string &text)
     {
         int textWidth, textHeight;
         TTF_SizeUTF8(m_font.get(), text.c_str(), &textWidth, &textHeight);
         
-        // Calculate center position
         int textX = x + (width - textWidth) / 2;
         int textY = y + (height - textHeight) / 2;
         return {textX, textY};
     }
 
+    /// Load and initialize TTF font.
     void Renderer::initFont()
     {
-        // Already loaded.
         if (m_font) 
-        {
             return;
-        }
 
-        // Ensure SDL_ttf is initialized.
         if (TTF_WasInit() == 0) 
         {
             if (TTF_Init() == -1) 
@@ -228,16 +225,13 @@ namespace core {
             }
         }
         
-        TTF_Font *font = nullptr;
-
-        font = TTF_OpenFont(FONT_PATH, 20);
+        TTF_Font *font = TTF_OpenFont(FONT_PATH, FONT_SIZE);
         if (font) 
         {
             std::clog << "[Renderer] Font loaded from: " << FONT_PATH << '\n';
         }
         else
         {
-
             std::cerr << "[Renderer] Could not load any font. Aborting.\n";
             std::abort();
         }
@@ -246,3 +240,4 @@ namespace core {
     }
 
 } // namespace core
+

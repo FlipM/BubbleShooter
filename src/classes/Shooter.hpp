@@ -4,15 +4,9 @@
 #pragma once
 
 #include "Bubble.hpp"
-#include "core/Renderer.hpp"
-#include "core/UI.hpp"
-#include "core/ResourceManager.hpp"
 #include "utils/MathUtils.hpp"
-#include <functional>
-#include <memory>
+#include "core/Renderer.hpp"
 #include <set>
-#include <cmath>
-#include <iostream>
 
 namespace core 
 {
@@ -26,53 +20,41 @@ namespace classes
     {
         public:
             /// @param basePos  Centre of the shooter (screen-space pixels).
-            explicit Shooter(utils::Vec2f basePos) : m_basePos(basePos) {};
+            explicit Shooter(utils::Vec2f basePos);
             ~Shooter() = default;
 
-            void initiate(std::vector<classes::BubbleColor> palette);
+            // Non-copyable, movable.
+            Shooter(const Shooter &) = delete;
+            Shooter &operator=(const Shooter &) = delete;
+            Shooter(Shooter &&) = default;
+            Shooter &operator=(Shooter &&) = default;
 
-            // ── Update ─────────────────────────────────────────────────────────────
-            /// Update aim direction toward the mouse cursor position.
-            /// Should be called every frame.
-            void aimAt(utils::Vec2f mousePos) noexcept;
-
-            // ── Fire ───────────────────────────────────────────────────────────────
-            /// Launch the current bubble in the aimed direction.
-            /// Moves `next` → `current`, generates a new `next` bubble.
-            /// Returns the launched bubble (caller takes ownership to simulate flight).
-            /// Returns nullptr if already a bubble in flight.
-            std::unique_ptr<Bubble> shoot();
-
-            // ── Bubble management ──────────────────────────────────────────────────
-            /// Callback: request a new random bubble colour from the game.
-            classes::BubbleColor randomColor();
-            void removeColor(BubbleColor color);
-            std::set<classes::BubbleColor> remainingColors() const { return m_upcomingColors; }
-
-             // ── Non-copyable, movable ───────────────────────────────────────────────
-
-            // ── Rendering ──────────────────────────────────────────────────────────
-            void draw(core::Renderer &renderer) const;
-
-            // ── Accessors ──────────────────────────────────────────────────────────
+            // ── Getters ────────────────────────────────────────────────────────────
             [[nodiscard]] float aimAngle() const noexcept { return m_aimAngle; }
             [[nodiscard]] utils::Vec2f basePos() const noexcept { return m_basePos; }
             [[nodiscard]] const Bubble *current() const noexcept { return m_current.get(); }       
             [[nodiscard]] const Bubble *next() const noexcept { return m_next.get(); }
+            [[nodiscard]] std::set<classes::BubbleColor> remainingColors() const;
+
+            // ── Aiming and Shooting ────────────────────────────────────────────────
+            void aimAt(utils::Vec2f mousePos) noexcept;
+            std::unique_ptr<Bubble> shoot();
+
+            // ── Utility ────────────────────────────────────────────────────────────
+            void initiate(std::vector<classes::BubbleColor> palette);
+            classes::BubbleColor randomColor();
+            void removeColor(BubbleColor color);
+            void draw(core::Renderer &renderer) const;
 
         private:
-            utils::Vec2f m_basePos;
-            float m_aimAngle{-1.5708f}; ///< Radians (default: straight up).
+            utils::Vec2f m_basePos;                    ///< Screen-space position of launcher base.
+            float m_aimAngle;                          ///< Aim direction in radians.
+            std::unique_ptr<Bubble> m_current;         ///< Currently held bubble.
+            std::unique_ptr<Bubble> m_next;            ///< Preview of next bubble to shoot.
+            std::set<BubbleColor> m_upcomingColors;    ///< Available colors for new bubbles.
+            int m_arrowLength;                         ///< Length of aim guide in pixels.
 
-            std::unique_ptr<Bubble> m_current;
-            std::unique_ptr<Bubble> m_next;
-            std::set<BubbleColor> m_upcomingColors;
-
-            int m_arrowLength{80}; ///< Length of the aim arrow in pixels.
-
-            /// Advance: next → current, generate new next.
             void advance();
-
             void drawArrow(core::Renderer &renderer) const;
             void drawCurrent(core::Renderer &renderer) const;
             void drawNext(core::Renderer &renderer) const;

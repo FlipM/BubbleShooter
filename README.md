@@ -35,6 +35,10 @@ The last command is VERY important, as the executable is going to search for the
 
     Shooting too close to the horizontal line makes the bubble slowly advance towards the top. Since no other shot is possible until it stops flying, this can generate an annoying situation. The solution was to limit the angle in which the player can shoot the bubble. 
 
+=> Screen format
+
+    The screen size was chosen to be fit for smartphones playing vertically. It also works for desktop, with black stripes. It also initiates with a smaller window, that can be streched to the max window size, with small quality loss.
+
 # Technical debt/backlog
 
 => Aesthetics and UX

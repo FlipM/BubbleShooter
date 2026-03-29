@@ -8,10 +8,9 @@ namespace screens
 
     namespace 
     {
-        // Grid configuration constants.
         constexpr int GRID_COLS = 10;
         constexpr int GRID_ROWS = 14;
-        constexpr int   ORIGIN_OFFSET_X = 2; // pixels from viewport edge to grid start
+        constexpr int ORIGIN_OFFSET_X = 2; // pixels from viewport edge to grid start
     } // namespace
 
     GameScreen::GameScreen(Callback onGameOver, Callback onAdvanceStage, levels::GameData &gameData, 
@@ -39,18 +38,17 @@ namespace screens
             event.button.button == SDL_BUTTON_LEFT) 
         {
             if (!m_flyingBubble) 
-            { // only shoot when no bubble is in flight
+            {
                 handleShoot();
             }
         }
 
         if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) 
         {
-            // TODO: push a pause menu, for now toggle pause.
             m_paused = !m_paused;
         }
 
-        (void)input; // mouse position is polled in update() via InputHandler
+        (void)input;
     }
 
     void GameScreen::update(float deltaSeconds) 
@@ -89,8 +87,6 @@ namespace screens
             }
         }
 
-        // TODO: update particle effects, animations.
-
         if(!checkGameOver())
             checkNextLevel();
     }
@@ -106,8 +102,6 @@ namespace screens
             m_flyingBubble->draw(renderer);
         m_gd.score.draw(renderer, m_viewport.x, m_viewport.y, m_viewport.w);
     }
-
-    int GameScreen::finalScore() const noexcept { return m_gd.score.current(); }
 
     void GameScreen::handleShoot() 
     {
@@ -197,7 +191,7 @@ namespace screens
 
             m_grid.dropFloating();
         
-            
+            // Avoid shooting a color that is no longer in the grid
             if(!m_grid.colorExists(savedColor))
             {
                 m_shooter.removeColor(savedColor);
@@ -207,6 +201,7 @@ namespace screens
         }
         else
         {
+            // For colorblind level 
             if(m_levelLoader.changeColor())
             {
                 src->setColor(m_shooter.randomColor());

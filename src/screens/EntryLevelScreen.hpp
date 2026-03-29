@@ -1,4 +1,5 @@
-// screens/GameOverScreen.hpp
+// screens/EntryLevelScreen.hpp
+// The stage entry screen: brief intro before actual level gameplay begins.
 #pragma once
 
 #include "Screen.hpp"
@@ -7,28 +8,27 @@
 
 namespace screens 
 {
-
-    constexpr float ENTRY_LEVEL_DURATION = 3.f; // seconds before auto-start
-
     class EntryLevelScreen final : public Screen 
     {
         public:
             using Callback = std::function<void()>;
 
+            /// Initialize entry screen with stage information and callback.
             EntryLevelScreen(Callback onPlay, levels::GameData &gameData, SDL_Rect viewport);
 
-            void handleEvent(const SDL_Event &event,
-                            const core::InputHandler &input) override;
+            // ── Lifecycle Callbacks ────────────────────────────────────────
+            void handleEvent(const SDL_Event &event, const core::InputHandler &input) override;
             void update(float deltaSeconds) override;
             void render(core::Renderer &renderer) override;
 
         private:
-            Callback m_onPlay;
-            levels::GameData &m_gd;
-            SDL_Rect m_viewport;
-            levels::LevelLoader m_levelLoader;
-            
-            float timer;
+            static constexpr float AUTO_START_DURATION = 3.f;  ///< Seconds before automatic game start.
+
+            Callback m_onPlay;                                  ///< Callback to start gameplay.
+            levels::GameData &m_gd;                             ///< Current stage and score reference.
+            SDL_Rect m_viewport;                                ///< Screen display dimensions.
+            levels::LevelLoader m_levelLoader;                  ///< Level configuration loader.
+            float m_timer{0.f};                                 ///< Elapsed time for auto-start countdown.
     };
 
 } // namespace screens

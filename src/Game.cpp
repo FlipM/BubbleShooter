@@ -13,17 +13,16 @@
 #include <SDL2/SDL_mixer.h>
 #endif
 
-namespace 
-{
-    constexpr int WINDOW_W = 1080;
-    constexpr int WINDOW_H = 844;
-} // namespace
+constexpr int WINDOW_W = 1080;
+constexpr int WINDOW_H = 844;
+constexpr float MAX_FRAME_TIME = 0.05f;  // Prevent spiral-of-death on lag spikes.
 
+/// Initialize the game with SDL and transition to home screen.
 Game::Game(const std::string &title)
     : m_renderer(title, WINDOW_W, WINDOW_H), 
       m_resources(m_renderer, m_soundPlayer) 
 {
-    //m_settings.load("settings.ini");
+    m_settings.load("settings.ini");
 #ifdef HAS_SDL2_MIXER
     m_soundPlayer.init();
 #endif
@@ -31,15 +30,17 @@ Game::Game(const std::string &title)
     changeState(GameState::HOME);
 }
 
+/// Clean up SDL and audio resources.
 Game::~Game() 
 {
-    //m_settings.save("settings.ini");
+    m_settings.save("settings.ini");
 #ifdef HAS_SDL2_MIXER
     Mix_CloseAudio();
 #endif
     SDL_Quit();
 }
 
+/// Main game loop: process input, update, render.
 void Game::run() 
 {
     while (m_running) 
@@ -51,14 +52,14 @@ void Game::run()
     }
 }
 
+/// Transition to a new game state and initialize its screen.
 void Game::changeState(GameState newState) 
 {
-
-
     m_state = newState;
     m_currentScreen = makeScreen(newState);
 }
 
+/// Handle SDL events and delegate to current screen.
 void Game::processEvents() 
 {
     SDL_Event event;
@@ -74,12 +75,14 @@ void Game::processEvents()
     }
 }
 
+/// Update the current screen with delta time.
 void Game::update() 
 {
     if (m_currentScreen)
         m_currentScreen->update(m_deltaSeconds);
 }
 
+/// Render the current screen.
 void Game::render() 
 {
     m_renderer.clear();
@@ -88,6 +91,7 @@ void Game::render()
     m_renderer.present();
 }
 
+/// Calculate elapsed time since last frame.
 void Game::calcDelta() 
 {
     const Uint64 now = SDL_GetPerformanceCounter();
@@ -95,11 +99,12 @@ void Game::calcDelta()
     m_deltaSeconds =
         static_cast<float>(now - m_lastTick) / static_cast<float>(freq);
     m_lastTick = now;
-    // Clamp delta to avoid spiral-of-death on lag spikes.
-    if (m_deltaSeconds > 0.05f)
-        m_deltaSeconds = 0.05f;
+    
+    if (m_deltaSeconds > MAX_FRAME_TIME)
+        m_deltaSeconds = MAX_FRAME_TIME;
 }
 
+/// Create and return the appropriate screen for the given state.
 std::unique_ptr<screens::Screen> Game::makeScreen(GameState state) 
 {
     const SDL_Rect vp = viewportRect();
@@ -144,11 +149,13 @@ std::unique_ptr<screens::Screen> Game::makeScreen(GameState state)
         case GameState::GAME_ENDING:
             return std::make_unique<screens::EndingScreen>(
                 [this] { changeState(GameState::HOME); }, 
+                m_gameData.score.current(),
                 vp);
     }
-    return nullptr; // unreachable
+    return nullptr;
 }
 
+/// Advance to the next game stage or end sequence.
 void Game::advanceStage()
 {
     m_gameData.currentStage = static_cast<levels::Stage>(static_cast<int>(m_gameData.currentStage) + 1);
@@ -164,15 +171,16 @@ void Game::advanceStage()
         m_resources.play("stageClear");
         changeState(GameState::ENTRY_LEVEL); 
     }
-    return;
 }
 
+/// Return to start on game over.
 void Game::gameOver()
 {
     m_gameData.currentStage = levels::Stage::LEARNING_1;
     changeState(GameState::GAME_OVER);
 }
 
+/// Apply sound settings and return to home.
 void Game::processSettings()
 {
     changeState(GameState::HOME);
@@ -188,8 +196,16 @@ void Game::processSettings()
 #endif
 }
 
+/// Reset current stage to first learning level.
+void Game::resetStage()
+{
+    m_gameData.currentStage = levels::Stage::LEARNING_1;
+}
+
+/// Get viewport rect from renderer.
 SDL_Rect Game::viewportRect() const noexcept 
 {
     const auto &vp = m_renderer.viewport();
     return {vp.x, vp.y, vp.width, vp.height};
 }
+

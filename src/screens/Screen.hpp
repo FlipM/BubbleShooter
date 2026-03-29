@@ -3,31 +3,25 @@
 #pragma once
 
 #include "core/InputHandler.hpp"
-
-namespace core 
-{
-    class Renderer;
-}
+#include "core/Renderer.hpp"
+#include <SDL2/SDL.h>
 
 namespace screens 
 {
+    /// Abstract base class for game screens (menu, gameplay, etc).
     class Screen 
     {
         public:
             virtual ~Screen() = default;
 
-            /// Process one SDL event (called once per event per frame).
-            virtual void handleEvent(const SDL_Event &event, const core::InputHandler &input) = 0;
-
-            /// Update game logic for this frame.
-            virtual void update(float deltaSeconds) = 0;
-
-            /// Render this screen's content.
-            virtual void render(core::Renderer &renderer) = 0;
-
-            // Non-copyable.
+            // Non-copyable and non-movable.
             Screen(const Screen &) = delete;
             Screen &operator=(const Screen &) = delete;
+
+            // ── Lifecycle Callbacks ────────────────────────────────────────
+            virtual void handleEvent(const SDL_Event &event, const core::InputHandler &input) = 0;
+            virtual void update(float deltaSeconds) = 0;
+            virtual void render(core::Renderer &renderer) = 0;
 
         protected:
             Screen() = default;

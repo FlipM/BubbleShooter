@@ -1,40 +1,24 @@
 #pragma once
 
 #include "Level.hpp"
-#include <memory>
-#include <string>
 
 namespace levels 
 {
+    /// Rapidfire level: intense time-based challenge requiring fast decision-making.
+    /// Players must clear bubbles within a strict time limit with unlimited shots.
     class RapidfireLevel final : public Level
     {
-        const int rowsToFill = 3;
-
         public:
-            RapidfireLevel()
-            {
-                //All colors
-                for(classes::BubbleColor color = classes::BubbleColor::Red; color < classes::BubbleColor::COUNT;)
-                {
-                    level_palette.push_back(static_cast<classes::BubbleColor>(color));
-                    color = static_cast<classes::BubbleColor>(static_cast<int>(color) + 1);
-                }
-            };
+            RapidfireLevel();
 
             void fillInitialGrid(classes::BubbleGrid &grid) override;
-            bool isCleared(classes::BubbleGrid &grid) override;
             int shootLimit() const override;
-            float shootingTimeLimit() const override { return timeLimit; }
-            std::vector<classes::BubbleColor> getPalette() override;
-
+            float shootingTimeLimit() const override { return TIME_LIMIT; }
 
         private:
-            const int m_shootLimit{20};
-            const float timeLimit{1.f};
+            static constexpr float TIME_LIMIT = 1.f;        ///< Time limit in seconds for completion.
 
-            
-
-
+            int m_shootLimit{INITIAL_SHOOT_LIMIT + 10};
     };
 
 } // namespace levels

@@ -1,11 +1,12 @@
 // core/InputHandler.hpp
-// Polls SDL events each frame and exposes a clean query API.
+// Polls SDL events and provides a query API for input state.
 #pragma once
 
 #include <SDL2/SDL.h>
 #include <unordered_map>
 
-namespace core {
+namespace core 
+{
 
     struct MouseState 
     {
@@ -20,28 +21,26 @@ namespace core {
             InputHandler() = default;
             ~InputHandler() = default;
 
-            /// Poll the SDL event queue.  Call once per frame.
-            /// @returns false when the user requests quit (window-close / Alt-F4).
+            // Non-copyable, movable.
+            InputHandler(const InputHandler &) = delete;
+            InputHandler &operator=(const InputHandler &) = delete;
+            InputHandler(InputHandler &&) = default;
+            InputHandler &operator=(InputHandler &&) = default;
+
             bool pollEvents();
 
-            // ── Keyboard ─────────────────────────────────────────────────────────
-            /// True while the key is physically held.
+            // ── Keyboard State ────────────────────────────────────────────────────
             [[nodiscard]] bool isKeyDown(SDL_Keycode key) const;
-
-            /// True for exactly one frame after the key is pressed.
             [[nodiscard]] bool wasKeyPressed(SDL_Keycode key) const;
 
-            // ── Mouse ─────────────────────────────────────────────────────────────
+            // ── Mouse State ────────────────────────────────────────────────────────
             [[nodiscard]] const MouseState &mouse() const noexcept { return m_mouse; }
-
-            /// True for exactly one frame after LMB is released.
             [[nodiscard]] bool wasMouseClicked() const noexcept { return m_mouse.leftClicked; }
 
         private:
             MouseState m_mouse;
-
-            std::unordered_map<SDL_Keycode, bool> m_keysDown;
-            std::unordered_map<SDL_Keycode, bool> m_keysPressed; ///< single-frame pulse
+            std::unordered_map<SDL_Keycode, bool> m_keysDown;       ///< Persistent key state.
+            std::unordered_map<SDL_Keycode, bool> m_keysPressed;    ///< Single-frame pulse.
 
             void resetFrameState();
     };

@@ -15,32 +15,30 @@ namespace core
 {
     class ResourceManager 
     {
-        const std::string SOUND_PATH = "assets/sounds/";
-        const std::string SOUND_EXT = ".wav";
-
         public:
             explicit ResourceManager(Renderer &renderer, SoundPlayer &soundPlayer);
             ~ResourceManager() = default;
 
-            // Non-copyable.
+            // Non-copyable, movable.
             ResourceManager(const ResourceManager &) = delete;
             ResourceManager &operator=(const ResourceManager &) = delete;
+            ResourceManager(ResourceManager &&) = default;
+            ResourceManager &operator=(ResourceManager &&) = default;
 
-            Renderer *getRenderer() { return &m_renderer; } 
+            // ── Accessors ──────────────────────────────────────────────────────────
+            [[nodiscard]] Renderer *getRenderer() { return &m_renderer; }
 
-            /// Purge all cached resources.
+            // ── Resource Management ────────────────────────────────────────────────
             void clear();
-
-            /// Play a sound effect by ID, loading from file on first access.
             void play(const std::string &id, int loops = 0);
-
 
         private:
             Renderer &m_renderer;
             SoundPlayer &m_soundPlayer;
         #ifdef HAS_SDL2_MIXER
-            std::unordered_map<std::string, SoundPlayer::SoundPtr> m_sounds;
+            std::unordered_map<std::string, SoundPlayer::SoundPtr> m_sounds; ///< Sound effect cache.
         #endif
+
     };
 
 } // namespace core

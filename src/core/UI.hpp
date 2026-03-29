@@ -38,13 +38,20 @@ namespace core
 
         const core::UI::Color GAME_BACKGROUND  = core::UI::Color(20, 20, 40, 255);
         const core::UI::Color GAME_BORDER  = core::UI::Color(80, 80, 130, 255);
+        const core::UI::Color ROOF_COLOR  = core::UI::Color(50, 50, 80, 255);
+        const core::UI::Color SHOOTER_LINE = core::UI::Color(255, 255, 255, 200);
+        const core::UI::Color SHOOTER_BASE = core::UI::Color(80, 80, 120, 255);
+        
         const core::UI::Color ENTRY_LEVEL_BACKGROUND  = core::UI::Color(10, 5, 25, 240);
         const core::UI::Color SETTINGS_ON = core::UI::Color(80, 220, 80, 255);
         const core::UI::Color SETTINGS_OFF = core::UI::Color(80, 80, 80, 255);
+        
 
         // ── UI Elements ─────────────────────────────────────────────────────────────
 
         constexpr int   PLATE_DEFAULT_HEIGHT    = 100;
+        constexpr int   BUTTON_DEFAULT_WIDTH    = 200;      
+        constexpr int   BUTTON_DEFAULT_HEIGHT   = 45;       
         constexpr float PLATE_WIDTH_DISP        = 0.1f;
         constexpr float PLATE_HEIGHT_DISP       = 0.1f;
         constexpr float PLATE_WIDTH             = 0.8f;

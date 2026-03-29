@@ -4,10 +4,6 @@
 
 #include "utils/MathUtils.hpp"
 #include "core/Renderer.hpp"
-#include "core/UI.hpp"
-#include <cstdlib>
-#include <iostream>
-#include <memory>
 
 namespace classes 
 {

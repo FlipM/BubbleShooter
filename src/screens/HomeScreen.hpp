@@ -14,21 +14,26 @@ namespace screens
         public:
             using Callback = std::function<void()>;
 
-            /// @param onStart    Called when user clicks Start.
-            /// @param onOptions  Called when user clicks Options.
             HomeScreen(Callback onStart, Callback onOptions, SDL_Rect viewport);
 
-            void handleEvent(const SDL_Event &event,
-                            const core::InputHandler &input) override;
+            // ── Lifecycle Callbacks ────────────────────────────────────────
+            void handleEvent(const SDL_Event &event, const core::InputHandler &input) override;
             void update(float deltaSeconds) override;
             void render(core::Renderer &renderer) override;
 
         private:
-            Callback m_onStart;
-            Callback m_onOptions;
-            SDL_Rect m_viewport;
-            core::UI::Button m_startBtn;
-            core::UI::Button m_optionsBtn;
+            static constexpr int BUTTON_WIDTH = 200;       ///< Width of menu buttons.
+            static constexpr int BUTTON_HEIGHT = 50;       ///< Height of menu buttons.
+            static constexpr int BUTTON_GAP = 20;          ///< Vertical spacing between buttons.
+            static constexpr int TITLE_OFFSET_X = 4;       ///< Title horizontal position divisor.
+            static constexpr int TITLE_OFFSET_Y = 4;       ///< Title vertical position divisor.
+            static constexpr int TITLE_HEIGHT = 40;        ///< Height of title bar.
+
+            Callback m_onStart;                            ///< Callback when start button pressed.
+            Callback m_onOptions;                          ///< Callback when options button pressed.
+            SDL_Rect m_viewport;                           ///< Screen display dimensions.
+            core::UI::Button m_startBtn;                   ///< Start game button.
+            core::UI::Button m_optionsBtn;                 ///< Options menu button.
 
             void drawBackground(core::Renderer &renderer) const;
             void drawTitle(core::Renderer &renderer) const;

@@ -4,42 +4,39 @@
 #pragma once
 
 #include "Bubble.hpp"
-#include <memory>
 
-namespace core {
-    class Renderer;
-}
-
-namespace classes {
+namespace classes 
+{
 
     class Roof 
     {
         public:
             /// @param x, y, w, h  Screen rect of the roof bar.
-            Roof(int x, int y, int w, int h);
+            explicit Roof(int x, int y, int w, int h);
             ~Roof() = default;
 
-            // ── Collision ─────────────────────────────────────────────────────────
-            /// Returns true if bubble's pixel position overlaps the roof rect.
-            [[nodiscard]] bool collides(const Bubble &bubble) const noexcept;
+            // Non-copyable, movable.
+            Roof(const Roof &) = delete;
+            Roof &operator=(const Roof &) = delete;
+            Roof(Roof &&) = default;
+            Roof &operator=(Roof &&) = default;
 
-            // ── Attachment (stub) ─────────────────────────────────────────────────
-            /// Called when an in-flight bubble reaches the roof.
-            /// Transfers the bubble into the BubbleGrid at row 0.
-            /// The actual grid attachment is handled by GameScreen; this is a trigger
-            /// hook.
-            void attachBubble(std::shared_ptr<Bubble> bubble);
-
-            // ── Rendering ─────────────────────────────────────────────────────────
-            void draw(core::Renderer &renderer) const;
-
+            // ── Getters ────────────────────────────────────────────────────────────
             [[nodiscard]] int x() const noexcept { return m_x; }
             [[nodiscard]] int y() const noexcept { return m_y; }
             [[nodiscard]] int w() const noexcept { return m_w; }
             [[nodiscard]] int h() const noexcept { return m_h; }
 
+            // ── Utility ─────────────────────────────────────────────────────────
+            [[nodiscard]] bool collides(const Bubble &bubble) const noexcept;
+            void draw(core::Renderer &renderer) const;
+            void attachBubble(std::shared_ptr<Bubble> bubble);
+
         private:
-            int m_x, m_y, m_w, m_h;
+            int m_x;  ///< Top-left X coordinate.
+            int m_y;  ///< Top-left Y coordinate.
+            int m_w;  ///< Width in pixels.
+            int m_h;  ///< Height in pixels.
     };
 
 } // namespace classes

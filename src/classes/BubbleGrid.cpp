@@ -2,13 +2,14 @@
 #include "BubbleGrid.hpp"
 #include "core/Renderer.hpp"
 #include "core/UI.hpp"
-#include <cmath>
-#include <iostream>
-#include <queue>
-#include <unordered_set>
+#include <memory>
+#include <vector>
 
 namespace classes 
 {
+    constexpr int HEX_SIDES = 6;              // Sides in a hexagon.
+    constexpr int ROWS_TO_ADVANCE = 2;        // Rows to advance bubbles downward.
+    constexpr int MIN_MATCH_SIZE = 3;         // Minimum bubbles for a match.
 
     BubbleGrid::BubbleGrid(int cols, int rows, float hexSize, utils::Vec2f origin)
         : m_cols(cols), m_rows(rows), m_hexSize(hexSize), m_origin(origin) 
@@ -17,23 +18,24 @@ namespace classes
         visited.assign(rows, std::vector<int>(cols, 0));
     }
 
+    /// Place a bubble at the given hex coordinate.
     void BubbleGrid::addBubble(std::unique_ptr<Bubble> bubble, utils::HexCoord pos) 
     {
         if (pos.r < 0 || pos.r >= m_rows || pos.c < 0 || pos.c >= m_cols)
             return;
-
-        // Special case: 
 
         bubble->setGridPos(pos);
         bubble->setPixelPos(cellCenter(pos));
         m_grid[pos.r][pos.c] = std::move(bubble);
     }
 
+    /// Remove and return the bubble at the given position.
     std::shared_ptr<Bubble> BubbleGrid::removeBubble(utils::HexCoord pos) 
     {
         return std::exchange(m_grid[pos.r][pos.c], nullptr);
     }
 
+    /// Get the bubble at the given position, or nullptr if out of bounds.
     std::shared_ptr<Bubble> BubbleGrid::at(utils::HexCoord pos) const 
     {
         if (pos.r < 0 || pos.r >= m_rows || pos.c < 0 || pos.c >= m_cols)
@@ -41,27 +43,28 @@ namespace classes
         return m_grid[pos.r][pos.c];
     }
 
+    /// Check if bubble pointer is valid and active.
     bool BubbleGrid::isValidBubble(std::shared_ptr<Bubble> bubblePtr) const
     {
         return bubblePtr && bubblePtr->isActive();
     }
 
+    /// Select a random color from the provided palette.
     classes::BubbleColor BubbleGrid::getRandomColor(const std::vector<classes::BubbleColor> &palette) const
     {        
         int randomIndex = rand() % palette.size();
         return static_cast<classes::BubbleColor>(palette[randomIndex]);
     }
 
+    /// Find all connected bubbles matching the color at origin (BFS/DFS).
+    /// Returns a list of coordinates that form a match group.
     std::vector<utils::HexCoord> BubbleGrid::findMatches(utils::HexCoord origin) 
     {
-        // TODO: BFS collecting same-colour connected bubbles.
-        // Returns coords of matched group (≥3 → pop them).
         auto src = at(origin);
         if (!src)
             return {};
 
         std::vector<utils::HexCoord> matched;
-
         classes::BubbleColor color = src->color();
         visited[origin.r][origin.c] = 1;
         matched = recMatches(origin, color);
@@ -69,14 +72,15 @@ namespace classes
         return matched;
     }
 
+    /// Recursively collect connected bubbles of the same color.
     std::vector<utils::HexCoord> BubbleGrid::recMatches(utils::HexCoord origin, BubbleColor &color)
     {
         std::vector<utils::HexCoord> matched;
         matched.push_back(origin);
         visited[origin.r][origin.c] = 1;
 
-        std::vector<utils::HexCoord> neighbours = this->neighbours(origin);
-        for(const auto& neighborCoord : neighbours) 
+        std::vector<utils::HexCoord> neighbours_list = this->neighbours(origin);
+        for(const auto& neighborCoord : neighbours_list) 
         {
             if (isVisited(neighborCoord))
                 continue;
@@ -91,6 +95,7 @@ namespace classes
         return matched;
     }
 
+    /// Remove all floating bubbles (disconnected from the roof).
     void BubbleGrid::dropFloating() 
     {
         for(int c = 0; c < m_cols; c++)
@@ -103,7 +108,6 @@ namespace classes
                     dfsVisited(bubble->gridPos());
                 }
             }
-
         }
 
         for(int r = 0; r < m_rows; r++)
@@ -117,12 +121,13 @@ namespace classes
         clearVisited();
     }
 
+    /// Mark all bubbles reachable from position as visited (DFS).
     void BubbleGrid::dfsVisited(utils::HexCoord pos)
     {
         visited[pos.r][pos.c] = 1;
 
-        std::vector<utils::HexCoord> neighbours = this->neighbours(pos);
-        for(const auto& neighborCoord : neighbours) 
+        std::vector<utils::HexCoord> neighbours_list = this->neighbours(pos);
+        for(const auto& neighborCoord : neighbours_list) 
         {
             if (isVisited(neighborCoord))
                 continue;
@@ -133,18 +138,18 @@ namespace classes
                 dfsVisited(neighborCoord);
             }
         }
-        return;
     }
 
+    /// Snap an in-flight bubble to the nearest empty hex cell.
     utils::HexCoord BubbleGrid::snapToGrid(utils::Vec2f pixelPos) const 
     {
-        // TODO: find nearest empty hex cell to pixelPos.
         return utils::pixelToHex(pixelPos, m_origin);
     }
 
+    /// Advance the grid downward and fill top rows with new random bubbles.
     void BubbleGrid::advanceDown(const std::set<classes::BubbleColor> &shooterColors) 
     {
-        // Start from second last row and move down each bubble by one row. Last row has no bubbles, as the game would have ended by now.
+        // Move bubbles down from second-to-last row upward.
         for(int r = m_rows - 3; r >= 0; --r) 
         {
             for (int c = 0; c < m_cols; ++c) 
@@ -152,19 +157,19 @@ namespace classes
                 auto bubble = at({r, c});
                 if (isValidBubble(bubble)) 
                 {
-                    // Move bubble down by 2 rows. This is not ideal, but it simplifies the logic
-                    bubble->setGridPos({r + 2, c});
-                    bubble->setPixelPos(cellCenter({r + 2, c}));
-                    m_grid[r + 2][c] = std::move(m_grid[r][c]);
+                    bubble->setGridPos({r + ROWS_TO_ADVANCE, c});
+                    bubble->setPixelPos(cellCenter({r + ROWS_TO_ADVANCE, c}));
+                    m_grid[r + ROWS_TO_ADVANCE][c] = std::move(m_grid[r][c]);
                     m_grid[r][c] = nullptr;
                 }
             }
         }
 
+        // Fill top rows with new random bubbles.
         std::vector<classes::BubbleColor> colorVect(shooterColors.begin(), shooterColors.end());
         for (int c = 0; c < m_cols; ++c) 
         {
-            for (int r = 0; r < 2; ++r) 
+            for (int r = 0; r < ROWS_TO_ADVANCE; ++r) 
             {
                 classes::BubbleColor color = getRandomColor(colorVect);
                 this->addBubble(std::make_unique<classes::Bubble>(color), {r, c});
@@ -172,12 +177,12 @@ namespace classes
         }
     }
 
+    /// Fill the initial grid with random bubbles from the given palette.
     void BubbleGrid::fillInitialGrid(const std::vector<classes::BubbleColor> &palette, int rowsToFill) 
     {
         if (rowsToFill >= m_rows)
             rowsToFill = m_rows - 1; 
             
-        
         for (int r = 0; r < rowsToFill; ++r) 
         {
             for (int c = 0; c < m_cols; ++c) 
@@ -188,11 +193,10 @@ namespace classes
         }
     }
 
+    /// Render all active bubbles in the grid.
     void BubbleGrid::draw(core::Renderer &renderer) const 
     {
         //drawOutlines(renderer);
-
-        // Draw all active bubbles.
         for (auto &row : m_grid) 
         {
             for (auto &bubble : row) 
@@ -203,6 +207,7 @@ namespace classes
         }
     }
 
+    /// Render hex outlines for all cells (debugging aid).
     void BubbleGrid::drawOutlines(core::Renderer &renderer) const 
     {
         for (int r = 0; r < m_rows - 1; ++r) 
@@ -214,11 +219,13 @@ namespace classes
         }
     }
 
+    /// Convert hex coordinates to screen pixel position.
     utils::Vec2f BubbleGrid::cellCenter(utils::HexCoord pos) const noexcept 
     {
         return utils::hexToPixel(pos, m_origin);
     }
 
+    /// Clear the visited tracking array.
     void BubbleGrid::clearVisited()
     {
         for(int r = 0; r < m_rows; r++)
@@ -227,42 +234,43 @@ namespace classes
         }
     }
 
+    /// Check if a cell has been visited in the current algorithm pass.
     bool BubbleGrid::isVisited(utils::HexCoord pos) const
     {
         return visited[pos.r][pos.c] == 1;
     }
 
+    /// Get all valid neighbors of a hex cell using flat-top layout.
     std::vector<utils::HexCoord> BubbleGrid::neighbours(utils::HexCoord pos) const 
     {
         int offset_r = pos.r % 2;
 
-        static constexpr utils::HexCoord dirs[6] = {{ 0, 1},   { 0, -1},  // samle line
-                                                    {-1, 0},   {-1,  1},  // prev line
-                                                    { 1, 0},   { 1,  1}}; // next line
+        static constexpr utils::HexCoord dirs[6] = {{ 0, 1},   { 0, -1},  // same row
+                                                    {-1, 0},   {-1,  1},  // prev row
+                                                    { 1, 0},   { 1,  1}}; // next row
         std::vector<utils::HexCoord> result;
         result.reserve(6);
         for (auto &d : dirs) 
         {
             utils::HexCoord n{pos.r + d.r, pos.c + d.c};
-            // If odd row, subtract 1 in the indexes of top and bottom neighbors.
+            // Adjust for odd rows in flat-top hex layout.
             if(offset_r == 0 && (d.r == 1 || d.r == -1)) 
                 n.c -= 1; 
             if (n.c >= 0 && n.c < m_cols && n.r >= 0 && n.r < m_rows)
-            result.push_back(n);
+                result.push_back(n);
         }
         return result;
     }
 
+    /// Render a single hex cell outline.
     void BubbleGrid::drawHexOutline(core::Renderer &renderer,
                                     utils::Vec2f center) const 
     {
-        // Draw six-sided polygon outline.
-        core::UI::Color color(60, 60, 80, 100); // subtle dark colour
-        constexpr int sides = 6;
-        for (int i = 0; i < sides; ++i) 
+        core::UI::Color color(60, 60, 80, 100);
+        for (int i = 0; i < HEX_SIDES; ++i) 
         {
-            float a0 = static_cast<float>(i) / sides * 2.f * utils::PI;
-            float a1 = static_cast<float>(i + 1) / sides * 2.f * utils::PI;
+            float a0 = static_cast<float>(i) / HEX_SIDES * 2.f * utils::PI;
+            float a1 = static_cast<float>(i + 1) / HEX_SIDES * 2.f * utils::PI;
             int x0 = static_cast<int>(center.x + m_hexSize * std::cos(a0));
             int y0 = static_cast<int>(center.y + m_hexSize * std::sin(a0));
             int x1 = static_cast<int>(center.x + m_hexSize * std::cos(a1));
@@ -271,6 +279,7 @@ namespace classes
         }
     }
 
+    /// Check if a given color exists anywhere in the grid.
     bool BubbleGrid::colorExists(classes::BubbleColor color) const
     {
         for (const auto &row : m_grid) 
@@ -284,6 +293,7 @@ namespace classes
         return false;
     }
 
+    /// Check if the grid is completely empty of active bubbles.
     bool BubbleGrid::isEmpty() const
     {
         for (const auto &row : m_grid) 

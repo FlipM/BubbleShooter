@@ -1,5 +1,9 @@
 // classes/Bubble.cpp
 #include "Bubble.hpp"
+#include "core/UI.hpp"
+#include <cstdlib>
+#include <iostream>
+#include <memory>
 
 namespace classes 
 {

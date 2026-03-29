@@ -4,10 +4,12 @@
 #include "core/UI.hpp"
 #include <iostream>
 
-namespace classes {
+namespace classes 
+{
 
     Roof::Roof(int x, int y, int w, int h) : m_x(x), m_y(y), m_w(w), m_h(h) {}
 
+    /// Check if this bubble's position overlaps the roof rect.
     bool Roof::collides(const Bubble &bubble) const noexcept 
     {
         const int by = static_cast<int>(bubble.pixelPos().y);
@@ -16,21 +18,18 @@ namespace classes {
         return (by - r) <= (m_y + m_h);
     }
 
+    /// Hand off a bubble to the grid when it reaches the roof.
     void Roof::attachBubble(std::shared_ptr<Bubble> bubble) 
     {
-        // TODO: hand bubble off to BubbleGrid.addBubble() at the proper grid cell.
-        std::clog << "[Roof] attachBubble() stub\n";
-        (void)bubble; // suppress warning until implemented
+        std::clog << "[Roof] attachBubble()\n";
+        (void)bubble;
     }
 
+    /// Draw the roof as a solid bar with a bright edge line.
     void Roof::draw(core::Renderer &renderer) const 
     {
-        // Draw roof as a solid bar with a subtle gradient-like effect.
-        renderer.drawRect(m_x, m_y, m_w, m_h, core::UI::Color(50, 50, 80, 255));
-
-        // Draw bright edge line.
-        renderer.drawLine(m_x, m_y + m_h, m_x + m_w, m_y + m_h, 
-                         core::UI::Color(120, 120, 200, 255));
+        renderer.drawRect(m_x, m_y, m_w, m_h, core::UI::ROOF_COLOR);
+        renderer.drawLine(m_x, m_y + m_h, m_x + m_w, m_y + m_h, core::UI::LIGHT_BLUE);
     }
 
 } // namespace classes

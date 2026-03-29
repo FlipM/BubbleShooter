@@ -21,47 +21,43 @@ namespace screens
         public:
             using Callback = std::function<void()>;
 
-            /// @param onGameOver  Called when a game-over condition is met.
-            /// @param advanceStage Called when the stage should be advanced.
-            /// @param viewport    Pixel rect of the game area (portrait, centred).
-            /// @param resourceMgr ResourceManager for audio playback.
+            /// Initialize gameplay screen with level configuration and resources.
             GameScreen(Callback onGameOver, Callback onAdvanceStage, levels::GameData &gameData, 
                        core::ResourceManager &resourceMgr, SDL_Rect viewport);
 
+            // ── Lifecycle Callbacks ────────────────────────────────────────
             void handleEvent(const SDL_Event &event, const core::InputHandler &input) override;
             void update(float deltaSeconds) override;
             void render(core::Renderer &renderer) override;
 
-            [[nodiscard]] int finalScore() const noexcept;
+            // ── Accessors ──────────────────────────────────────────────────
+            [[nodiscard]] int finalScore() const noexcept { return m_gd.score.current(); }
 
         private:
-            Callback m_onGameOver;
-            Callback m_onAdvanceStage;
-            SDL_Rect m_viewport;
-            core::ResourceManager* m_resources{nullptr};
+            Callback m_onGameOver;                        ///< Triggered on game over condition.
+            Callback m_onAdvanceStage;                    ///< Triggered when stage is complete.
+            SDL_Rect m_viewport;                          ///< Playable area dimensions.
+            core::ResourceManager* m_resources{nullptr};  ///< Audio resource cache.
 
-            // ── Game objects ───────────────────────────────────────────────────────
-            classes::BubbleGrid m_grid;
-            classes::Shooter m_shooter;
-            classes::Roof m_roof;
-            levels::LevelLoader m_levelLoader;            
-            levels::GameData &m_gd;
-            std::unique_ptr<classes::Bubble> m_flyingBubble; 
+            // ── Game Objects ───────────────────────────────────────────────
+            classes::BubbleGrid m_grid;                   ///< Hex grid of bubbles.
+            classes::Shooter m_shooter;                   ///< Launcher at bottom.
+            classes::Roof m_roof;                         ///< Anchor barrier at top.
+            levels::LevelLoader m_levelLoader;            ///< Level configuration loader.
+            levels::GameData &m_gd;                       ///< Persistent game state.
+            std::unique_ptr<classes::Bubble> m_flyingBubble;  ///< Currently in-flight bubble.
 
-            // ── Game values ────────────────────────────────────────────────────────
-            int m_shootcount{0};
-            float nonShootTime{0.f}; // Time elapsed since last shot, for rapid-fire levels.
+            // ── Game State ─────────────────────────────────────────────────
+            int m_shootcount{0};                          ///< Number of shots fired in current level.
+            float nonShootTime{0.f};                      ///< Time since last shot (for rapid-fire).
+            bool m_paused{false};                         ///< Whether gameplay is paused.
 
-            // ── State ──────────────────────────────────────────────────────────────
-            bool m_paused{false};
-
-            // ── Helpers ────────────────────────────────────────────────────────────
-            void handleShoot();          ///< Trigger: fire the shooter.
-            bool updateFlight(float dt); ///< Move flying bubble, check collisions. True if bubble landed.
-            void landBubble();           ///< Attach flying bubble to grid, check matches.
-            void checkNextLevel();       ///< Advance stage if current level objectives are met.
-            bool checkGameOver();        ///< Game-over when bubbles reach shooter row.
-
+            void handleShoot();
+            bool updateFlight(float dt);
+            void landBubble();
+            void checkNextLevel();
+            bool checkGameOver();
+            
             void drawBackground(core::Renderer &renderer) const;
             void drawBorders(core::Renderer &renderer) const;
     };
