@@ -15,10 +15,11 @@ namespace levels
     enum class Stage
     {
         LEARNING_1,   ///< Tutorial level with simple bubble patterns.
-        COUNT,         ///< Total number of stages.
         CASCADE_2,    ///< Vertical drop challenge with cascading bubbles.
         RAPIDFIRE_3,  ///< Fast-paced level with time limit and rapid shooting.
-        COLORBLIND_4 ///< Color-changing bubbles for difficulty variation.
+        COLORBLIND_4, ///< Color-changing bubbles for difficulty variation.
+        COUNT         ///< Total number of stages.
+
     };
 
     struct GameData

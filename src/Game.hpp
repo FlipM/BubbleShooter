@@ -40,19 +40,19 @@ class Game
         [[nodiscard]] core::ResourceManager &getResourceManager() noexcept   { return m_resources; }
 
     private:
-        core::Renderer m_renderer;
-        core::InputHandler m_input;
-        core::Settings m_settings;
-        core::SoundPlayer m_soundPlayer;
-        core::ResourceManager m_resources;
-        levels::GameData m_gameData;
+        core::Renderer m_renderer;                        ///< SDL window and rendering context.
+        core::InputHandler m_input;                       ///< Keyboard and mouse event polling.
+        core::Settings m_settings;                        ///< Game configuration (sound, etc).
+        core::SoundPlayer m_soundPlayer;                  ///< Audio playback system.
+        core::ResourceManager m_resources;                ///< Sound effect cache and management.
+        levels::GameData m_gameData;                      ///< Persistent game state (score, stage).
 
-        std::unique_ptr<screens::Screen> m_currentScreen;
-        GameState m_state{GameState::HOME};
-        bool m_running{true};
+        std::unique_ptr<screens::Screen> m_currentScreen; ///< Active screen (home, gameplay, etc).
+        GameState m_state{GameState::HOME};               ///< Current game state.
+        bool m_running{true};                             ///< Whether main loop should continue.
 
-        Uint64 m_lastTick{0};
-        float m_deltaSeconds{0.f};
+        Uint64 m_lastTick{0};                             ///< Last SDL performance counter tick.
+        float m_deltaSeconds{0.f};                        ///< Frame delta time, clamped to max.
 
         // ── Frame Update and screen management ─────────────────────────────────
         void processEvents();

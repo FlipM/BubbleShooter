@@ -31,6 +31,7 @@ namespace screens
         m_shooter.initiate(m_levelLoader.getStagePalette());
     }
 
+    /// Handle input events (mouse clicks, ESC for pause).
     void GameScreen::handleEvent(const SDL_Event &event,
                                 const core::InputHandler &input) 
     {
@@ -51,6 +52,7 @@ namespace screens
         (void)input;
     }
 
+    /// Update game state: aiming, bubble flight, collision detection, and level progression.
     void GameScreen::update(float deltaSeconds) 
     {
         if (m_paused)
@@ -91,6 +93,7 @@ namespace screens
             checkNextLevel();
     }
 
+    /// Render all game elements: background, grid, bubbles, shooter, score overlay.
     void GameScreen::render(core::Renderer &renderer) 
     {
         drawBackground(renderer);
@@ -103,6 +106,7 @@ namespace screens
         m_gd.score.draw(renderer, m_viewport.x, m_viewport.y, m_viewport.w);
     }
 
+    /// Fire shooter and create new in-flight bubble.
     void GameScreen::handleShoot() 
     {
         m_flyingBubble = m_shooter.shoot();
@@ -116,6 +120,8 @@ namespace screens
         }
     }    
     
+    /// Update in-flight bubble trajectory and check for wall/roof/bubble collisions.
+    /// Returns true if bubble has landed, false if still flying.
     bool GameScreen::updateFlight(float dt) 
     {
         m_flyingBubble->updateMovement(dt);
@@ -163,6 +169,8 @@ namespace screens
         return false; // still flying
     }
 
+    /// Attach landed bubble to grid, check for color matches, and cascade.
+    /// Handles score updates, bubble removal, and gravity simulation.
     void GameScreen::landBubble() 
     {
         if (!m_flyingBubble)
@@ -210,6 +218,7 @@ namespace screens
 
     }
 
+    /// Check game-over condition: if any bubble has reached the shooter row.
     bool GameScreen::checkGameOver() 
     {
         for (int col = 0; col < GRID_COLS; ++col) 
@@ -225,6 +234,7 @@ namespace screens
         return false;
     }
 
+    /// Check if current level is cleared and trigger stage advance if so.
     void GameScreen::checkNextLevel() 
     {  
         if (m_levelLoader.isStageCleared(m_grid)) 
@@ -234,12 +244,14 @@ namespace screens
         }
     }
 
+    /// Draw game background (viewport fill color).
     void GameScreen::drawBackground(core::Renderer &renderer) const 
     {
         renderer.drawRect(m_viewport.x, m_viewport.y, m_viewport.w, m_viewport.h,
                          core::UI::GAME_BACKGROUND);
     }
 
+    /// Draw the viewport border outline.
     void GameScreen::drawBorders(core::Renderer &renderer) const 
     {
         renderer.drawRectOutline(m_viewport.x, m_viewport.y, m_viewport.w, m_viewport.h,
