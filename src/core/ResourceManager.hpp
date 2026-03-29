@@ -13,14 +13,8 @@
 
 namespace core 
 {
-    struct TextureDeleter 
-    {
-        void operator()(SDL_Texture *t) const noexcept { SDL_DestroyTexture(t); }
-    };
-
     class ResourceManager 
     {
-        const std::string FONT_PATH = "assets/fonts/";
         const std::string SOUND_PATH = "assets/sounds/";
         const std::string SOUND_EXT = ".wav";
 
@@ -33,8 +27,6 @@ namespace core
             ResourceManager &operator=(const ResourceManager &) = delete;
 
             Renderer *getRenderer() { return &m_renderer; } 
-            
-            
 
             /// Purge all cached resources.
             void clear();

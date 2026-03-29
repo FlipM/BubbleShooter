@@ -23,7 +23,7 @@ Game::Game(const std::string &title)
     : m_renderer(title, WINDOW_W, WINDOW_H), 
       m_resources(m_renderer, m_soundPlayer) 
 {
-    m_settings.load("settings.ini");
+    //m_settings.load("settings.ini");
 #ifdef HAS_SDL2_MIXER
     m_soundPlayer.init();
 #endif
@@ -33,7 +33,7 @@ Game::Game(const std::string &title)
 
 Game::~Game() 
 {
-    m_settings.save("settings.ini");
+    //m_settings.save("settings.ini");
 #ifdef HAS_SDL2_MIXER
     Mix_CloseAudio();
 #endif

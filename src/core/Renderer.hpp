@@ -18,7 +18,7 @@ namespace core
     {
         void operator()(SDL_Window *w) const noexcept { SDL_DestroyWindow(w); }
     };
-    
+
     struct RendererDeleter 
     {
         void operator()(SDL_Renderer *r) const noexcept { SDL_DestroyRenderer(r); }
@@ -43,6 +43,8 @@ namespace core
 
     class Renderer 
     {
+        const char *FONT_PATH = "assets/fonts/DejaVuSans.ttf";
+
         public:
             /// Creates OS window + SDL renderer.  Throws std::runtime_error on failure.
             explicit Renderer(const std::string &title, int windowW = 1080,
@@ -55,6 +57,8 @@ namespace core
             Renderer &operator=(const Renderer &) = delete;
             Renderer(Renderer &&) = default;
             Renderer &operator=(Renderer &&) = default;
+
+            void initFont();
 
             // ── Frame lifecycle ───────────────────────────────────────────────────
             void clear();   ///< Fill with background (black bars + game area).
@@ -101,8 +105,6 @@ namespace core
             /// Recalculate viewport so game area is centred, preserving aspect ratio.
             void recalculateViewport(int windowW, int windowH);
 
-            /// Lazy-initialize and cache the default font (called on first drawText).
-            void ensureFontLoaded();
 
             /// Measure the dimensions of a UTF-8 text string.
             std::pair<int, int> measureText(int x, int y, int width, int height, const std::string &text);

@@ -190,14 +190,7 @@ namespace classes
 
     void BubbleGrid::draw(core::Renderer &renderer) const 
     {
-        // Draw hex lines. Odd rows has one less slot. Last row is ommited, since a ball there would end the game.
-        for (int r = 0; r < m_rows - 1; ++r) 
-        {
-            for (int c = 0; c < m_cols; ++c) 
-            {
-                drawHexOutline(renderer, cellCenter({r, c}));
-            }
-        }
+        //drawOutlines(renderer);
 
         // Draw all active bubbles.
         for (auto &row : m_grid) 
@@ -206,6 +199,17 @@ namespace classes
             {
                 if (bubble)
                     bubble->draw(renderer);
+            }
+        }
+    }
+
+    void BubbleGrid::drawOutlines(core::Renderer &renderer) const 
+    {
+        for (int r = 0; r < m_rows - 1; ++r) 
+        {
+            for (int c = 0; c < m_cols; ++c) 
+            {
+                drawHexOutline(renderer, cellCenter({r, c}));
             }
         }
     }

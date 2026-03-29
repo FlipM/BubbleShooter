@@ -9,10 +9,12 @@ namespace core {
 
     Renderer::Renderer(const std::string &title, int windowW, int windowH) 
     {
+        
         if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) 
         {
             throw std::runtime_error(std::string("SDL_Init failed: ") + SDL_GetError());
         }
+        initFont();
 
         SDL_Window *raw_win = SDL_CreateWindow(
             title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowW,
@@ -101,9 +103,6 @@ namespace core {
     {
         if (text.empty()) return;
 
-        // Lazy-load font on first use.
-        ensureFontLoaded();
-
         if (!m_font) {
             // Font loading failed; silently skip text rendering.
             std::clog << "[Renderer] Font not available, skipping drawText\n";
@@ -127,9 +126,7 @@ namespace core {
 
         SDL_Rect dst{ x, y, surf->w, surf->h };
         SDL_FreeSurface(surf);
-
         SDL_RenderCopy(m_renderer.get(), tex, nullptr, &dst);
-
         SDL_DestroyTexture(tex);
     }
 
@@ -213,7 +210,7 @@ namespace core {
         return {textX, textY};
     }
 
-    void Renderer::ensureFontLoaded()
+    void Renderer::initFont()
     {
         // Already loaded.
         if (m_font) 
@@ -222,35 +219,27 @@ namespace core {
         }
 
         // Ensure SDL_ttf is initialized.
-        if (TTF_WasInit() == 0) {
-            if (TTF_Init() == -1) {
+        if (TTF_WasInit() == 0) 
+        {
+            if (TTF_Init() == -1) 
+            {
                 std::cerr << "[Renderer] TTF_Init failed: " << TTF_GetError() << '\n';
                 return;
             }
         }
-
-        // Try a few common font locations (platform-specific).
-        const char *fontPaths[] = 
-        {
-            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", // Linux
-            "/Library/Fonts/Arial.ttf",                        // macOS
-            "C:\\Windows\\Fonts\\arial.ttf",                   // Windows
-            nullptr
-        };
-
+        
         TTF_Font *font = nullptr;
-        for (int i = 0; fontPaths[i] != nullptr; ++i) 
-        {
-            font = TTF_OpenFont(fontPaths[i], 20);
-            if (font) {
-                std::clog << "[Renderer] Font loaded from: " << fontPaths[i] << '\n';
-                break;
-            }
-        }
 
-        if (!font) {
-            std::cerr << "[Renderer] Could not load any font\n";
-            return;
+        font = TTF_OpenFont(FONT_PATH, 20);
+        if (font) 
+        {
+            std::clog << "[Renderer] Font loaded from: " << FONT_PATH << '\n';
+        }
+        else
+        {
+
+            std::cerr << "[Renderer] Could not load any font. Aborting.\n";
+            std::abort();
         }
 
         m_font.reset(font);

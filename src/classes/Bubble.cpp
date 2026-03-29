@@ -62,7 +62,6 @@ namespace classes
                            static_cast<int>(m_pixelPos.y), 
                            m_radius, col);
 
-        // TODO: draw bubble shine / texture on top.
     }
 
     void Bubble::updateMovement(float deltaSeconds) 

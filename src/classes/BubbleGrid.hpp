@@ -91,6 +91,7 @@ namespace classes {
             [[nodiscard]] utils::Vec2f cellCenter(utils::HexCoord pos) const noexcept;
 
             /// Draw the outline of a single hex cell (background grid decoration).
+            void drawOutlines(core::Renderer &renderer) const;
             void drawHexOutline(core::Renderer &renderer, utils::Vec2f center) const;
     };
 
