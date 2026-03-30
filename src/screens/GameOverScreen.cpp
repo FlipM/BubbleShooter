@@ -25,6 +25,7 @@ namespace screens
                                      core::UI::BUTTON_DEFAULT_WIDTH, 
                                      core::UI::BUTTON_DEFAULT_HEIGHT, 
                                      "HOME");
+
     }
 
     /// Handle mouse motion and click events for button interaction.
@@ -48,9 +49,9 @@ namespace screens
     }
 
     /// Update game over screen logic
-    void GameOverScreen::update(float /*deltaSeconds*/) 
+    void GameOverScreen::update(float deltaSeconds) 
     {
-        // TODO: fade-in animation, score tally counter.
+        (void)deltaSeconds; 
     }
 
     /// Render game over message, final score, and action buttons.
@@ -68,7 +69,7 @@ namespace screens
                          "GAME OVER", core::UI::RED, core::UI::WHITE_COLOR);
 
         renderer.drawText("Score: " + std::to_string(m_gd.score.current()), 
-                         mx + mw / 4, my + mh / 4 + core::UI::PLATE_DEFAULT_HEIGHT * 1.5, 
+                         mx + mw / 4, my + mh / 4 + static_cast<int>(core::UI::PLATE_DEFAULT_HEIGHT * 1.5), 
                          core::UI::WHITE_COLOR);
 
         renderer.drawButton(m_retryBtn, core::UI::BLUE, core::UI::LIGHTEST_BLUE, 

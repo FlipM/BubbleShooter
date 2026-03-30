@@ -27,7 +27,44 @@
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "C:/vcpkg/scripts/buildsystems/vcpkg.cmake",
-        "VCPKG_TARGET_TRIPLET": "x64-windows"
+        "VCPKG_TARGET_TRIPLET": "x64-windows",
+        "BUBBLE_MSVC_STATIC_RUNTIME": "OFF"
+      }
+    },
+    {
+      "name": "windows-static-release",
+      "displayName": "Windows Static Release (Portable)",
+      "inherits": "windows-vcpkg",
+      "binaryDir": "${sourceDir}/build-static",
+      "cacheVariables": {
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static",
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build-static/dist",
+        "BUBBLE_PREFER_STATIC_SDL": "ON",
+        "BUBBLE_MSVC_STATIC_RUNTIME": "ON",
+        "BUBBLE_REQUIRE_SDL2_TTF": "ON",
+        "BUBBLE_REQUIRE_SDL2_MIXER": "ON",
+        "BUBBLE_ENABLE_INSTALL": "ON",
+        "BUBBLE_ENABLE_CPACK": "ON"
+      }
+    },
+    {
+      "name": "linux-release",
+      "displayName": "Linux Release (Package)",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build-linux",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build-linux/dist",
+        "BUBBLE_PREFER_STATIC_SDL": "ON",
+        "BUBBLE_REQUIRE_SDL2_TTF": "ON",
+        "BUBBLE_REQUIRE_SDL2_MIXER": "ON",
+        "BUBBLE_ENABLE_INSTALL": "ON",
+        "BUBBLE_ENABLE_CPACK": "ON"
+      },
+      "condition": {
+        "type": "notEquals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
       }
     }
   ],
@@ -39,6 +76,45 @@
     {
       "name": "build-windows-vcpkg",
       "configurePreset": "windows-vcpkg"
+    },
+    {
+      "name": "build-windows-static-release",
+      "configurePreset": "windows-static-release",
+      "configuration": "Release"
+    },
+    {
+      "name": "package-windows-static-release",
+      "configurePreset": "windows-static-release",
+      "configuration": "Release",
+      "targets": [
+        "package"
+      ]
+    },
+    {
+      "name": "build-linux-release",
+      "configurePreset": "linux-release"
+    },
+    {
+      "name": "package-linux-release",
+      "configurePreset": "linux-release",
+      "targets": [
+        "package"
+      ]
+    },
+    {
+      "name": "install-windows-static-release",
+      "configurePreset": "windows-static-release",
+      "configuration": "Release",
+      "targets": [
+        "install"
+      ]
+    },
+    {
+      "name": "install-linux-release",
+      "configurePreset": "linux-release",
+      "targets": [
+        "install"
+      ]
     }
   ]
 }

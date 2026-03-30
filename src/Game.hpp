@@ -10,6 +10,7 @@
 #include "levels/LevelLoader.hpp"
 #include "screens/Screen.hpp"
 #include <memory>
+#include <optional>
 #include <string>
 
 enum class GameState 
@@ -50,12 +51,15 @@ class Game
         std::unique_ptr<screens::Screen> m_currentScreen; ///< Active screen (home, gameplay, etc).
         GameState m_state{GameState::HOME};               ///< Current game state.
         bool m_running{true};                             ///< Whether main loop should continue.
+        std::optional<GameState> m_pendingState;          ///< Deferred state change (queued during event handling).
+        bool m_processingEvents{false};                   ///< Flag: true if currently handling SDL events.
 
         Uint64 m_lastTick{0};                             ///< Last SDL performance counter tick.
         float m_deltaSeconds{0.f};                        ///< Frame delta time, clamped to max.
 
         // ── Frame Update and screen management ─────────────────────────────────
         void processEvents();
+
         void update();
         void render();
         void calcDelta();

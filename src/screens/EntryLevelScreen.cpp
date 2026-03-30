@@ -40,15 +40,15 @@ namespace screens
         renderer.drawRect(mx, my, mw, mh, core::UI::ENTRY_LEVEL_BACKGROUND);
 
         std::string stageName = m_levelLoader.getStageName(m_gd.currentStage);
-        renderer.drawPlate(mx + mw * core::UI::PLATE_WIDTH_DISP, 
-                          my + mh * core::UI::PLATE_HEIGHT_DISP, 
-                          mw * core::UI::PLATE_WIDTH, 
+        renderer.drawPlate(mx + static_cast<int>(mw * core::UI::PLATE_WIDTH_DISP), 
+                          my + static_cast<int>(mh * core::UI::PLATE_HEIGHT_DISP), 
+                          static_cast<int>(mw * core::UI::PLATE_WIDTH), 
                           core::UI::PLATE_DEFAULT_HEIGHT, stageName, core::UI::LIGHT_BLUE,
                           core::UI::WHITE_COLOR);
 
         renderer.drawTextVector(m_levelLoader.getStageDescription(m_gd.currentStage),
-                               mx + mw * core::UI::PLATE_WIDTH_DISP, 
-                               my + (mh * core::UI::PLATE_HEIGHT_DISP * 3),
+                               mx + static_cast<int>(mw * core::UI::PLATE_WIDTH_DISP), 
+                               my + static_cast<int>(mh * core::UI::PLATE_HEIGHT_DISP * 3),
                                core::UI::WHITE_COLOR, 25);
     }
 

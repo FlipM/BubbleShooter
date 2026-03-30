@@ -3,21 +3,83 @@ This repository presents a bubble shooter game, implemented in C++ using the SDL
 
 # Compiling and running the game
 
-The game is self-contained in one executable. It can be obtained with CMAKE (3.21) by compilation, requiring the following:
+The game can be built on Windows and Linux with CMake.
 
- - SDL, with the TTF package (and MIXER, to be able to play sounds). Installation instructions are present in the CMakeLists.txt file.
- - a C++20 compiler
- - Catch2 (testing only)
+## Build requirements
 
-To generate the executable, issue the following commands via terminal (PowerShell): 
+### Common
 
- $ cmake -B build -DCMAKE_BUILD_TYPE=Release
- $ cmake -build build
- $ cp build/bin/BubbleShooter .
+- CMake >= 3.21
+- C++20 compiler
+- CMake generator supported by your platform
 
-The last command is VERY important, as the executable is going to search for the asset folder that is not available at "build/bin/". An alternative is to run directly with ./build/bin/directory.
+### Windows (MSVC + vcpkg)
 
-To change to debug mode, just remove the "-DCMAKE_BUILD_TYPE=Release" from the first command. To include the test suite "BubbleTests", add "-DBUILD_TESTS=ON". The tests will be in the build/bin/ folder. I've added the release executables (for linux and Windows) and the test executable to the main folder, for convenience.
+- Visual Studio 2022 (MSVC)
+- vcpkg at "C:/vcpkg" (or set "VCPKG_ROOT")
+- For static/portable Release builds (recommended):
+	- sdl2:x64-windows-static
+	- sdl2-ttf:x64-windows-static
+	- sdl2-mixer:x64-windows-static
+- For dynamic Debug builds:
+	- sdl2:x64-windows
+	- sdl2-ttf:x64-windows
+	- sdl2-mixer:x64-windows
+
+Install packages (PowerShell):
+
+C:/vcpkg/vcpkg.exe install sdl2:x64-windows-static sdl2-ttf:x64-windows-static sdl2-mixer:x64-windows-static
+C:/vcpkg/vcpkg.exe install sdl2:x64-windows sdl2-ttf:x64-windows sdl2-mixer:x64-windows
+
+
+### Linux
+
+- GCC or Clang with C++20 support
+- Make/Ninja
+- SDL2 development packages:
+	- libsdl2-dev
+	- libsdl2-ttf-dev
+	- libsdl2-mixer-dev
+
+Example (Debian/Ubuntu):
+
+sudo apt update
+sudo apt install -y build-essential cmake libsdl2-dev libsdl2-ttf-dev libsdl2-mixer-dev
+
+## Build commands
+
+### Windows Debug
+
+cmake --preset windows-vcpkg
+cmake --build --preset build-windows-vcpkg --config Debug
+
+### Windows Release (static)
+
+cmake --preset windows-static-release --fresh
+cmake --build --preset build-windows-static-release
+
+### Linux Debug
+
+cmake --preset linux-debug
+cmake --build --preset build-linux-debug
+
+### Linux Release
+
+cmake --preset linux-release
+cmake --build --preset build-linux-release
+
+## Output
+
+- Executable output: build/bin/
+- Installed distributable folder:
+	- Windows: build-static/dist/
+	- Linux: build-linux/dist/
+
+## Notes
+
+- End users do not need to install SDL manually when using the Windows static Release package.
+- The game expects the "assets/" folder next to the executable in the installed/package output.
+- To include tests, configure with "-DBUILD_TESTS=ON".
 
 # The game
 
