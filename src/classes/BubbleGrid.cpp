@@ -2,6 +2,7 @@
 #include "BubbleGrid.hpp"
 #include "core/Renderer.hpp"
 #include "core/UI.hpp"
+#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -56,7 +57,7 @@ namespace classes
     classes::BubbleColor BubbleGrid::getRandomColor(const std::vector<classes::BubbleColor> &palette) const
     {        
         if (palette.empty())
-            return classes::BubbleColor::Blue;
+            return classes::BubbleColor::Gray; //Protection, but should not happen
 
         int randomIndex = rand() % palette.size();
         return static_cast<classes::BubbleColor>(palette[randomIndex]);
@@ -149,10 +150,7 @@ namespace classes
     /// Snap an in-flight bubble to the nearest empty hex cell.
     utils::HexCoord BubbleGrid::snapToGrid(utils::Vec2f pixelPos) const 
     {
-        auto snapped = utils::pixelToHex(pixelPos, m_origin);
-        snapped.r = utils::clamp(snapped.r, 0, m_rows - 1);
-        snapped.c = utils::clamp(snapped.c, 0, m_cols - 1);
-        return snapped;
+        return utils::pixelToHex(pixelPos, m_origin);
     }
 
     /// Advance the grid downward and fill top rows with new random bubbles.
@@ -173,19 +171,11 @@ namespace classes
                 }
             }
         }
+        if(shooterColors.empty())
+            return;
 
         // Fill top rows with new random bubbles.
         std::vector<classes::BubbleColor> colorVect(shooterColors.begin(), shooterColors.end());
-        if (colorVect.empty())
-        {
-            colorVect = {
-                classes::BubbleColor::Blue,
-                classes::BubbleColor::Green,
-                classes::BubbleColor::Red,
-                classes::BubbleColor::Yellow
-            };
-        }
-
         for (int c = 0; c < m_cols; ++c) 
         {
             for (int r = 0; r < ROWS_TO_ADVANCE; ++r) 
@@ -288,7 +278,7 @@ namespace classes
     void BubbleGrid::drawHexOutline(core::Renderer &renderer,
                                     utils::Vec2f center) const 
     {
-        core::UI::Color color(60, 60, 80, 100);
+        core::UI::Color core::UI::HEX_OUTLINE;
         for (int i = 0; i < HEX_SIDES; ++i) 
         {
             float a0 = static_cast<float>(i) / HEX_SIDES * 2.f * utils::PI;
@@ -322,7 +312,8 @@ namespace classes
         {
             for (const auto &bubble : row) 
             {
-                if (bubble && bubble->isActive())
+                // Gray bubbles do not count as active for game-over conditions
+                if (bubble && bubble->isActive() && bubble->color() != classes::BubbleColor::Gray)
                     return false;
             }
         }

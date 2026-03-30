@@ -60,7 +60,7 @@ void Game::changeState(GameState newState)
     m_pendingState = newState;
 }
 
-/// Apply any queued state change.
+/// Apply any queued state change. Only happens at handling and udpate points.
 void Game::processPendingStateChange()
 {
     if (!m_pendingState)
@@ -105,7 +105,6 @@ void Game::render()
     if (m_currentScreen)
         m_currentScreen->render(m_renderer);
     m_renderer.present();
-    processPendingStateChange();
 
 }
 

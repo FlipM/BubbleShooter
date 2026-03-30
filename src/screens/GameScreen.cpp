@@ -72,7 +72,7 @@ namespace screens
         {
             if(updateFlight(deltaSeconds))
             {
-                if (m_levelLoader.exceededShootLimit(m_shootcount))
+                if (m_levelLoader.exceededShootLimit(m_shootcount) && !m_grid.isEmpty())
                 {
                     m_grid.advanceDown(m_shooter.remainingColors());
                     m_shootcount = 0; // reset shoot count after advancing grid
@@ -177,33 +177,6 @@ namespace screens
             return;
 
         auto coord = m_grid.snapToGrid(m_flyingBubble->pixelPos());
-
-        // If snapped cell is occupied, choose the nearest empty neighbor instead of overwriting.
-        if (m_grid.at(coord))
-        {
-            auto neighbors = m_grid.neighbours(coord);
-            bool foundEmpty = false;
-            utils::HexCoord bestCoord = coord;
-
-            for (const auto &n : neighbors)
-            {
-                if (m_grid.at(n))
-                    continue;
-
-                bestCoord = n;
-                foundEmpty = true;
-                break;
-            }
-
-            if (foundEmpty)
-                coord = bestCoord;
-            else
-            {
-                std::clog << "[GameScreen] landBubble: no empty neighbor for occupied snap cell\n";
-                return;
-            }
-        }
-
         m_grid.addBubble(std::move(m_flyingBubble), coord);
 
         // Check for matches.
