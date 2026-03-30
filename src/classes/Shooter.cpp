@@ -88,9 +88,12 @@ namespace classes
     void Shooter::removeColor(BubbleColor color) 
     {
         m_upcomingColors.erase(color);
+        int count = 0;
         while(m_current && m_current->color() == color) 
         {
             advance(); // if the next bubble is of the removed color, advance to get a new next bubble.
+            if (count++ > 2)
+                break;
         }
         if(m_next && m_next->color() == color)
         {

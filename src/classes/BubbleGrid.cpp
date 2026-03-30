@@ -156,6 +156,8 @@ namespace classes
     /// Advance the grid downward and fill top rows with new random bubbles.
     void BubbleGrid::advanceDown(const std::set<classes::BubbleColor> &shooterColors) 
     {
+        if (m_rows < 3) return;
+        
         // Move bubbles down from second-to-last row upward.
         for(int r = m_rows - 3; r >= 0; --r) 
         {

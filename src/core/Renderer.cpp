@@ -183,6 +183,9 @@ namespace core
     /// Recalculate viewport maintaining aspect ratio and centering.
     void Renderer::recalculateViewport(int windowW, int windowH) 
     {
+        if (m_viewport.height == 0) 
+            return;
+
         const float gameAspect = static_cast<float>(m_viewport.width) /
                                 static_cast<float>(m_viewport.height);
         int gameH = windowH;
@@ -202,8 +205,9 @@ namespace core
     /// Calculate center position for text within a bounding box.
     std::pair<int, int> Renderer::measureText(int x, int y, int width, int height, const std::string &text)
     {
-        int textWidth, textHeight;
-        TTF_SizeUTF8(m_font.get(), text.c_str(), &textWidth, &textHeight);
+        int textWidth = 0, textHeight = 0;
+        if(m_font)
+            TTF_SizeUTF8(m_font.get(), text.c_str(), &textWidth, &textHeight);
         
         int textX = x + (width - textWidth) / 2;
         int textY = y + (height - textHeight) / 2;

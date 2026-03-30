@@ -112,7 +112,9 @@ namespace screens
         m_flyingBubble = m_shooter.shoot();
         m_shootcount++;
         nonShootTime = 0.f;
-        m_resources->play("bubbleShot");
+
+        if(m_resources)
+            m_resources->play("bubbleShot");
 
         if (m_flyingBubble) 
         {

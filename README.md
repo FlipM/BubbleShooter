@@ -82,8 +82,8 @@ cmake --build --preset build-linux-release
 
 ## Notes
 
-- End users do not need to install SDL manually when using the Windows static Release package.
-- The game expects the "assets/" folder next to the executable in the installed/package output.
+- End users do not need to install SDL manually when using the Windows static Release package. Debug options are bound to the same requirements as the build.
+- The game expects the "assets/" folder next to the executable in the installed/package output, independent of the executable build.
 - To include tests, configure with "-DBUILD_TESTS=ON". You will need to install Catch2 to do that.
 - For intermittent crashes, run the ASan preset and reproduce the issue. AddressSanitizer usually reports the exact invalid access and stack trace.
 
@@ -129,7 +129,7 @@ If the player finishes all 4 stages, he is awarded the winner's song. High score
 
 => Aesthetics and UX
 
- The game has simple drawings, text font, sounds, and colors. Besides, it has no animations or background music. For now, the MVP focuses on functionality, efficiency, and extensibility of the solution. These aspects can be improved in the future, and thus, are not in their final stages yet.
+ The game has suitable drawings, text font, sounds, and colors. However, it has no animations or background music. For now, the MVP focuses on functionality, efficiency, and extensibility of the solution. These aspects can be improved in the future, and thus, are not in their final stages yet.
 
 => Stages
 
