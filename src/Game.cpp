@@ -27,9 +27,9 @@ Game::Game(const std::string &title)
     m_soundPlayer.init();
 #endif
     m_lastTick = SDL_GetPerformanceCounter();
-    
-    m_state = GameState::HOME;
-    m_currentScreen = makeScreen(GameState::HOME);
+
+    changeState(GameState::HOME);
+    processPendingStateChange();
 }
 
 /// Clean up SDL and audio resources.
@@ -49,55 +49,44 @@ void Game::run()
     {
         calcDelta();
         processEvents();
-        
-        // Process any deferred state change from event callbacks
-        if (m_pendingState)
-        {
-            m_state = *m_pendingState;
-            m_currentScreen = makeScreen(m_state);
-            m_pendingState.reset();
-        }
-        
         update();
         render();
     }
 }
 
-/// Queue or immediately apply state change.
-/// Defers if called during event processing (safe from callback-triggered deletion).
-/// Otherwise applies immediately.
+/// Queue a state change to be applied at a safe point in the main loop.
 void Game::changeState(GameState newState) 
 {
-    if (m_processingEvents)
-    {
-        m_pendingState = newState;  // Defer during event handling
-    }
-    else
-    {
-        m_state = newState;
-        m_currentScreen = makeScreen(newState);
-    }
+    m_pendingState = newState;
+}
+
+/// Apply any queued state change.
+void Game::processPendingStateChange()
+{
+    if (!m_pendingState)
+        return;
+
+    m_state = *m_pendingState;
+    m_currentScreen = makeScreen(*m_pendingState);
+    m_pendingState.reset();
 }
 
 /// Handle SDL events and delegate to current screen.
 void Game::processEvents() 
 {
-    m_processingEvents = true;  
-    
     SDL_Event event;
     while (SDL_PollEvent(&event)) 
     {
         if (event.type == SDL_QUIT) 
         {
             m_running = false;
-            m_processingEvents = false;  
             return;
         }
         if (m_currentScreen)
             m_currentScreen->handleEvent(event, m_input);
     }
-    
-    m_processingEvents = false;  
+    processPendingStateChange();
+
 }
 
 /// Update the current screen with delta time.
@@ -105,6 +94,8 @@ void Game::update()
 {
     if (m_currentScreen)
         m_currentScreen->update(m_deltaSeconds);
+    processPendingStateChange();
+
 }
 
 /// Render the current screen.
@@ -114,6 +105,8 @@ void Game::render()
     if (m_currentScreen)
         m_currentScreen->render(m_renderer);
     m_renderer.present();
+    processPendingStateChange();
+
 }
 
 /// Calculate elapsed time since last frame.

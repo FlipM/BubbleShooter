@@ -3,7 +3,7 @@ This repository presents a bubble shooter game, implemented in C++ using the SDL
 
 # Compiling and running the game
 
-The game can be built on Windows and Linux with CMake.
+The game can be built on Windows and Linux with CMake. An executable is also available at the main folder, ready to run.
 
 ## Build requirements
 
@@ -58,6 +58,11 @@ cmake --build --preset build-windows-vcpkg --config Debug
 cmake --preset windows-static-release --fresh
 cmake --build --preset build-windows-static-release
 
+### Windows Debug with AddressSanitizer (for rare crashes)
+
+cmake --preset windows-asan --fresh
+cmake --build --preset build-windows-asan
+
 ### Linux Debug
 
 cmake --preset linux-debug
@@ -80,6 +85,7 @@ cmake --build --preset build-linux-release
 - End users do not need to install SDL manually when using the Windows static Release package.
 - The game expects the "assets/" folder next to the executable in the installed/package output.
 - To include tests, configure with "-DBUILD_TESTS=ON". You will need to install Catch2 to do that.
+- For intermittent crashes, run the ASan preset and reproduce the issue. AddressSanitizer usually reports the exact invalid access and stack trace.
 
 # The game
 

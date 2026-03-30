@@ -48,6 +48,17 @@
       }
     },
     {
+      "name": "windows-asan",
+      "displayName": "Windows Debug + AddressSanitizer",
+      "inherits": "windows-vcpkg",
+      "binaryDir": "${sourceDir}/build-asan",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "BUBBLE_ENABLE_ASAN": "ON",
+        "BUBBLE_MSVC_STATIC_RUNTIME": "OFF"
+      }
+    },
+    {
       "name": "linux-release",
       "displayName": "Linux Release (Package)",
       "generator": "Unix Makefiles",
@@ -81,6 +92,11 @@
       "name": "build-windows-static-release",
       "configurePreset": "windows-static-release",
       "configuration": "Release"
+    },
+    {
+      "name": "build-windows-asan",
+      "configurePreset": "windows-asan",
+      "configuration": "Debug"
     },
     {
       "name": "package-windows-static-release",

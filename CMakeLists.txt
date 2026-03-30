@@ -8,6 +8,7 @@ option(BUBBLE_REQUIRE_SDL2_TTF "Fail configuration if SDL2_ttf is missing" OFF)
 option(BUBBLE_REQUIRE_SDL2_MIXER "Fail configuration if SDL2_mixer is missing" OFF)
 option(BUBBLE_ENABLE_INSTALL "Enable install rules for distributable output" ON)
 option(BUBBLE_ENABLE_CPACK "Enable CPack archive generation" ON)
+option(BUBBLE_ENABLE_ASAN "Enable AddressSanitizer instrumentation" OFF)
 
 # ── Windows zero-config bootstrap (vcpkg) ───────────────────────────────────
 # Allows: cmake -B build
@@ -180,6 +181,16 @@ else()
     target_compile_options(BubbleShooter PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
+if(BUBBLE_ENABLE_ASAN)
+    if(MSVC)
+        target_compile_options(BubbleShooter PRIVATE /fsanitize=address /Zi)
+        target_link_options(BubbleShooter PRIVATE /fsanitize=address /INCREMENTAL:NO)
+    else()
+        target_compile_options(BubbleShooter PRIVATE -fsanitize=address -fno-omit-frame-pointer)
+        target_link_options(BubbleShooter PRIVATE -fsanitize=address)
+    endif()
+endif()
+
 # ── Tests ────────────────────────────────────────────────────────────────────
 option(BUILD_TESTS "Build unit tests" OFF)
 if(BUILD_TESTS)
@@ -209,6 +220,7 @@ message(STATUS "BUBBLE_MSVC_STATIC_RUNTIME=${BUBBLE_MSVC_STATIC_RUNTIME}")
 message(STATUS "VCPKG_TARGET_TRIPLET=${VCPKG_TARGET_TRIPLET}")
 message(STATUS "BUBBLE_ENABLE_INSTALL=${BUBBLE_ENABLE_INSTALL}")
 message(STATUS "BUBBLE_ENABLE_CPACK=${BUBBLE_ENABLE_CPACK}")
+message(STATUS "BUBBLE_ENABLE_ASAN=${BUBBLE_ENABLE_ASAN}")
 if(DEFINED BUBBLE_SDL2_TTF_TARGET)
     message(STATUS "SDL2_ttf target: ${BUBBLE_SDL2_TTF_TARGET}")
 endif()
