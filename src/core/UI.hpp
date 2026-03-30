@@ -41,6 +41,7 @@ namespace core
         const core::UI::Color ROOF_COLOR  = core::UI::Color(50, 50, 80, 255);
         const core::UI::Color SHOOTER_LINE = core::UI::Color(255, 255, 255, 200);
         const core::UI::Color SHOOTER_BASE = core::UI::Color(80, 80, 120, 255);
+        const core::UI::Color HEX_OUTLINE = core::UI::Color(60, 60, 80, 100);
         
         const core::UI::Color ENTRY_LEVEL_BACKGROUND  = core::UI::Color(10, 5, 25, 240);
         const core::UI::Color SETTINGS_ON = core::UI::Color(80, 220, 80, 255);

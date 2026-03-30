@@ -278,7 +278,7 @@ namespace classes
     void BubbleGrid::drawHexOutline(core::Renderer &renderer,
                                     utils::Vec2f center) const 
     {
-        core::UI::Color core::UI::HEX_OUTLINE;
+        auto color = core::UI::HEX_OUTLINE;
         for (int i = 0; i < HEX_SIDES; ++i) 
         {
             float a0 = static_cast<float>(i) / HEX_SIDES * 2.f * utils::PI;
