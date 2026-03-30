@@ -79,7 +79,7 @@ cmake --build --preset build-linux-release
 
 - End users do not need to install SDL manually when using the Windows static Release package.
 - The game expects the "assets/" folder next to the executable in the installed/package output.
-- To include tests, configure with "-DBUILD_TESTS=ON".
+- To include tests, configure with "-DBUILD_TESTS=ON". You will need to install Catch2 to do that.
 
 # The game
 

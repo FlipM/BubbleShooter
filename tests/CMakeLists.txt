@@ -51,7 +51,11 @@ if(Catch2_FOUND)
     target_include_directories(BubbleTests PRIVATE ${CMAKE_SOURCE_DIR}/src)
     
     # Compiler options
-    target_compile_options(BubbleTests PRIVATE -Wall -Wextra -Wpedantic)
+    if(MSVC)
+        target_compile_options(BubbleTests PRIVATE /W4 /permissive-)
+    else()
+        target_compile_options(BubbleTests PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
     
     # Register tests
     include(Catch)
