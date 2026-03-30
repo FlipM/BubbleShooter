@@ -177,11 +177,44 @@ namespace screens
             return;
 
         auto coord = m_grid.snapToGrid(m_flyingBubble->pixelPos());
+
+        // If snapped cell is occupied, choose the nearest empty neighbor instead of overwriting.
+        if (m_grid.at(coord))
+        {
+            auto neighbors = m_grid.neighbours(coord);
+            bool foundEmpty = false;
+            utils::HexCoord bestCoord = coord;
+
+            for (const auto &n : neighbors)
+            {
+                if (m_grid.at(n))
+                    continue;
+
+                bestCoord = n;
+                foundEmpty = true;
+                break;
+            }
+
+            if (foundEmpty)
+                coord = bestCoord;
+            else
+            {
+                std::clog << "[GameScreen] landBubble: no empty neighbor for occupied snap cell\n";
+                return;
+            }
+        }
+
         m_grid.addBubble(std::move(m_flyingBubble), coord);
 
         // Check for matches.
         auto matched = m_grid.findMatches(coord);
         auto src = m_grid.at(coord);
+        if (!src)
+        {
+            std::clog << "[GameScreen] landBubble: invalid grid coordinate, skipping\n";
+            return;
+        }
+
         auto savedColor = src->color();
 
         if (matched.size() >= 3) 

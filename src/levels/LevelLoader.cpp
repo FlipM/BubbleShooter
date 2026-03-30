@@ -116,6 +116,12 @@ namespace levels
 
     std::vector<classes::BubbleColor> LevelLoader::getStagePalette()
     {
+        if (!m_currentLevel)
+        {
+            std::clog << "[LevelLoader] no current level palette, using fallback\n";
+            return {classes::BubbleColor::Blue, classes::BubbleColor::Green, classes::BubbleColor::Red};
+        }
+
         return m_currentLevel->getPalette();   
     }
 
